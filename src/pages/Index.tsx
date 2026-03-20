@@ -49,7 +49,7 @@ const Index = () => {
             ENGINEER_REFERENCE_TERMINAL
           </h1>
           <span className="font-mono text-[11px] text-muted-foreground">
-            // VER 1.0.1
+            {`// VER ${__APP_VERSION__}`}
           </span>
         </div>
       </header>

@@ -118,7 +118,7 @@ const ColorsTab = () => {
       movingIndicatorTimeoutRef.current = window.setTimeout(() => {
         setMovingColorName((current) => (current === colorName ? null : current));
         movingIndicatorTimeoutRef.current = null;
-      }, 700);
+      }, 1400);
     },
     [pendingCopyCounts],
   );
@@ -229,7 +229,7 @@ const ColorsTab = () => {
               key={color.name}
               className="w-full"
               layout
-              transition={{ type: "spring", stiffness: 360, damping: 32, mass: 0.45 }}
+              transition={{ type: "spring", stiffness: 180, damping: 32, mass: 0.9 }}
               animate={movingColorName === color.name ? { scale: [1, 1.035, 1] } : { scale: 1 }}
             >
               <ColorSwatch
