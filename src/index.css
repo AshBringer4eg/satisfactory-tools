@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 240 10% 4%;
+    --foreground: 0 0% 90%;
+
+    --card: 240 6% 10%;
+    --card-foreground: 0 0% 90%;
+
+    --popover: 240 6% 10%;
+    --popover-foreground: 0 0% 90%;
+
+    --primary: 26 90% 60%;
+    --primary-foreground: 240 10% 4%;
+
+    --secondary: 240 6% 14%;
+    --secondary-foreground: 0 0% 75%;
+
+    --muted: 240 4% 16%;
+    --muted-foreground: 240 4% 40%;
+
+    --accent: 190 90% 50%;
+    --accent-foreground: 240 10% 4%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 100% / 0.08;
+    --input: 0 0% 100% / 0.08;
+    --ring: 26 90% 60%;
+
+    --radius: 2px;
+
+    --surface: 240 6% 10%;
+    --surface-elevated: 240 6% 14%;
+
+    --sidebar-background: 240 10% 4%;
+    --sidebar-foreground: 0 0% 75%;
+    --sidebar-primary: 26 90% 60%;
+    --sidebar-primary-foreground: 240 10% 4%;
+    --sidebar-accent: 240 6% 14%;
+    --sidebar-accent-foreground: 0 0% 90%;
+    --sidebar-border: 0 0% 100% / 0.08;
+    --sidebar-ring: 26 90% 60%;
+
+    --ease-out: cubic-bezier(0.2, 0, 0, 1);
+    --shadow-inset: inset 0 1px 0 0 rgba(255,255,255,0.05);
+    --shadow-low: 0 2px 4px rgba(0,0,0,0.3);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Geist Sans', ui-sans-serif, system-ui, sans-serif;
+    font-feature-settings: "tnum";
+  }
+
+  .font-mono {
+    font-family: 'Geist Mono', ui-monospace, monospace;
+  }
+}
