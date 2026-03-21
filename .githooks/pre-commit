@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+set -e
+
+pnpm run bump:minor:package
+git add package.json
