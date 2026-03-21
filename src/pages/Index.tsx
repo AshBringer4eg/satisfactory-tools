@@ -6,6 +6,7 @@ import PlaceholderTab from "@/components/PlaceholderTab";
 
 const COPY_COUNTS_STORAGE_KEY = "ficsit-color-copy-counts";
 const RESET_COPY_COUNTS_EVENT = "ficsit:reset-copy-counters";
+const ACTIVE_TAB_STORAGE_KEY = "ficsit-active-tab";
 
 const tabs = [
   { id: "default", label: "Default", icon: Palette },
@@ -15,18 +16,30 @@ const tabs = [
 
 type TabId = (typeof tabs)[number]["id"];
 const DEFAULT_TAB_ID: TabId = "default";
+const readStoredTab = (): TabId => {
+  if (typeof window === "undefined") return DEFAULT_TAB_ID;
 
-const Index = () => {
-  const [activeTab, setActiveTab] = useState<TabId>(() => {
-    const stored = localStorage.getItem("ficsit-active-tab");
+  try {
+    const stored = window.localStorage.getItem(ACTIVE_TAB_STORAGE_KEY);
     if (stored && tabs.some((tab) => tab.id === stored)) {
       return stored as TabId;
     }
-    return DEFAULT_TAB_ID;
-  });
+  } catch {
+    // Ignore storage access failures.
+  }
+
+  return DEFAULT_TAB_ID;
+};
+
+const Index = () => {
+  const [activeTab, setActiveTab] = useState<TabId>(() => readStoredTab());
 
   useEffect(() => {
-    localStorage.setItem("ficsit-active-tab", activeTab);
+    try {
+      window.localStorage.setItem(ACTIVE_TAB_STORAGE_KEY, activeTab);
+    } catch {
+      // Ignore storage write failures.
+    }
   }, [activeTab]);
 
   const handleResetCounters = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {

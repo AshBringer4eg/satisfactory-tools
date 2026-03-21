@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import type { SatisfactoryColor } from "@/data/colors";
 
 interface ColorSwatchProps {
@@ -12,12 +12,37 @@ interface ColorSwatchProps {
 const ColorSwatch = ({ color, copyCount, onCopy, onSwatchLeave, isReordering = false }: ColorSwatchProps) => {
   const [copied, setCopied] = useState(false);
   const [hovered, setHovered] = useState(false);
+  const copiedResetTimeoutRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (copiedResetTimeoutRef.current !== null) {
+        window.clearTimeout(copiedResetTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const handleCopy = useCallback(() => {
-    void navigator.clipboard.writeText(color.hex);
-    onCopy?.();
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1200);
+    if (typeof navigator === "undefined" || !navigator.clipboard?.writeText) return;
+
+    void navigator.clipboard.writeText(color.hex).then(
+      () => {
+        onCopy?.();
+        setCopied(true);
+
+        if (copiedResetTimeoutRef.current !== null) {
+          window.clearTimeout(copiedResetTimeoutRef.current);
+        }
+
+        copiedResetTimeoutRef.current = window.setTimeout(() => {
+          setCopied(false);
+          copiedResetTimeoutRef.current = null;
+        }, 1200);
+      },
+      () => {
+        // Ignore clipboard permission or availability failures.
+      },
+    );
   }, [color.hex, onCopy]);
 
   const handleMouseLeave = useCallback(() => {
