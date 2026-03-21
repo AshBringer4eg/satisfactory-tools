@@ -92,5 +92,6 @@ src/
 
 Color list references are credited in-app:
 
-- https://www.reddit.com/r/SatisfactoryGame/comments/154vft6/vencams_colour_list_25/
-- https://www.reddit.com/r/SatisfactoryGame/comments/1ft4tb8/i_made_a_list_of_item_colors_for_10/
+u/Vencam - https://www.reddit.com/r/SatisfactoryGame/comments/154vft6/vencams_colour_list_25/
+
+u/Squidcraft_101 - https://www.reddit.com/r/SatisfactoryGame/comments/1ft4tb8/i_made_a_list_of_item_colors_for_10/

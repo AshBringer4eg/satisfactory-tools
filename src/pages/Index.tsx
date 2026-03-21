@@ -142,7 +142,7 @@ const Index = () => {
               rel="noopener noreferrer"
               className="underline underline-offset-2 hover:text-foreground"
             >
-              UNKNOWN_AUTHOR
+              u/Vencam
             </a>
             {" "}
             |
@@ -153,12 +153,21 @@ const Index = () => {
               rel="noopener noreferrer"
               className="underline underline-offset-2 hover:text-foreground"
             >
-              SQUIDCRAFT_101
+              u/Squidcraft_101
             </a>
             {" "}
             |
             {" "}
-            ME :)
+            
+            <a
+              href="https://www.reddit.com/user/Ok_Hall4730/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline underline-offset-2 hover:text-foreground"
+            >
+              ME :)
+            </a>
+            
           </div>
           <button
             type="button"
