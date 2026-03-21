@@ -22,7 +22,7 @@ https://ashbringer4eg.github.io/satisfactory-tools/
 - Tailwind CSS + Radix UI primitives
 - Framer Motion
 - Vitest + Testing Library
-- Playwright (config scaffold included)
+- Playwright E2E tests
 
 ## Getting Started
 
@@ -66,6 +66,9 @@ pnpm preview
 - `pnpm lint` - run ESLint
 - `pnpm test` - run Vitest once
 - `pnpm test:watch` - run Vitest in watch mode
+- `pnpm test:e2e` - run Playwright E2E tests
+- `pnpm test:e2e:ui` - run Playwright in UI mode
+- `pnpm bump:patch:package` - bump package version `x.y.z -> x.y.(z+1)`
 
 ## Deployment (GitHub Pages)
 
@@ -85,7 +88,9 @@ src/
   components/       UI components and feature components
   data/             Satisfactory color dataset
   pages/            Route pages
-  test/             Unit test setup and examples. Trust me, they are here and exists :)
+  test/             Unit test setup and lightweight unit tests
+tests/
+  e2e/              Playwright end-to-end tests for interaction flows
 ```
 
 ## Credits
