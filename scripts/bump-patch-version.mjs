@@ -15,8 +15,8 @@ if (parts.length !== 3 || parts.some((part) => Number.isNaN(part) || part < 0)) 
   throw new Error(`package.json version \"${pkg.version}\" is not a simple semver (x.y.z)`);
 }
 
-const [major, minor] = parts;
-pkg.version = `${major}.${minor + 1}.0`;
+const [major, minor, patch] = parts;
+pkg.version = `${major}.${minor}.${patch + 1}`;
 
 fs.writeFileSync(packageJsonPath, `${JSON.stringify(pkg, null, 2)}\n`, "utf8");
 console.log(`Bumped package.json version to ${pkg.version}`);

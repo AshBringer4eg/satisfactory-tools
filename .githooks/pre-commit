@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 set -e
 
-pnpm run bump:minor:package
+pnpm run bump:patch:package
 git add package.json
