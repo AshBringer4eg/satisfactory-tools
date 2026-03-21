@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
-import { Menu, Search } from "lucide-react";
+import { Menu, Search, X } from "lucide-react";
 import { colorPalettes, type SatisfactoryColor } from "@/data/colors";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import ColorSwatch from "./ColorSwatch";
@@ -321,12 +321,22 @@ const ColorsTab = () => {
         placeholder={`Search ${colors.length} colours`}
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="w-full bg-surface pl-10 pr-3 py-2 text-[13px] font-mono text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+        className="w-full bg-surface pl-10 pr-9 py-2 text-[13px] font-mono text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
         style={{
           borderRadius: "2px",
           border: "1px solid rgba(255,255,255,0.08)",
         }}
       />
+      {search && (
+        <button
+          type="button"
+          onClick={() => setSearch("")}
+          className="absolute right-2 top-1/2 -translate-y-1/2 inline-flex h-5 w-5 items-center justify-center text-muted-foreground hover:text-foreground"
+          aria-label="Clear search"
+        >
+          <X className="h-3.5 w-3.5" />
+        </button>
+      )}
     </div>
   );
 
