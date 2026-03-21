@@ -10,8 +10,7 @@ const ACTIVE_TAB_STORAGE_KEY = "ficsit-active-tab";
 
 const tabs = [
   { id: "default", label: "Default", icon: Palette },
-  { id: "alternative-1", label: "Alternative 1", icon: FlaskConical },
-  { id: "alternative-2", label: "Alternative 2", icon: Clock },
+  { id: "alternative-1", label: "Alter. 1", icon: FlaskConical }
 ] as const;
 
 type TabId = (typeof tabs)[number]["id"];
@@ -68,7 +67,7 @@ const Index = () => {
       </header>
 
       {/* Tab bar */}
-      <nav className="border-b border-border px-6 flex gap-0 shrink-0">
+      <nav className="border-b border-border px-6 flex gap-0 shrink-0 min-w-0">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -76,14 +75,14 @@ const Index = () => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`relative flex items-center gap-2 px-4 py-3 text-[12px] font-bold uppercase tracking-wider transition-colors duration-150 ${
+              className={`relative flex min-w-0 flex-1 items-center justify-center gap-2 px-4 py-3 text-[12px] font-bold uppercase tracking-wider transition-colors duration-150 ${
                 isActive
                   ? "text-primary"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              <Icon className="w-4 h-4" />
-              {tab.label}
+              <Icon className="w-4 h-4 shrink-0" />
+              <span className="truncate">{tab.label}</span>
               {isActive && (
                 <motion.div
                   layoutId="tab-indicator"
