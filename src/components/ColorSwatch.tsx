@@ -77,6 +77,7 @@ const ColorSwatch = ({ color, copyCount, onCopy, onSwatchLeave, isReordering = f
   }, []);
 
   const copyLabel = copied ? "COPIED" : copyFailed ? "SELECT HEX" : "COPY";
+  const showCopyLabel = hovered || copied || copyFailed;
 
   return (
     <button
@@ -106,12 +107,14 @@ const ColorSwatch = ({ color, copyCount, onCopy, onSwatchLeave, isReordering = f
         style={{ backgroundColor: color.hex }}
       >
         <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/10 to-transparent" />
-        <div
-          className="absolute left-2 top-2 z-10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white bg-black/45 rounded-[2px] pointer-events-none"
-          aria-hidden="true"
-        >
-          {copyLabel}
-        </div>
+        {showCopyLabel && (
+          <div
+            className="absolute left-2 top-2 z-10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white bg-black/45 rounded-[2px] pointer-events-none"
+            aria-hidden="true"
+          >
+            {copyLabel}
+          </div>
+        )}
         <div
           className="absolute right-2 top-2 px-2 py-0.5 text-[12px] font-semibold text-white bg-black/35 rounded-[2px] pointer-events-none"
         >
