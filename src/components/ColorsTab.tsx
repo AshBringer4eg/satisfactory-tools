@@ -4,6 +4,7 @@ import { Menu, Search, X } from "lucide-react";
 import { colorPalettes, type SatisfactoryColor } from "@/data/colors";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import ColorSwatch from "./ColorSwatch";
+import { AppTabId } from "@/config/tabs";
 
 const COPY_COUNTS_STORAGE_KEY = "ficsit-color-copy-counts";
 const RESET_COPY_COUNTS_EVENT = "ficsit:reset-copy-counters";
@@ -70,10 +71,10 @@ const getFilteredColors = (search: string, activeCategories: Set<string>, counts
     });
 
 interface ColorsTabProps {
-  variant?: "single" | "duo";
+  variant?: AppTabId;
 }
 
-const ColorsTab = ({ variant = "single" }: ColorsTabProps) => {
+const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
   const [search, setSearch] = useState("");
   const [activeCategories, setActiveCategories] = useState<Set<string>>(new Set());
   const [copyCounts, setCopyCounts] = useState<CopyCounts>(() => readCopyCounts());

@@ -1,28 +1,22 @@
 import { useState, useEffect, useCallback } from "react";
-import { Palette, SwatchBook, PencilRuler, Terminal, Github, MessageCircle } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import ColorsTab from "@/components/ColorsTab";
-import PlaceholderTab from "@/components/PlaceholderTab";
+import { appTabs, type AppTabId } from "@/config/tabs";
+import AppHeader from "@/components/layout/AppHeader";
+import AppTabBar from "@/components/layout/AppTabBar";
+import AppTabContent from "@/components/layout/AppTabContent";
+import AppFooter from "@/components/layout/AppFooter";
 
 const COPY_COUNTS_STORAGE_KEY = "ficsit-color-copy-counts";
 const RESET_COPY_COUNTS_EVENT = "ficsit:reset-copy-counters";
 const ACTIVE_TAB_STORAGE_KEY = "ficsit-active-tab";
 
-const tabs = [
-  { id: "solo", label: "SOLO", icon: Palette  },
-  { id: "duo", label: "DUO", icon: SwatchBook },
-  { id: "own", label: "OWN", icon: PencilRuler }
-] as const;
-
-type TabId = (typeof tabs)[number]["id"];
-const DEFAULT_TAB_ID: TabId = "solo";
-const readStoredTab = (): TabId => {
+const DEFAULT_TAB_ID: AppTabId = "solo";
+const readStoredTab = (): AppTabId => {
   if (typeof window === "undefined") return DEFAULT_TAB_ID;
 
   try {
     const stored = window.localStorage.getItem(ACTIVE_TAB_STORAGE_KEY);
-    if (stored && tabs.some((tab) => tab.id === stored)) {
-      return stored as TabId;
+    if (stored && appTabs.some((tab) => tab.id === stored)) {
+      return stored as AppTabId;
     }
   } catch {
     // Ignore storage access failures.
@@ -32,7 +26,7 @@ const readStoredTab = (): TabId => {
 };
 
 const Index = () => {
-  const [activeTab, setActiveTab] = useState<TabId>(() => readStoredTab());
+  const [activeTab, setActiveTab] = useState<AppTabId>(() => readStoredTab());
 
   useEffect(() => {
     try {
@@ -54,222 +48,10 @@ const Index = () => {
 
   return (
     <div className="min-h-screen min-w-[220px] bg-background flex flex-col">
-      {/* Header */}
-      <header className="border-b border-border px-6 py-3 flex items-center justify-between shrink-0">
-        <div className="flex items-center gap-3">
-          <Terminal className="w-5 h-5 text-primary" />
-          <h1 className="font-mono text-[12px] font-bold uppercase tracking-wider text-foreground">
-            ENGINEER_REFERENCE_TERMINAL
-          </h1>
-          <span className="font-mono text-[11px] text-muted-foreground">
-            {`// VER ${__APP_VERSION__}`}
-          </span>
-        </div>
-      </header>
-
-      {/* Tab bar */}
-      <nav className="border-b border-border px-6 flex gap-0 shrink-0 min-w-0">
-        {tabs.map((tab) => {
-          const Icon = tab.icon;
-          const isActive = activeTab === tab.id;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`relative flex min-w-0 flex-1 items-center justify-center gap-2 px-4 py-3 text-[12px] font-bold uppercase tracking-wider transition-colors duration-150 ${
-                isActive
-                  ? "text-primary"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <Icon className="w-4 h-4 shrink-0" />
-              <span className="truncate">{tab.label}</span>
-              {isActive && (
-                <motion.div
-                  layoutId="tab-indicator"
-                  className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary"
-                  transition={{ duration: 0.15, ease: [0.2, 0, 0, 1] }}
-                />
-              )}
-            </button>
-          );
-        })}
-      </nav>
-
-      {/* Content */}
-      <main className="flex-1 p-6 overflow-auto">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, x: 4 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -4 }}
-            transition={{ duration: 0.15, ease: [0.2, 0, 0, 1] }}
-          >
-            {activeTab === "solo" && <ColorsTab />}
-            {activeTab === "duo" && (
-              <ColorsTab variant="duo" />
-            )}
-            {activeTab === "own" && (
-              <PlaceholderTab
-                title="ALTERNATIVE_2"
-                description="- under construction"
-              />
-            )}
-          </motion.div>
-        </AnimatePresence>
-      </main>
-
-      {/* Status bar */}
-      <footer className="border-t border-border px-6 py-2 shrink-0">
-        <div className="grid grid-cols-2 gap-4">
-          <div className="min-w-0 flex flex-col gap-1">
-            <span className="font-mono text-[11px] text-muted-foreground">
-              FICSIT_EMPLOYEE_TOOLKIT
-            </span>
-            <div className="md:hidden font-mono text-[10px] text-muted-foreground leading-tight">
-              <div>THANKS_FOR_COLOR_DATA:</div>
-              <div>
-                <a
-                  href="https://www.reddit.com/r/SatisfactoryGame/comments/154vft6/vencams_colour_list_25/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline underline-offset-2 hover:text-foreground"
-                >
-                  u/Vencam
-                </a>
-                {" |"}
-              </div>
-              <div>
-                <a
-                  href="https://www.reddit.com/r/SatisfactoryGame/comments/1ft4tb8/i_made_a_list_of_item_colors_for_10/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline underline-offset-2 hover:text-foreground"
-                >
-                  u/Squidcraft_101
-                </a>
-                {" |"}
-              </div>
-              <div>
-                <a
-                  href="https://www.reddit.com/user/Ok_Hall4730/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline underline-offset-2 hover:text-foreground"
-                >
-                  ME :)
-                </a>
-              </div>
-            </div>
-            <div className="hidden md:block font-mono text-[10px] text-muted-foreground leading-tight">
-              THANKS_FOR_COLOR_DATA:
-              {" "}
-              <a
-                href="https://www.reddit.com/r/SatisfactoryGame/comments/154vft6/vencams_colour_list_25/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline underline-offset-2 hover:text-foreground"
-              >
-                u/Vencam
-              </a>
-              {" | "}
-              <a
-                href="https://www.reddit.com/r/SatisfactoryGame/comments/1ft4tb8/i_made_a_list_of_item_colors_for_10/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline underline-offset-2 hover:text-foreground"
-              >
-                u/Squidcraft_101
-              </a>
-              {" | "}
-              <a
-                href="https://www.reddit.com/user/Ok_Hall4730/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline underline-offset-2 hover:text-foreground"
-              >
-                ME :)
-              </a>
-            </div>
-          </div>
-
-          <div className="min-w-0 flex flex-col items-end gap-1 text-right justify-self-end">
-            <div className="md:hidden font-mono text-[11px] text-muted-foreground leading-tight">
-              <div>CLICK_SWATCH_TO_COPY_HEX |</div>
-              <button
-                type="button"
-                onClick={handleResetCounters}
-                className="font-mono text-[10px] text-muted-foreground underline underline-offset-2 hover:text-foreground"
-              >
-                RESET_COUNTERS
-              </button>
-            </div>
-            <div className="hidden md:flex items-center justify-end gap-2 font-mono text-[11px] text-muted-foreground">
-              <span>CLICK_SWATCH_TO_COPY_HEX</span>
-              <span>|</span>
-              <button
-                type="button"
-                onClick={handleResetCounters}
-                className="font-mono text-[10px] text-muted-foreground underline underline-offset-2 hover:text-foreground"
-              >
-                RESET_COUNTERS
-              </button>
-            </div>
-
-            <div className="md:hidden font-mono text-[10px] text-muted-foreground leading-tight">
-              <div>
-                <a
-                  href="https://github.com/AshBringer4eg/satisfactory-tools/issues"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline underline-offset-2 hover:text-foreground inline-flex items-center gap-1"
-                  aria-label="Open GitHub Issues feedback page"
-                >
-                  <Github className="w-3 h-3" />
-                  FEEDBACK_GH
-                </a>
-                {" |"}
-              </div>
-              <div>
-                <a
-                  href="https://www.reddit.com/r/SatisfactoryGame/comments/1rzqp4w/i_made_a_simple_satisfactory_color_swatch_tool"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline underline-offset-2 hover:text-foreground inline-flex items-center gap-1"
-                  aria-label="Open Reddit post feedback thread"
-                >
-                  <MessageCircle className="w-3 h-3" />
-                  FEEDBACK_REDDIT
-                </a>
-              </div>
-            </div>
-            <div className="hidden md:flex items-center justify-end gap-2 font-mono text-[10px] text-muted-foreground">
-              <a
-                href="https://github.com/AshBringer4eg/satisfactory-tools/issues"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline underline-offset-2 hover:text-foreground inline-flex items-center gap-1"
-                aria-label="Open GitHub Issues feedback page"
-              >
-                <Github className="w-3 h-3" />
-                FEEDBACK_GH
-              </a>
-              <span>|</span>
-              <a
-                href="https://www.reddit.com/r/SatisfactoryGame/comments/1rzqp4w/i_made_a_simple_satisfactory_color_swatch_tool"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline underline-offset-2 hover:text-foreground inline-flex items-center gap-1"
-                aria-label="Open Reddit post feedback thread"
-              >
-                <MessageCircle className="w-3 h-3" />
-                FEEDBACK_REDDIT
-              </a>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <AppHeader />
+      <AppTabBar activeTab={activeTab} onTabChange={setActiveTab} />
+      <AppTabContent activeTab={activeTab} />
+      <AppFooter onResetCounters={handleResetCounters} />
     </div>
   );
 };
