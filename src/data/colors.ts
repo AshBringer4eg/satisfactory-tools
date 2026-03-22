@@ -6,24 +6,24 @@ export interface SatisfactoryColor {
 }
 
 const defaultCategories = [
+  "Aliens",
+  "Ammos",
+  "Communications",
+  "Consumed",
+  "Containers",
+  "Electronics",
+  "Fuels",
+  "Gas",
   "Ores",
   "Ingots",
   "Minerals",
-  "Aliens",
   "Liquids",
-  "Gas",
-  "Standard Parts",
   "Industrial Parts",
-  "Electronics",
-  "Communications",
-  "Quantum Technology",
-  "Containers",
-  "Fuels",
-  "Consumed",
-  "Ammos",
   "Nuclear",
-  "Waste",
+  "Quantum Technology",
+  "Standard Parts",
   "Special",
+  "Waste",
 ] as const;
 
 export type Category = (typeof defaultCategories)[number];

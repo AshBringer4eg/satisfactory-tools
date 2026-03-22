@@ -7,21 +7,32 @@ interface ColorSwatchProps {
   onCopy?: () => void;
   onSwatchLeave?: () => void;
   isReordering?: boolean;
+  mode?: "single" | "duo";
 }
 
-const ColorSwatch = ({ color, copyCount, onCopy, onSwatchLeave, isReordering = false }: ColorSwatchProps) => {
-  const [copied, setCopied] = useState(false);
-  const [copyFailed, setCopyFailed] = useState(false);
-  const [hovered, setHovered] = useState(false);
+type SwatchPart = "primary" | "secondary";
+
+const ColorSwatch = ({
+  color,
+  copyCount,
+  onCopy,
+  onSwatchLeave,
+  isReordering = false,
+  mode = "single",
+}: ColorSwatchProps) => {
+  const [copiedPart, setCopiedPart] = useState<SwatchPart | null>(null);
+  const [copyFailedPart, setCopyFailedPart] = useState<SwatchPart | null>(null);
+  const [hoveredPart, setHoveredPart] = useState<SwatchPart | null>(null);
   const feedbackResetTimeoutRef = useRef<number | null>(null);
+  const isDuo = mode === "duo";
 
   const scheduleFeedbackReset = useCallback(() => {
     if (feedbackResetTimeoutRef.current !== null) {
       window.clearTimeout(feedbackResetTimeoutRef.current);
     }
     feedbackResetTimeoutRef.current = window.setTimeout(() => {
-      setCopied(false);
-      setCopyFailed(false);
+      setCopiedPart(null);
+      setCopyFailedPart(null);
       feedbackResetTimeoutRef.current = null;
     }, 1400);
   }, []);
@@ -34,31 +45,32 @@ const ColorSwatch = ({ color, copyCount, onCopy, onSwatchLeave, isReordering = f
     };
   }, []);
 
-  const handleCopy = useCallback(() => {
+  const handleCopy = useCallback((part: SwatchPart) => {
+    const hexToCopy = part === "primary" ? color.hex : color.secondaryColor;
     if (typeof navigator === "undefined" || !navigator.clipboard?.writeText) {
-      setCopied(false);
-      setCopyFailed(true);
+      setCopiedPart(null);
+      setCopyFailedPart(part);
       scheduleFeedbackReset();
       return;
     }
 
-    void navigator.clipboard.writeText(color.hex).then(
+    void navigator.clipboard.writeText(hexToCopy).then(
       () => {
         onCopy?.();
-        setCopyFailed(false);
-        setCopied(true);
+        setCopyFailedPart(null);
+        setCopiedPart(part);
         scheduleFeedbackReset();
       },
       () => {
-        setCopied(false);
-        setCopyFailed(true);
+        setCopiedPart(null);
+        setCopyFailedPart(part);
         scheduleFeedbackReset();
       },
     );
-  }, [color.hex, onCopy, scheduleFeedbackReset]);
+  }, [color.hex, color.secondaryColor, onCopy, scheduleFeedbackReset]);
 
   const handleMouseLeave = useCallback(() => {
-    setHovered(false);
+    setHoveredPart(null);
     onSwatchLeave?.();
   }, [onSwatchLeave]);
 
@@ -76,69 +88,184 @@ const ColorSwatch = ({ color, copyCount, onCopy, onSwatchLeave, isReordering = f
     selection.addRange(range);
   }, []);
 
-  const copyLabel = copied ? "COPIED" : copyFailed ? "SELECT HEX" : "COPY";
-  const showCopyLabel = hovered || copied || copyFailed;
+  const getPartLabel = (part: SwatchPart) => {
+    if (copiedPart === part) return "COPIED";
+    if (copyFailedPart === part) return "SELECT HEX";
+    if (hoveredPart === part) return "COPY";
+    return null;
+  };
+
+  const isPartActive = (part: SwatchPart) => (
+    hoveredPart === part || copiedPart === part || copyFailedPart === part
+  );
+  const isSwatchHovered = hoveredPart !== null;
+  const bottomTintStyle = {
+    background: "linear-gradient(to top, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0) 100%)",
+  } as const;
+
+  if (!isDuo) {
+    return (
+      <button
+        type="button"
+        onClick={() => handleCopy("primary")}
+        onMouseEnter={() => setHoveredPart("primary")}
+        onMouseLeave={handleMouseLeave}
+        className="relative w-full flex flex-col overflow-hidden text-left transition-all duration-150 cursor-pointer group"
+        aria-label={`Copy hex code ${color.hex} for ${color.name}`}
+        style={{
+          borderRadius: "2px",
+          boxShadow: "inset 0 1px 0 0 rgba(255,255,255,0.05), 0 2px 4px rgba(0,0,0,0.3)",
+          border: "1px solid rgba(255,255,255,0.03)",
+        }}
+      >
+        {copiedPart === "primary" && (
+          <div
+            className="absolute top-0 left-0 right-0 h-[2px] animate-copy-flash z-10"
+            style={{ backgroundColor: "hsl(190, 90%, 50%)" }}
+          />
+        )}
+        <div
+          className="relative w-full aspect-[5/3]"
+          style={{ backgroundColor: color.hex }}
+        >
+          <div className="absolute inset-0 pointer-events-none" style={bottomTintStyle} />
+          {isPartActive("primary") && (
+            <div
+              className="absolute left-2 top-2 z-10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white bg-black/45 rounded-[2px] pointer-events-none"
+              aria-hidden="true"
+            >
+              {getPartLabel("primary")}
+            </div>
+          )}
+          <div className="absolute right-2 top-2 px-2 py-0.5 text-[12px] font-semibold text-white bg-black/35 rounded-[2px] pointer-events-none">
+            {copyCount}x
+          </div>
+          <div className="absolute inset-x-0 px-3 pt-2 flex flex-col gap-0" style={{ bottom: "0.2rem" }}>
+            <span className="text-[14px] font-semibold tracking-normal text-white leading-tight truncate">
+              {color.name}
+            </span>
+            <code
+              className="text-[13px] font-mono tracking-normal text-white select-text cursor-text"
+              aria-label={`${color.name} hex code ${color.hex}`}
+              onClick={handleHexClick}
+              onMouseDown={(event) => event.stopPropagation()}
+            >
+              {color.hex}
+            </code>
+          </div>
+        </div>
+        {(isSwatchHovered || isReordering) && (
+          <div
+            className={`absolute inset-0 pointer-events-none ${isReordering ? "animate-pulse" : ""}`}
+            style={{
+              border: isReordering ? "1px solid rgba(56, 189, 248, 0.85)" : "1px solid rgba(250, 149, 73, 0.5)",
+              borderRadius: "2px",
+            }}
+          />
+        )}
+      </button>
+    );
+  }
 
   return (
-    <button
-      type="button"
-      onClick={handleCopy}
-      onMouseEnter={() => setHovered(true)}
+    <div
       onMouseLeave={handleMouseLeave}
-      className="relative w-full flex flex-col overflow-hidden text-left transition-all duration-150 cursor-pointer group"
-      aria-label={`Copy hex code ${color.hex} for ${color.name}`}
+      className="relative w-full flex flex-col overflow-hidden text-left transition-all duration-150"
       style={{
         borderRadius: "2px",
         boxShadow: "inset 0 1px 0 0 rgba(255,255,255,0.05), 0 2px 4px rgba(0,0,0,0.3)",
         border: "1px solid rgba(255,255,255,0.03)",
       }}
     >
-      {/* Copy flash bar */}
-      {copied && (
+      {copiedPart && (
         <div
-          className="absolute top-0 left-0 right-0 h-[2px] animate-copy-flash z-10"
+          className="absolute top-0 left-0 right-0 h-[2px] animate-copy-flash z-20"
           style={{ backgroundColor: "hsl(190, 90%, 50%)" }}
         />
       )}
 
-      {/* Color area */}
-      <div
-        className="relative w-full aspect-[5/3]"
-        style={{ backgroundColor: color.hex }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/10 to-transparent" />
-        {showCopyLabel && (
-          <div
-            className="absolute left-2 top-2 z-10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white bg-black/45 rounded-[2px] pointer-events-none"
-            aria-hidden="true"
-          >
-            {copyLabel}
-          </div>
-        )}
-        <div
-          className="absolute right-2 top-2 px-2 py-0.5 text-[12px] font-semibold text-white bg-black/35 rounded-[2px] pointer-events-none"
+      <div className="relative w-full aspect-[5/3] flex">
+        <button
+          type="button"
+          onMouseEnter={() => setHoveredPart("primary")}
+          onClick={() => handleCopy("primary")}
+          className="relative basis-[70%] grow-0 shrink-0 text-left overflow-hidden"
+          style={{ backgroundColor: color.hex }}
+          aria-label={`Copy primary hex code ${color.hex} for ${color.name}`}
         >
-          {copyCount}x
-        </div>
-        <div className="absolute inset-x-0 bottom-0 px-3 py-2.5 flex flex-col gap-0.5">
-          <span
-            className="text-[15px] font-semibold tracking-normal text-white leading-tight truncate"
-          >
+          <div className="absolute inset-0 pointer-events-none" style={bottomTintStyle} />
+          {isPartActive("primary") && (
+            <>
+              <div className="absolute inset-0 bg-white/10 pointer-events-none" />
+              <div
+                className="absolute left-2 top-2 z-10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white bg-black/45 rounded-[2px] pointer-events-none"
+                aria-hidden="true"
+              >
+                {getPartLabel("primary")}
+              </div>
+            </>
+          )}
+          <div className="absolute left-3" style={{ bottom: "0.2rem" }}>
+            <code
+              className="text-[13px] font-mono tracking-normal text-white select-text cursor-text"
+              aria-label={`${color.name} primary hex code ${color.hex}`}
+              onClick={handleHexClick}
+              onMouseDown={(event) => event.stopPropagation()}
+            >
+              {color.hex}
+            </code>
+          </div>
+        </button>
+
+        <button
+          type="button"
+          onMouseEnter={() => setHoveredPart("secondary")}
+          onClick={() => handleCopy("secondary")}
+          className="relative basis-[30%] grow-0 shrink-0 text-left overflow-hidden"
+          style={{ backgroundColor: color.secondaryColor }}
+          aria-label={`Copy secondary hex code ${color.secondaryColor} for ${color.name}`}
+        >
+          <div className="absolute inset-0 pointer-events-none" style={bottomTintStyle} />
+          {isPartActive("secondary") && (
+            <>
+              <div className="absolute inset-0 bg-white/10 pointer-events-none" />
+            </>
+          )}
+          <div className="absolute inset-x-0 px-1 overflow-hidden" style={{ bottom: "0.2rem" }}>
+            <code
+              className="block w-full truncate text-center text-[11px] font-mono tracking-tight text-white select-text cursor-text"
+              aria-label={`${color.name} secondary hex code ${color.secondaryColor}`}
+              onClick={handleHexClick}
+              onMouseDown={(event) => event.stopPropagation()}
+            >
+              {color.secondaryColor}
+            </code>
+          </div>
+        </button>
+
+        <div className="absolute left-3 right-3 pointer-events-none" style={{ bottom: "1.6rem" }}>
+          <span className="text-[14px] font-semibold tracking-normal text-white leading-tight truncate block">
             {color.name}
           </span>
-          <code
-            className="text-[14px] font-mono tracking-normal text-white select-text cursor-text"
-            aria-label={`${color.name} hex code ${color.hex}`}
-            onClick={handleHexClick}
-            onMouseDown={(event) => event.stopPropagation()}
-          >
-            {color.hex}
-          </code>
         </div>
+
+        {isPartActive("secondary") ? (
+          <div
+            className="absolute right-2 top-2 z-10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white bg-black/45 rounded-[2px] pointer-events-none"
+            aria-hidden="true"
+          >
+            {getPartLabel("secondary")}
+          </div>
+        ) : (
+          <div
+            className="absolute right-2 top-2 px-2 py-0.5 text-[12px] font-semibold text-white bg-black/35 rounded-[2px] pointer-events-none z-10"
+          >
+            {copyCount}x
+          </div>
+        )}
       </div>
 
-      {/* Hover border */}
-      {(hovered || isReordering) && (
+      {(isSwatchHovered || isReordering) && (
         <div
           className={`absolute inset-0 pointer-events-none ${isReordering ? "animate-pulse" : ""}`}
           style={{
@@ -147,7 +274,7 @@ const ColorSwatch = ({ color, copyCount, onCopy, onSwatchLeave, isReordering = f
           }}
         />
       )}
-    </button>
+    </div>
   );
 };
 

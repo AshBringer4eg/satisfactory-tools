@@ -69,7 +69,11 @@ const getFilteredColors = (search: string, activeCategories: Set<string>, counts
       return a.name.localeCompare(b.name);
     });
 
-const ColorsTab = () => {
+interface ColorsTabProps {
+  variant?: "single" | "duo";
+}
+
+const ColorsTab = ({ variant = "single" }: ColorsTabProps) => {
   const [search, setSearch] = useState("");
   const [activeCategories, setActiveCategories] = useState<Set<string>>(new Set());
   const [copyCounts, setCopyCounts] = useState<CopyCounts>(() => readCopyCounts());
@@ -471,6 +475,7 @@ const ColorsTab = () => {
               >
                 <ColorSwatch
                   color={color}
+                  mode={variant}
                   copyCount={(copyCounts[color.name] ?? 0) + (pendingCopyCounts[color.name] ?? 0)}
                   onCopy={() => queueCopyCount(color.name)}
                   onSwatchLeave={() => flushQueuedCopyCount(color.name)}
@@ -517,6 +522,7 @@ const ColorsTab = () => {
         >
           <ColorSwatch
             color={floatingMove.color}
+            mode={variant}
             copyCount={copyCounts[floatingMove.colorName] ?? 0}
             isReordering
           />

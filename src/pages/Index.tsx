@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { Palette, FlaskConical, Clock, Terminal } from "lucide-react";
+import { Palette, SwatchBook, PencilRuler, Terminal, Github, MessageCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ColorsTab from "@/components/ColorsTab";
 import PlaceholderTab from "@/components/PlaceholderTab";
@@ -9,12 +9,13 @@ const RESET_COPY_COUNTS_EVENT = "ficsit:reset-copy-counters";
 const ACTIVE_TAB_STORAGE_KEY = "ficsit-active-tab";
 
 const tabs = [
-  { id: "default", label: "Default", icon: Palette },
-  { id: "alternative-1", label: "Alter. 1", icon: FlaskConical }
+  { id: "solo", label: "SOLO", icon: Palette  },
+  { id: "duo", label: "DUO", icon: SwatchBook },
+  { id: "own", label: "OWN", icon: PencilRuler }
 ] as const;
 
 type TabId = (typeof tabs)[number]["id"];
-const DEFAULT_TAB_ID: TabId = "default";
+const DEFAULT_TAB_ID: TabId = "solo";
 const readStoredTab = (): TabId => {
   if (typeof window === "undefined") return DEFAULT_TAB_ID;
 
@@ -52,7 +53,7 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen min-w-[220px] bg-background flex flex-col">
       {/* Header */}
       <header className="border-b border-border px-6 py-3 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-3">
@@ -105,14 +106,11 @@ const Index = () => {
             exit={{ opacity: 0, x: -4 }}
             transition={{ duration: 0.15, ease: [0.2, 0, 0, 1] }}
           >
-            {activeTab === "default" && <ColorsTab />}
-            {activeTab === "alternative-1" && (
-              <PlaceholderTab
-                title="ALTERNATIVE_1"
-                description="- under construction"
-              />
+            {activeTab === "solo" && <ColorsTab />}
+            {activeTab === "duo" && (
+              <ColorsTab variant="duo" />
             )}
-            {activeTab === "alternative-2" && (
+            {activeTab === "own" && (
               <PlaceholderTab
                 title="ALTERNATIVE_2"
                 description="- under construction"
@@ -123,59 +121,153 @@ const Index = () => {
       </main>
 
       {/* Status bar */}
-      <footer className="border-t border-border px-6 py-2 flex flex-col gap-1 shrink-0">
-        <div className="flex items-center justify-between">
-          <span className="font-mono text-[11px] text-muted-foreground">
-            FICSIT_EMPLOYEE_TOOLKIT
-          </span>
-          <span className="font-mono text-[11px] text-muted-foreground">
-            CLICK_SWATCH_TO_COPY_HEX
-          </span>
-        </div>
-        <div className="flex items-start justify-between gap-3">
-          <div className="font-mono text-[10px] text-muted-foreground leading-tight">
-            THANKS_FOR_COLOR_DATA:
-            {" "}
-            <a
-              href="https://www.reddit.com/r/SatisfactoryGame/comments/154vft6/vencams_colour_list_25/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline underline-offset-2 hover:text-foreground"
-            >
-              u/Vencam
-            </a>
-            {" "}
-            |
-            {" "}
-            <a
-              href="https://www.reddit.com/r/SatisfactoryGame/comments/1ft4tb8/i_made_a_list_of_item_colors_for_10/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline underline-offset-2 hover:text-foreground"
-            >
-              u/Squidcraft_101
-            </a>
-            {" "}
-            |
-            {" "}
-            
-            <a
-              href="https://www.reddit.com/user/Ok_Hall4730/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline underline-offset-2 hover:text-foreground"
-            >
-              ME :)
-            </a>
-            
+      <footer className="border-t border-border px-6 py-2 shrink-0">
+        <div className="grid grid-cols-2 gap-4">
+          <div className="min-w-0 flex flex-col gap-1">
+            <span className="font-mono text-[11px] text-muted-foreground">
+              FICSIT_EMPLOYEE_TOOLKIT
+            </span>
+            <div className="md:hidden font-mono text-[10px] text-muted-foreground leading-tight">
+              <div>THANKS_FOR_COLOR_DATA:</div>
+              <div>
+                <a
+                  href="https://www.reddit.com/r/SatisfactoryGame/comments/154vft6/vencams_colour_list_25/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline underline-offset-2 hover:text-foreground"
+                >
+                  u/Vencam
+                </a>
+                {" |"}
+              </div>
+              <div>
+                <a
+                  href="https://www.reddit.com/r/SatisfactoryGame/comments/1ft4tb8/i_made_a_list_of_item_colors_for_10/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline underline-offset-2 hover:text-foreground"
+                >
+                  u/Squidcraft_101
+                </a>
+                {" |"}
+              </div>
+              <div>
+                <a
+                  href="https://www.reddit.com/user/Ok_Hall4730/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline underline-offset-2 hover:text-foreground"
+                >
+                  ME :)
+                </a>
+              </div>
+            </div>
+            <div className="hidden md:block font-mono text-[10px] text-muted-foreground leading-tight">
+              THANKS_FOR_COLOR_DATA:
+              {" "}
+              <a
+                href="https://www.reddit.com/r/SatisfactoryGame/comments/154vft6/vencams_colour_list_25/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-2 hover:text-foreground"
+              >
+                u/Vencam
+              </a>
+              {" | "}
+              <a
+                href="https://www.reddit.com/r/SatisfactoryGame/comments/1ft4tb8/i_made_a_list_of_item_colors_for_10/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-2 hover:text-foreground"
+              >
+                u/Squidcraft_101
+              </a>
+              {" | "}
+              <a
+                href="https://www.reddit.com/user/Ok_Hall4730/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-2 hover:text-foreground"
+              >
+                ME :)
+              </a>
+            </div>
           </div>
-          <button
-            type="button"
-            onClick={handleResetCounters}
-            className="shrink-0 font-mono text-[10px] text-muted-foreground underline underline-offset-2 hover:text-foreground"
-          >
-            RESET_COUNTERS
-          </button>
+
+          <div className="min-w-0 flex flex-col items-end gap-1 text-right justify-self-end">
+            <div className="md:hidden font-mono text-[11px] text-muted-foreground leading-tight">
+              <div>CLICK_SWATCH_TO_COPY_HEX |</div>
+              <button
+                type="button"
+                onClick={handleResetCounters}
+                className="font-mono text-[10px] text-muted-foreground underline underline-offset-2 hover:text-foreground"
+              >
+                RESET_COUNTERS
+              </button>
+            </div>
+            <div className="hidden md:flex items-center justify-end gap-2 font-mono text-[11px] text-muted-foreground">
+              <span>CLICK_SWATCH_TO_COPY_HEX</span>
+              <span>|</span>
+              <button
+                type="button"
+                onClick={handleResetCounters}
+                className="font-mono text-[10px] text-muted-foreground underline underline-offset-2 hover:text-foreground"
+              >
+                RESET_COUNTERS
+              </button>
+            </div>
+
+            <div className="md:hidden font-mono text-[10px] text-muted-foreground leading-tight">
+              <div>
+                <a
+                  href="https://github.com/AshBringer4eg/satisfactory-tools/issues"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline underline-offset-2 hover:text-foreground inline-flex items-center gap-1"
+                  aria-label="Open GitHub Issues feedback page"
+                >
+                  <Github className="w-3 h-3" />
+                  FEEDBACK_GH
+                </a>
+                {" |"}
+              </div>
+              <div>
+                <a
+                  href="https://www.reddit.com/r/SatisfactoryGame/comments/1rzqp4w/i_made_a_simple_satisfactory_color_swatch_tool"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline underline-offset-2 hover:text-foreground inline-flex items-center gap-1"
+                  aria-label="Open Reddit post feedback thread"
+                >
+                  <MessageCircle className="w-3 h-3" />
+                  FEEDBACK_REDDIT
+                </a>
+              </div>
+            </div>
+            <div className="hidden md:flex items-center justify-end gap-2 font-mono text-[10px] text-muted-foreground">
+              <a
+                href="https://github.com/AshBringer4eg/satisfactory-tools/issues"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-2 hover:text-foreground inline-flex items-center gap-1"
+                aria-label="Open GitHub Issues feedback page"
+              >
+                <Github className="w-3 h-3" />
+                FEEDBACK_GH
+              </a>
+              <span>|</span>
+              <a
+                href="https://www.reddit.com/r/SatisfactoryGame/comments/1rzqp4w/i_made_a_simple_satisfactory_color_swatch_tool"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-2 hover:text-foreground inline-flex items-center gap-1"
+                aria-label="Open Reddit post feedback thread"
+              >
+                <MessageCircle className="w-3 h-3" />
+                FEEDBACK_REDDIT
+              </a>
+            </div>
+          </div>
         </div>
       </footer>
     </div>
