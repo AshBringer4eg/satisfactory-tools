@@ -109,7 +109,7 @@ const AppFooter = ({ onResetCounters }: AppFooterProps) => (
         </div>
 
         <div className="min-w-0 font-mono text-[10px] text-muted-foreground">
-          <div className="hidden md:flex items-baseline justify-end gap-2 text-right whitespace-nowrap leading-tight">
+          <div className="hidden md:flex items-center justify-end gap-2 text-right whitespace-nowrap leading-tight">
             <a
               href="https://github.com/AshBringer4eg/satisfactory-tools/issues"
               target="_blank"
@@ -117,7 +117,7 @@ const AppFooter = ({ onResetCounters }: AppFooterProps) => (
               className="underline underline-offset-2 hover:text-foreground inline-flex items-center gap-1"
               aria-label={t("footer.feedbackGithubAria")}
             >
-              <Github className="w-3 h-3 align-text-bottom" />
+              <Github className="w-3 h-3 shrink-0" />
               {t("footer.feedbackGithub")}
             </a>
             <span>|</span>
@@ -128,13 +128,13 @@ const AppFooter = ({ onResetCounters }: AppFooterProps) => (
               className="underline underline-offset-2 hover:text-foreground inline-flex items-center gap-1"
               aria-label={t("footer.feedbackRedditAria")}
             >
-              <MessageCircle className="w-3 h-3 align-text-bottom" />
+              <MessageCircle className="w-3 h-3 shrink-0" />
               {t("footer.feedbackReddit")}
             </a>
             <span>|</span>
             <a
               href={`${import.meta.env.BASE_URL}changelog.html`}
-              className="underline underline-offset-2 hover:text-foreground"
+              className="underline underline-offset-2 hover:text-foreground inline-flex items-center"
               aria-label={t("footer.changelogAria")}
             >
               {t("footer.changelog")}
