@@ -108,7 +108,7 @@ test.describe("SOLO tab", () => {
     await expect(getSoloSwatchByName(page, TURBOFUEL_NAME)).toContainText("1x", { timeout: 3000 });
     await expect
       .poll(() => page.evaluate(() => localStorage.getItem("ficsit-color-copy-counts")))
-      .toContain("\"Turbofuel\":1");
+      .toContain("\"COLOR_TURBOFUEL\":1");
 
     await page.reload();
     await expect(getSoloSwatchByName(page, TURBOFUEL_NAME)).toContainText("1x");
@@ -206,7 +206,7 @@ test.describe("DUO tab", () => {
     await expect(filteredCard).toContainText("1x", { timeout: 3000 });
     await expect
       .poll(() => page.evaluate(() => localStorage.getItem("ficsit-color-copy-counts")))
-      .toContain("\"Turbofuel\":1");
+      .toContain("\"COLOR_TURBOFUEL\":1");
 
     await page.reload();
     await openDuoTab(page);

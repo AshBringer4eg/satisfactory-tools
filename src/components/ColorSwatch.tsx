@@ -1,5 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import type { SatisfactoryColor } from "@/data/colors";
+import { t } from "@/i18n";
+import { AppTabId } from "@/config/tabs";
 
 interface ColorSwatchProps {
   color: SatisfactoryColor;
@@ -7,7 +9,7 @@ interface ColorSwatchProps {
   onCopy?: () => void;
   onSwatchLeave?: () => void;
   isReordering?: boolean;
-  mode?: "single" | "duo";
+  mode?: AppTabId;
 }
 
 type SwatchPart = "primary" | "secondary";
@@ -18,7 +20,7 @@ const ColorSwatch = ({
   onCopy,
   onSwatchLeave,
   isReordering = false,
-  mode = "single",
+  mode = "solo",
 }: ColorSwatchProps) => {
   const [copiedPart, setCopiedPart] = useState<SwatchPart | null>(null);
   const [copyFailedPart, setCopyFailedPart] = useState<SwatchPart | null>(null);
@@ -89,9 +91,9 @@ const ColorSwatch = ({
   }, []);
 
   const getPartLabel = (part: SwatchPart) => {
-    if (copiedPart === part) return "COPIED";
-    if (copyFailedPart === part) return "SELECT HEX";
-    if (hoveredPart === part) return "COPY";
+    if (copiedPart === part) return t("swatch.copied");
+    if (copyFailedPart === part) return t("swatch.selectHex");
+    if (hoveredPart === part) return t("swatch.copy");
     return null;
   };
 
@@ -111,7 +113,7 @@ const ColorSwatch = ({
         onMouseEnter={() => setHoveredPart("primary")}
         onMouseLeave={handleMouseLeave}
         className="relative w-full flex flex-col overflow-hidden text-left transition-all duration-150 cursor-pointer group"
-        aria-label={`Copy hex code ${color.hex} for ${color.name}`}
+        aria-label={t("swatch.aria.copyHex", { hex: color.hex, name: color.name })}
         style={{
           borderRadius: "2px",
           boxShadow: "inset 0 1px 0 0 rgba(255,255,255,0.05), 0 2px 4px rgba(0,0,0,0.3)",
@@ -146,7 +148,7 @@ const ColorSwatch = ({
             </span>
             <code
               className="text-[13px] font-mono tracking-normal text-white select-text cursor-text"
-              aria-label={`${color.name} hex code ${color.hex}`}
+              aria-label={t("swatch.aria.hexCode", { hex: color.hex, name: color.name })}
               onClick={handleHexClick}
               onMouseDown={(event) => event.stopPropagation()}
             >
@@ -191,7 +193,7 @@ const ColorSwatch = ({
           onClick={() => handleCopy("primary")}
           className="relative basis-[70%] grow-0 shrink-0 text-left overflow-hidden"
           style={{ backgroundColor: color.hex }}
-          aria-label={`Copy primary hex code ${color.hex} for ${color.name}`}
+          aria-label={t("swatch.aria.copyPrimaryHex", { hex: color.hex, name: color.name })}
         >
           <div className="absolute inset-0 pointer-events-none" style={bottomTintStyle} />
           {isPartActive("primary") && (
@@ -208,7 +210,7 @@ const ColorSwatch = ({
           <div className="absolute left-3" style={{ bottom: "0.2rem" }}>
             <code
               className="text-[13px] font-mono tracking-normal text-white select-text cursor-text"
-              aria-label={`${color.name} primary hex code ${color.hex}`}
+              aria-label={t("swatch.aria.primaryHexCode", { hex: color.hex, name: color.name })}
               onClick={handleHexClick}
               onMouseDown={(event) => event.stopPropagation()}
             >
@@ -223,7 +225,7 @@ const ColorSwatch = ({
           onClick={() => handleCopy("secondary")}
           className="relative basis-[30%] grow-0 shrink-0 text-left overflow-hidden"
           style={{ backgroundColor: color.secondaryColor }}
-          aria-label={`Copy secondary hex code ${color.secondaryColor} for ${color.name}`}
+          aria-label={t("swatch.aria.copySecondaryHex", { hex: color.secondaryColor, name: color.name })}
         >
           <div className="absolute inset-0 pointer-events-none" style={bottomTintStyle} />
           {isPartActive("secondary") && (
@@ -234,7 +236,7 @@ const ColorSwatch = ({
           <div className="absolute inset-x-0 px-1 overflow-hidden" style={{ bottom: "0.2rem" }}>
             <code
               className="block w-full truncate text-center text-[11px] font-mono tracking-tight text-white select-text cursor-text"
-              aria-label={`${color.name} secondary hex code ${color.secondaryColor}`}
+              aria-label={t("swatch.aria.secondaryHexCode", { hex: color.secondaryColor, name: color.name })}
               onClick={handleHexClick}
               onMouseDown={(event) => event.stopPropagation()}
             >

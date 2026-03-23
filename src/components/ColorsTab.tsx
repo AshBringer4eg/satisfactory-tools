@@ -1,10 +1,11 @@
 import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
 import { Menu, Search, X } from "lucide-react";
-import { colorPalettes, type SatisfactoryColor } from "@/data/colors";
+import { colorPalettes, type ColorCode, type SatisfactoryColor } from "@/data/colors";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import ColorSwatch from "./ColorSwatch";
 import { AppTabId } from "@/config/tabs";
+import { t } from "@/i18n";
 
 const COPY_COUNTS_STORAGE_KEY = "ficsit-color-copy-counts";
 const RESET_COPY_COUNTS_EVENT = "ficsit:reset-copy-counters";
@@ -22,7 +23,7 @@ type Rect = {
   height: number;
 };
 type FloatingMove = {
-  colorName: string;
+  colorCode: ColorCode;
   color: SatisfactoryColor;
   targetIndex: number;
   fromRect: Rect;
@@ -65,7 +66,7 @@ const getFilteredColors = (search: string, activeCategories: Set<string>, counts
       return matchSearch && matchCat;
     })
     .sort((a, b) => {
-      const byCount = (counts[b.name] ?? 0) - (counts[a.name] ?? 0);
+      const byCount = (counts[b.code] ?? 0) - (counts[a.code] ?? 0);
       if (byCount !== 0) return byCount;
       return a.name.localeCompare(b.name);
     });
@@ -79,10 +80,10 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
   const [activeCategories, setActiveCategories] = useState<Set<string>>(new Set());
   const [copyCounts, setCopyCounts] = useState<CopyCounts>(() => readCopyCounts());
   const [pendingCopyCounts, setPendingCopyCounts] = useState<CopyCounts>({});
-  const [movingColorName, setMovingColorName] = useState<string | null>(null);
+  const [movingColorCode, setMovingColorCode] = useState<ColorCode | null>(null);
   const [floatingMove, setFloatingMove] = useState<FloatingMove | null>(null);
   const movingIndicatorTimeoutRef = useRef<number | null>(null);
-  const previousOrderRef = useRef<string[]>([]);
+  const previousOrderRef = useRef<ColorCode[]>([]);
   const swatchNodeRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const placeholderRef = useRef<HTMLDivElement | null>(null);
 
@@ -108,7 +109,7 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
       window.clearTimeout(movingIndicatorTimeoutRef.current);
     }
     movingIndicatorTimeoutRef.current = window.setTimeout(() => {
-      setMovingColorName(null);
+      setMovingColorCode(null);
       movingIndicatorTimeoutRef.current = null;
     }, delay);
   }, []);
@@ -119,7 +120,7 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
     const handleResetCounters = () => {
       setCopyCounts({});
       setPendingCopyCounts({});
-      setMovingColorName(null);
+      setMovingColorCode(null);
       setFloatingMove(null);
       try {
         window.localStorage.removeItem(COPY_COUNTS_STORAGE_KEY);
@@ -141,40 +142,40 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
     });
   };
 
-  const queueCopyCount = useCallback((colorName: string) => {
+  const queueCopyCount = useCallback((colorCode: ColorCode) => {
     setPendingCopyCounts((prev) => ({
       ...prev,
-      [colorName]: (prev[colorName] ?? 0) + 1,
+      [colorCode]: (prev[colorCode] ?? 0) + 1,
     }));
   }, []);
 
   const filtered = useMemo(() => getFilteredColors(search, activeCategories, copyCounts), [search, activeCategories, copyCounts]);
 
   const flushQueuedCopyCount = useCallback(
-    (colorName: string) => {
-      const pendingCount = pendingCopyCounts[colorName] ?? 0;
+    (colorCode: ColorCode) => {
+      const pendingCount = pendingCopyCounts[colorCode] ?? 0;
       if (pendingCount <= 0) return;
 
       setPendingCopyCounts((prev) => {
         const next = { ...prev };
-        delete next[colorName];
+        delete next[colorCode];
         return next;
       });
 
-      const currentIndex = filtered.findIndex((color) => color.name === colorName);
+      const currentIndex = filtered.findIndex((color) => color.code === colorCode);
       const nextCounts: CopyCounts = {
         ...copyCounts,
-        [colorName]: (copyCounts[colorName] ?? 0) + pendingCount,
+        [colorCode]: (copyCounts[colorCode] ?? 0) + pendingCount,
       };
       const nextFiltered = getFilteredColors(search, activeCategories, nextCounts);
-      const targetIndex = nextFiltered.findIndex((color) => color.name === colorName);
+      const targetIndex = nextFiltered.findIndex((color) => color.code === colorCode);
 
       setCopyCounts(nextCounts);
-      setMovingColorName(colorName);
+      setMovingColorCode(colorCode);
 
-      const sourceNode = swatchNodeRefs.current[colorName];
+      const sourceNode = swatchNodeRefs.current[colorCode];
       const sourceRect = sourceNode?.getBoundingClientRect();
-      const movingColor = nextFiltered.find((color) => color.name === colorName);
+      const movingColor = nextFiltered.find((color) => color.code === colorCode);
 
       const canUseFloatingMove = !floatingMove
         && sourceRect !== undefined
@@ -185,7 +186,7 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
 
       if (canUseFloatingMove) {
         setFloatingMove({
-          colorName,
+          colorCode,
           color: movingColor,
           targetIndex,
           fromRect: {
@@ -204,10 +205,10 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
     [pendingCopyCounts, filtered, copyCounts, search, activeCategories, floatingMove, scheduleMovingIndicatorReset],
   );
 
-  const currentOrder = useMemo(() => filtered.map((color) => color.name), [filtered]);
+  const currentOrder = useMemo(() => filtered.map((color) => color.code), [filtered]);
 
   const previousIndexByName = (() => {
-    const indexByName = new Map<string, number>();
+    const indexByName = new Map<ColorCode, number>();
     previousOrderRef.current.forEach((name, index) => {
       indexByName.set(name, index);
     });
@@ -215,8 +216,8 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
   })();
 
   const reorderDelayByName = useMemo(() => {
-    const delays = new Map<string, number>();
-    if (!movingColorName) return delays;
+    const delays = new Map<ColorCode, number>();
+    if (!movingColorCode) return delays;
 
     const previousOrder = previousOrderRef.current;
     if (previousOrder.length !== currentOrder.length || currentOrder.length === 0) {
@@ -227,8 +228,8 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
       if (!previousIndexByName.has(name)) return delays;
     }
 
-    const movedPrevIndex = previousIndexByName.get(movingColorName);
-    const movedNextIndex = currentOrder.indexOf(movingColorName);
+    const movedPrevIndex = previousIndexByName.get(movingColorCode);
+    const movedNextIndex = currentOrder.indexOf(movingColorCode);
 
     if (movedPrevIndex === undefined || movedNextIndex < 0 || movedPrevIndex === movedNextIndex) {
       return delays;
@@ -237,7 +238,7 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
     if (movedPrevIndex > movedNextIndex) {
       // Moving up: animate neighbors below the old slot first, then propagate upward.
       currentOrder.forEach((name) => {
-        if (name === movingColorName) return;
+        if (name === movingColorCode) return;
         const prevIndex = previousIndexByName.get(name);
         if (prevIndex === undefined) return;
         if (prevIndex >= movedNextIndex && prevIndex < movedPrevIndex) {
@@ -248,7 +249,7 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
     } else {
       // Moving down: animate neighbors above the old slot first, then propagate downward.
       currentOrder.forEach((name) => {
-        if (name === movingColorName) return;
+        if (name === movingColorCode) return;
         const prevIndex = previousIndexByName.get(name);
         if (prevIndex === undefined) return;
         if (prevIndex > movedPrevIndex && prevIndex <= movedNextIndex) {
@@ -259,19 +260,19 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
     }
 
     return delays;
-  }, [movingColorName, currentOrder, previousIndexByName]);
+  }, [movingColorCode, currentOrder, previousIndexByName]);
 
   const gridTokens = useMemo<GridToken[]>(() => {
     if (!floatingMove) {
       return filtered.map((color) => ({ kind: "color", color }));
     }
 
-    const withoutMoving = filtered.filter((color) => color.name !== floatingMove.colorName);
+    const withoutMoving = filtered.filter((color) => color.code !== floatingMove.colorCode);
     const insertIndex = Math.max(0, Math.min(floatingMove.targetIndex, withoutMoving.length));
     const tokens = withoutMoving.map((color) => ({ kind: "color", color } as GridToken));
     tokens.splice(insertIndex, 0, {
       kind: "placeholder",
-      key: `floating-placeholder-${floatingMove.colorName}`,
+      key: `floating-placeholder-${floatingMove.colorCode}`,
     });
     return tokens;
   }, [filtered, floatingMove]);
@@ -323,7 +324,7 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
       <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
       <input
         type="text"
-        placeholder={`Search ${colors.length} colours`}
+        placeholder={t("colors.searchPlaceholder", { total: colors.length })}
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         className="w-full bg-surface pl-10 pr-9 py-2 text-[13px] font-mono text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
@@ -337,7 +338,7 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
           type="button"
           onClick={() => setSearch("")}
           className="absolute right-2 top-1/2 -translate-y-1/2 inline-flex h-5 w-5 items-center justify-center text-muted-foreground hover:text-foreground"
-          aria-label="Clear search"
+          aria-label={t("colors.clearSearchAria")}
         >
           <X className="h-3.5 w-3.5" />
         </button>
@@ -379,7 +380,7 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
 
   const resultsSummary = (
     <div className="text-muted-foreground text-[11px] font-mono mt-2 px-3">
-      {filtered.length} / {colors.length} RESULTS
+      {t("colors.resultsSummary", { filtered: filtered.length, total: colors.length })}
     </div>
   );
 
@@ -400,15 +401,15 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
               type="button"
               className="shrink-0 inline-flex items-center gap-2 px-3 py-2 text-[12px] font-bold uppercase tracking-wider text-foreground border border-border bg-surface"
               style={{ borderRadius: "2px" }}
-              aria-label="Open menu"
+              aria-label={t("colors.openMenuAria")}
             >
               <Menu className="w-4 h-4" />
-              Menu
+              {t("colors.menu")}
             </button>
           </SheetTrigger>
           <SheetContent side="left" className="w-[85vw] max-w-sm overflow-y-auto">
             <div className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground mb-4">
-              Categories
+              {t("colors.categories")}
             </div>
             <div className="flex flex-col gap-3">
               {categoryFilters}
@@ -419,13 +420,14 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
         <div className="flex-1 min-w-0">{searchFilter}</div>
       </div>
 
-      {/* Sidebar filters */}
       <div className="hidden md:flex md:w-56 shrink-0 flex-col gap-3">
         {filters}
       </div>
 
-      {/* Color grid */}
       <div className="flex-1 min-w-0">
+        <div className="mb-2 font-mono text-[9px] leading-tight text-orange-400/90">
+          {t("header.manualInstruction")}
+        </div>
         <div className="grid gap-2" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))" }}>
           {gridTokens.map((token) => {
             if (token.kind === "placeholder") {
@@ -455,10 +457,10 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
             const { color } = token;
             return (
               <motion.div
-                key={color.name}
+                key={color.code}
                 ref={(node) => {
-                  if (node) swatchNodeRefs.current[color.name] = node;
-                  else delete swatchNodeRefs.current[color.name];
+                  if (node) swatchNodeRefs.current[color.code] = node;
+                  else delete swatchNodeRefs.current[color.code];
                 }}
                 className="w-full"
                 layout="position"
@@ -468,19 +470,19 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
                     stiffness: 180,
                     damping: 32,
                     mass: 0.9,
-                    delay: reorderDelayByName.get(color.name) ?? 0,
+                    delay: reorderDelayByName.get(color.code) ?? 0,
                   },
                   scale: { duration: 0.22, ease: "easeOut" },
                 }}
-                animate={movingColorName === color.name ? { scale: [1, 1.035, 1] } : { scale: 1 }}
+                animate={movingColorCode === color.code ? { scale: [1, 1.035, 1] } : { scale: 1 }}
               >
                 <ColorSwatch
                   color={color}
                   mode={variant}
-                  copyCount={(copyCounts[color.name] ?? 0) + (pendingCopyCounts[color.name] ?? 0)}
-                  onCopy={() => queueCopyCount(color.name)}
-                  onSwatchLeave={() => flushQueuedCopyCount(color.name)}
-                  isReordering={movingColorName === color.name && !floatingMove}
+                  copyCount={(copyCounts[color.code] ?? 0) + (pendingCopyCounts[color.code] ?? 0)}
+                  onCopy={() => queueCopyCount(color.code)}
+                  onSwatchLeave={() => flushQueuedCopyCount(color.code)}
+                  isReordering={movingColorCode === color.code && !floatingMove}
                 />
               </motion.div>
             );
@@ -488,7 +490,7 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
         </div>
         {filtered.length === 0 && (
           <div className="flex items-center justify-center h-40 font-mono text-muted-foreground text-[13px]">
-            NO_DATA_FOUND: CHECK_FILTERS
+            {t("colors.noData")}
           </div>
         )}
       </div>
@@ -518,13 +520,13 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
           onAnimationComplete={() => {
             if (!floatingMove.toRect) return;
             setFloatingMove(null);
-            setMovingColorName(null);
+            setMovingColorCode(null);
           }}
         >
           <ColorSwatch
             color={floatingMove.color}
             mode={variant}
-            copyCount={copyCounts[floatingMove.colorName] ?? 0}
+            copyCount={copyCounts[floatingMove.colorCode] ?? 0}
             isReordering
           />
         </motion.div>

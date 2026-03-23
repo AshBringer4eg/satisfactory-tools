@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { appTabs, type AppTabId } from "@/config/tabs";
+import { t } from "@/i18n";
 
 interface AppTabBarProps {
   activeTab: AppTabId;
@@ -22,7 +23,7 @@ const AppTabBar = ({ activeTab, onTabChange }: AppTabBarProps) => (
           }`}
         >
           <Icon className="w-4 h-4 shrink-0" />
-          <span className="truncate">{tab.label}</span>
+          <span className="truncate">{t(tab.labelKey)}</span>
           {isActive && (
             <motion.div
               layoutId="tab-indicator"

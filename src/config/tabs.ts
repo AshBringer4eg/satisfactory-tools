@@ -6,15 +6,15 @@ import OwnTab from "@/components/tabs/OwnTab";
 
 export type AppTabDefinition = {
   id: "solo" | "duo" | "own";
-  label: string;
+  labelKey: string;
   icon: ComponentType<{ className?: string }>;
   component: ComponentType;
 };
 
 export const appTabs: AppTabDefinition[] = [
-  { id: "solo", label: "SOLO", icon: Palette, component: SoloTab },
-  { id: "duo", label: "DUO", icon: SwatchBook, component: DuoTab },
-  { id: "own", label: "OWN", icon: PencilRuler, component: OwnTab },
+  { id: "solo", labelKey: "tabs.solo", icon: Palette, component: SoloTab },
+  { id: "duo", labelKey: "tabs.duo", icon: SwatchBook, component: DuoTab },
+  { id: "own", labelKey: "tabs.own", icon: PencilRuler, component: OwnTab },
 ];
 
 export type AppTabId = AppTabDefinition["id"];

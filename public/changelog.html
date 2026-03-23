@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Satisfactory Tools - Changelog</title>
+    <style>
+      :root {
+        --bg: #0f1217;
+        --panel: #151922;
+        --line: #2b3343;
+        --text: #e5ebf5;
+        --muted: #9aa7bd;
+        --accent: #f4a34f;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: radial-gradient(circle at 20% 0%, #1a2233 0%, var(--bg) 45%);
+        color: var(--text);
+        font-family: Consolas, "Courier New", monospace;
+        padding: 28px;
+      }
+
+      .wrap {
+        max-width: 980px;
+        margin: 0 auto;
+        border: 1px solid var(--line);
+        background: color-mix(in srgb, var(--panel) 92%, black 8%);
+        border-radius: 6px;
+        overflow: hidden;
+      }
+
+      .head {
+        border-bottom: 1px solid var(--line);
+        padding: 16px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .title {
+        margin: 0;
+        font-size: 14px;
+        letter-spacing: 0.08em;
+      }
+
+      .back {
+        font-size: 12px;
+        color: var(--accent);
+        text-decoration: underline;
+        text-underline-offset: 2px;
+      }
+
+      .content {
+        padding: 18px 20px 24px;
+      }
+
+      .version {
+        margin: 0;
+        font-size: 13px;
+        color: var(--accent);
+      }
+
+      .summary {
+        margin: 4px 0 8px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      ul {
+        margin: 0 0 18px 20px;
+        padding: 0;
+        font-size: 12px;
+        line-height: 1.45;
+      }
+
+      li {
+        margin: 4px 0;
+      }
+
+      .divider {
+        border: 0;
+        border-top: 1px solid var(--line);
+        margin: 14px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <header class="head">
+        <h1 class="title">Satisfactory Tools // CHANGELOG</h1>
+        <a class="back" href="./">BACK TO APPLICATION</a>
+      </header>
+
+      <section class="content">
+        <h2 class="version">1.0 - Initial single tab application for copy colors</h2>
+        <p class="summary">First production-ready swatch terminal focused on rapid HEX extraction.</p>
+        <ul>
+          <li>Delivered single swatch workflow with click-to-copy behavior for primary HEX values.</li>
+          <li>Added search and category filtering for fast item lookup in large color catalogs.</li>
+          <li>Displayed color cards with names, HEX labels, and category grouping aligned to Satisfactory items.</li>
+          <li>Established terminal-style UI foundation with header, tabs scaffold, and footer support links.</li>
+        </ul>
+
+        <hr class="divider" />
+
+        <h2 class="version">1.1 - Introduced DUO mode</h2>
+        <p class="summary">Expanded swatch mechanics to support dual-zone color extraction and richer interaction.</p>
+        <ul>
+          <li>Added DUO tab variant with primary and secondary color zones per swatch.</li>
+          <li>Implemented per-item copy counters with localStorage persistence and reset event handling.</li>
+          <li>Added reorder/floating animation behavior so recently used colors rise in priority.</li>
+          <li>Improved responsive filtering UX with mobile sheet menu, tab switching, and no-results state messaging.</li>
+          <li>Added regression coverage for SOLO/DUO interactions in Playwright tests.</li>
+        </ul>
+
+        <hr class="divider" />
+
+        <h2 class="version">1.2.0 - Added localization core</h2>
+        <p class="summary">Refactored text and color data layers for i18n readiness and import/export schema support.</p>
+        <ul>
+          <li>Replaced hardcoded UI/ARIA text with translation key calls via `t('...')` across app-facing components.</li>
+          <li>Introduced English locale resources for interface text and color/category display labels.</li>
+          <li>Implemented fallback logic: active locale -&gt; English -&gt; normalized key for UI text.</li>
+          <li>Migrated color payload to schema-versioned `colors.json` with stable `COLOR_*` codes and `defaultName` fallback.</li>
+          <li>Added import/export validation rules for schema version, unique codes, category mapping, and HEX format.</li>
+          <li>Mapped unknown or user-defined categories to reserved `CATEGORY_OTHER` for safe ingest.</li>
+          <li>Switched copy-counter identity from localized names to stable color codes to prevent locale drift bugs.</li>
+          <li>Added unit tests for i18n fallback behavior and color schema parsing/generation paths.</li>
+          <li>Added header language switch entry point (`EN`) and factory-style operator instruction messaging in swatch tabs.</li>
+        </ul>
+      </section>
+    </main>
+  </body>
+</html>

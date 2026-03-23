@@ -1,5 +1,6 @@
 import { Github, MessageCircle } from "lucide-react";
 import type { MouseEvent } from "react";
+import { t } from "@/i18n";
 
 interface AppFooterProps {
   onResetCounters: (event: MouseEvent<HTMLButtonElement>) => void;
@@ -11,29 +12,29 @@ const AppFooter = ({ onResetCounters }: AppFooterProps) => (
       <div className="grid grid-cols-[1fr_auto] items-baseline gap-3">
         <div className="min-w-0">
           <span className="font-mono text-[11px] text-muted-foreground">
-            FICSIT_EMPLOYEE_TOOLKIT
+            {t("footer.toolkit")}
           </span>
         </div>
         <div className="min-w-0 flex flex-col items-end text-right font-mono text-[11px] text-muted-foreground">
           <div className="hidden md:flex items-center justify-end gap-2 whitespace-nowrap">
-            <span>CLICK_SWATCH_TO_COPY_HEX</span>
+            <span>{t("footer.clickToCopy")}</span>
             <span>|</span>
             <button
               type="button"
               onClick={onResetCounters}
               className="font-mono text-[10px] text-muted-foreground underline underline-offset-2 hover:text-foreground"
             >
-              RESET_COUNTERS
+              {t("footer.resetCounters")}
             </button>
           </div>
           <div className="md:hidden flex flex-col items-end leading-tight">
-            <span>CLICK_SWATCH_TO_COPY_HEX |</span>
+            <span>{t("footer.clickToCopy")} |</span>
             <button
               type="button"
               onClick={onResetCounters}
               className="font-mono text-[10px] text-muted-foreground underline underline-offset-2 hover:text-foreground"
             >
-              RESET_COUNTERS
+              {t("footer.resetCounters")}
             </button>
           </div>
         </div>
@@ -42,7 +43,7 @@ const AppFooter = ({ onResetCounters }: AppFooterProps) => (
       <div className="grid grid-cols-[1fr_auto] items-start gap-3">
         <div className="min-w-0 font-mono text-[10px] text-muted-foreground">
           <div className="hidden md:flex flex-wrap items-center gap-1 leading-tight">
-            <span>THANKS_FOR_COLOR_DATA:</span>
+            <span>{t("footer.thanksForColorData")}</span>
             <a
               href="https://www.reddit.com/r/SatisfactoryGame/comments/154vft6/vencams_colour_list_25/"
               target="_blank"
@@ -71,7 +72,7 @@ const AppFooter = ({ onResetCounters }: AppFooterProps) => (
             </a>
           </div>
           <div className="md:hidden flex flex-col leading-tight">
-            <span>THANKS_FOR_COLOR_DATA:</span>
+            <span>{t("footer.thanksForColorData")}</span>
             <span>
               <a
                 href="https://www.reddit.com/r/SatisfactoryGame/comments/154vft6/vencams_colour_list_25/"
@@ -114,10 +115,10 @@ const AppFooter = ({ onResetCounters }: AppFooterProps) => (
               target="_blank"
               rel="noopener noreferrer"
               className="underline underline-offset-2 hover:text-foreground inline-flex items-center gap-1"
-              aria-label="Open GitHub Issues feedback page"
+              aria-label={t("footer.feedbackGithubAria")}
             >
               <Github className="w-3 h-3 align-text-bottom" />
-              FEEDBACK_GH
+              {t("footer.feedbackGithub")}
             </a>
             <span>|</span>
             <a
@@ -125,10 +126,18 @@ const AppFooter = ({ onResetCounters }: AppFooterProps) => (
               target="_blank"
               rel="noopener noreferrer"
               className="underline underline-offset-2 hover:text-foreground inline-flex items-center gap-1"
-              aria-label="Open Reddit post feedback thread"
+              aria-label={t("footer.feedbackRedditAria")}
             >
               <MessageCircle className="w-3 h-3 align-text-bottom" />
-              FEEDBACK_REDDIT
+              {t("footer.feedbackReddit")}
+            </a>
+            <span>|</span>
+            <a
+              href={`${import.meta.env.BASE_URL}changelog.html`}
+              className="underline underline-offset-2 hover:text-foreground"
+              aria-label={t("footer.changelogAria")}
+            >
+              {t("footer.changelog")}
             </a>
           </div>
           <div className="md:hidden flex flex-col items-end text-right leading-tight">
@@ -138,10 +147,10 @@ const AppFooter = ({ onResetCounters }: AppFooterProps) => (
                 target="_blank"
                 rel="noopener noreferrer"
                 className="underline underline-offset-2 hover:text-foreground inline-flex items-center gap-1"
-                aria-label="Open GitHub Issues feedback page"
+                aria-label={t("footer.feedbackGithubAria")}
               >
                 <Github className="w-3 h-3" />
-                FEEDBACK_GH
+                {t("footer.feedbackGithub")}
               </a>
               {" |"}
             </span>
@@ -151,10 +160,20 @@ const AppFooter = ({ onResetCounters }: AppFooterProps) => (
                 target="_blank"
                 rel="noopener noreferrer"
                 className="underline underline-offset-2 hover:text-foreground inline-flex items-center gap-1"
-                aria-label="Open Reddit post feedback thread"
+                aria-label={t("footer.feedbackRedditAria")}
               >
                 <MessageCircle className="w-3 h-3" />
-                FEEDBACK_REDDIT
+                {t("footer.feedbackReddit")}
+              </a>
+              {" |"}
+            </span>
+            <span>
+              <a
+                href={`${import.meta.env.BASE_URL}changelog.html`}
+                className="underline underline-offset-2 hover:text-foreground"
+                aria-label={t("footer.changelogAria")}
+              >
+                {t("footer.changelog")}
               </a>
             </span>
           </div>

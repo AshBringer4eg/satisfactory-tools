@@ -1,0 +1,53 @@
+{
+  "tabs": {
+    "solo": "SOLO",
+    "duo": "DUO",
+    "own": "OWN"
+  },
+  "header": {
+    "title": "ENGINEER_REFERENCE_TERMINAL",
+    "manualInstruction": "[FACTORY MANUAL ENTRY #1337]: CLICK OR PRESS ANY SWATCH COLOR ZONE TO TRANSFER THAT HEX VALUE TO CLIPBOARD MEMORY. IF CLIPBOARD ACCESS IS RESTRICTED BY THE BROWSER, CLICK OR PRESS THE HEX TEXT FIELD TO AUTO-SELECT IT, THEN EXECUTE CTRL+C FOR MANUAL TRANSFER."
+  },
+  "footer": {
+    "toolkit": "FICSIT_EMPLOYEE_TOOLKIT",
+    "clickToCopy": "CLICK_SWATCH_TO_COPY_HEX",
+    "resetCounters": "RESET_COUNTERS",
+    "thanksForColorData": "THANKS_FOR_COLOR_DATA:",
+    "feedbackGithub": "FEEDBACK_GH",
+    "feedbackReddit": "FEEDBACK_REDDIT",
+    "changelog": "CHANGELOG",
+    "feedbackGithubAria": "Open GitHub Issues feedback page",
+    "feedbackRedditAria": "Open Reddit post feedback thread",
+    "changelogAria": "Open changelog page"
+  },
+  "ownTab": {
+    "title": "ALTERNATIVE_2",
+    "description": "- under construction"
+  },
+  "notFound": {
+    "message": "Oops! Page not found",
+    "returnHome": "Return to Home"
+  },
+  "colors": {
+    "searchPlaceholder": "Search {{total}} colours",
+    "clearSearchAria": "Clear search",
+    "openMenuAria": "Open menu",
+    "menu": "Menu",
+    "categories": "Categories",
+    "resultsSummary": "{{filtered}} / {{total}} RESULTS",
+    "noData": "NO_DATA_FOUND: CHECK_FILTERS"
+  },
+  "swatch": {
+    "copied": "COPIED",
+    "selectHex": "SELECT HEX",
+    "copy": "COPY",
+    "aria": {
+      "copyHex": "Copy hex code {{hex}} for {{name}}",
+      "copyPrimaryHex": "Copy primary hex code {{hex}} for {{name}}",
+      "copySecondaryHex": "Copy secondary hex code {{hex}} for {{name}}",
+      "hexCode": "{{name}} hex code {{hex}}",
+      "primaryHexCode": "{{name}} primary hex code {{hex}}",
+      "secondaryHexCode": "{{name}} secondary hex code {{hex}}"
+    }
+  }
+}

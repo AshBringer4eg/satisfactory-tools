@@ -1,9 +1,10 @@
 import PlaceholderTab from "@/components/PlaceholderTab";
+import { t } from "@/i18n";
 
 const OwnTab = () => (
   <PlaceholderTab
-    title="ALTERNATIVE_2"
-    description="- under construction"
+    title={t("ownTab.title")}
+    description={t("ownTab.description")}
   />
 );
 
