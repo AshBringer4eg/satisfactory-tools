@@ -9,7 +9,8 @@
       "secondaryColor": "#958675",
       "categories": [
         "CATEGORY_ORES"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/Limestone"
     },
     {
       "code": "COLOR_IRON_ORE",
@@ -18,7 +19,8 @@
       "secondaryColor": "#663633",
       "categories": [
         "CATEGORY_ORES"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/IronOre"
     },
     {
       "code": "COLOR_COPPER_ORE",
@@ -27,7 +29,8 @@
       "secondaryColor": "#405a61",
       "categories": [
         "CATEGORY_ORES"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/CopperOre"
     },
     {
       "code": "COLOR_CATERIUM_ORE",
@@ -36,7 +39,8 @@
       "secondaryColor": "#a27a40",
       "categories": [
         "CATEGORY_ORES"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/CateriumOre"
     },
     {
       "code": "COLOR_COAL",
@@ -45,7 +49,8 @@
       "secondaryColor": "#0b0f15",
       "categories": [
         "CATEGORY_ORES"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/Coal"
     },
     {
       "code": "COLOR_RAW_QUARTZ",
@@ -54,7 +59,8 @@
       "secondaryColor": "#c652c6",
       "categories": [
         "CATEGORY_ORES"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/RawQuartz"
     },
     {
       "code": "COLOR_SULFUR",
@@ -63,7 +69,8 @@
       "secondaryColor": "#86762c",
       "categories": [
         "CATEGORY_ORES"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/Sulfur"
     },
     {
       "code": "COLOR_BAUXITE",
@@ -72,7 +79,8 @@
       "secondaryColor": "#9c5548",
       "categories": [
         "CATEGORY_ORES"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/Bauxite"
     },
     {
       "code": "COLOR_SAM",
@@ -81,7 +89,8 @@
       "secondaryColor": "#502784",
       "categories": [
         "CATEGORY_ORES"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/SAM"
     },
     {
       "code": "COLOR_URANIUM",
@@ -90,7 +99,8 @@
       "secondaryColor": "#173717",
       "categories": [
         "CATEGORY_ORES"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/UraniumOre"
     },
     {
       "code": "COLOR_IRON_INGOT",
@@ -99,7 +109,8 @@
       "secondaryColor": "#484948",
       "categories": [
         "CATEGORY_INGOTS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/IronIngot"
     },
     {
       "code": "COLOR_COPPER_INGOT",
@@ -108,7 +119,8 @@
       "secondaryColor": "#553329",
       "categories": [
         "CATEGORY_INGOTS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/CopperIngot"
     },
     {
       "code": "COLOR_CATERIUM_INGOT",
@@ -117,7 +129,8 @@
       "secondaryColor": "#927844",
       "categories": [
         "CATEGORY_INGOTS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/CateriumIngot"
     },
     {
       "code": "COLOR_STEEL_INGOT",
@@ -126,7 +139,8 @@
       "secondaryColor": "#0f1011",
       "categories": [
         "CATEGORY_INGOTS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/SteelIngot"
     },
     {
       "code": "COLOR_ALUMINUM_INGOT",
@@ -135,7 +149,8 @@
       "secondaryColor": "#696969",
       "categories": [
         "CATEGORY_INGOTS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/AluminumIngot"
     },
     {
       "code": "COLOR_FICSITE_INGOT",
@@ -144,7 +159,8 @@
       "secondaryColor": "#5a1f00",
       "categories": [
         "CATEGORY_INGOTS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/FICSITIngot"
     },
     {
       "code": "COLOR_CONCRETE",
@@ -153,7 +169,8 @@
       "secondaryColor": "#c7c3c8",
       "categories": [
         "CATEGORY_MINERALS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/Concrete"
     },
     {
       "code": "COLOR_QUARTZ_CRYSTAL",
@@ -162,7 +179,8 @@
       "secondaryColor": "#2941c7",
       "categories": [
         "CATEGORY_MINERALS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/QuartzCrystal"
     },
     {
       "code": "COLOR_SILICA",
@@ -171,7 +189,8 @@
       "secondaryColor": "#b4d5e4",
       "categories": [
         "CATEGORY_MINERALS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/Silica"
     },
     {
       "code": "COLOR_COPPER_POWDER",
@@ -180,7 +199,8 @@
       "secondaryColor": "#d6d8e7",
       "categories": [
         "CATEGORY_MINERALS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/CopperPowder"
     },
     {
       "code": "COLOR_POLYMER_RESIN",
@@ -189,7 +209,8 @@
       "secondaryColor": "#060330",
       "categories": [
         "CATEGORY_MINERALS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/PolymerResin"
     },
     {
       "code": "COLOR_PETROLEUM_COKE",
@@ -198,7 +219,8 @@
       "secondaryColor": "#060606",
       "categories": [
         "CATEGORY_MINERALS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/PetroleumCoke"
     },
     {
       "code": "COLOR_ALUMINUM_SCRAP",
@@ -207,7 +229,8 @@
       "secondaryColor": "#d48f28",
       "categories": [
         "CATEGORY_MINERALS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/AluminumScrap"
     },
     {
       "code": "COLOR_ALIEN_PROTEIN",
@@ -216,7 +239,8 @@
       "secondaryColor": "#c9cbce",
       "categories": [
         "CATEGORY_ALIENS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/AlienProtein"
     },
     {
       "code": "COLOR_ALIEN_DNA_CAPSULE",
@@ -225,7 +249,8 @@
       "secondaryColor": "#49343c",
       "categories": [
         "CATEGORY_ALIENS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/AlienDNACapsule"
     },
     {
       "code": "COLOR_WATER",
@@ -234,7 +259,8 @@
       "secondaryColor": "#0d0d0d",
       "categories": [
         "CATEGORY_LIQUIDS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Categories/Water"
     },
     {
       "code": "COLOR_CRUDE_OIL",
@@ -243,7 +269,8 @@
       "secondaryColor": "#0d0d0d",
       "categories": [
         "CATEGORY_LIQUIDS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/CrudeOil"
     },
     {
       "code": "COLOR_HEAVY_OIL_RESIDUE",
@@ -252,7 +279,8 @@
       "secondaryColor": "#0d0d0d",
       "categories": [
         "CATEGORY_LIQUIDS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/HeavyOilResidue"
     },
     {
       "code": "COLOR_FUEL",
@@ -261,7 +289,8 @@
       "secondaryColor": "#0d0d0d",
       "categories": [
         "CATEGORY_LIQUIDS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Categories/Fuel"
     },
     {
       "code": "COLOR_LIQUID_BIOFUEL",
@@ -270,7 +299,8 @@
       "secondaryColor": "#0d0d0d",
       "categories": [
         "CATEGORY_LIQUIDS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/LiquidBiofuel"
     },
     {
       "code": "COLOR_TURBOFUEL",
@@ -279,7 +309,8 @@
       "secondaryColor": "#0d0d0d",
       "categories": [
         "CATEGORY_LIQUIDS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/FuelTurbo"
     },
     {
       "code": "COLOR_ALUMINA_SOLUTION",
@@ -288,7 +319,8 @@
       "secondaryColor": "#0d0d0d",
       "categories": [
         "CATEGORY_LIQUIDS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/AluminaSolution"
     },
     {
       "code": "COLOR_SULFURIC_ACID",
@@ -297,7 +329,8 @@
       "secondaryColor": "#0d0d0d",
       "categories": [
         "CATEGORY_LIQUIDS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/SulfuricAcid"
     },
     {
       "code": "COLOR_NITRIC_ACID",
@@ -306,7 +339,8 @@
       "secondaryColor": "#0d0d0d",
       "categories": [
         "CATEGORY_LIQUIDS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/NitricAcid"
     },
     {
       "code": "COLOR_DISSOLVED_SILICA",
@@ -315,7 +349,8 @@
       "secondaryColor": "#0d0d0d",
       "categories": [
         "CATEGORY_LIQUIDS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/DissolvedSilica"
     },
     {
       "code": "COLOR_NITROGEN_GAS",
@@ -324,7 +359,8 @@
       "secondaryColor": "#0d0d0d",
       "categories": [
         "CATEGORY_GAS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/NitrogenGas"
     },
     {
       "code": "COLOR_ROCKET_FUEL",
@@ -333,7 +369,8 @@
       "secondaryColor": "#0d0d0d",
       "categories": [
         "CATEGORY_GAS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/RocketFuel"
     },
     {
       "code": "COLOR_IONIZED_FUEL",
@@ -342,7 +379,8 @@
       "secondaryColor": "#0d0d0d",
       "categories": [
         "CATEGORY_GAS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/IonizedFuel"
     },
     {
       "code": "COLOR_DARK_MATTER_RESIDUE",
@@ -351,7 +389,8 @@
       "secondaryColor": "#0d0d0d",
       "categories": [
         "CATEGORY_GAS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/DarkEnergy"
     },
     {
       "code": "COLOR_EXCITED_PHOTONIC_MATTER",
@@ -360,7 +399,8 @@
       "secondaryColor": "#0d0d0d",
       "categories": [
         "CATEGORY_GAS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/QuantumEnergy"
     },
     {
       "code": "COLOR_IRON_ROD",
@@ -369,7 +409,8 @@
       "secondaryColor": "#1c1e22",
       "categories": [
         "CATEGORY_STANDARD_PARTS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/IronRod"
     },
     {
       "code": "COLOR_SCREWS",
@@ -378,7 +419,8 @@
       "secondaryColor": "#1164ce",
       "categories": [
         "CATEGORY_STANDARD_PARTS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/Screw"
     },
     {
       "code": "COLOR_IRON_PLATE",
@@ -387,7 +429,8 @@
       "secondaryColor": "#4c4f54",
       "categories": [
         "CATEGORY_STANDARD_PARTS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/IronPlate"
     },
     {
       "code": "COLOR_REINFORCED_IRON_PLATE",
@@ -396,7 +439,8 @@
       "secondaryColor": "#59657e",
       "categories": [
         "CATEGORY_STANDARD_PARTS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/IronPlateReinforced"
     },
     {
       "code": "COLOR_COPPER_SHEET",
@@ -405,7 +449,8 @@
       "secondaryColor": "#325a8d",
       "categories": [
         "CATEGORY_STANDARD_PARTS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/CopperSheet"
     },
     {
       "code": "COLOR_ALCLAD_ALUMINUM_SHEET",
@@ -414,7 +459,8 @@
       "secondaryColor": "#8d8f9e",
       "categories": [
         "CATEGORY_STANDARD_PARTS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/AluminumSheetAlclad"
     },
     {
       "code": "COLOR_ALUMINUM_CASING",
@@ -423,7 +469,8 @@
       "secondaryColor": "#242526",
       "categories": [
         "CATEGORY_STANDARD_PARTS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/CasingAluminum"
     },
     {
       "code": "COLOR_STEEL_PIPE",
@@ -432,7 +479,8 @@
       "secondaryColor": "#703d30",
       "categories": [
         "CATEGORY_STANDARD_PARTS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/PipeSteel"
     },
     {
       "code": "COLOR_STEEL_BEAM",
@@ -441,7 +489,8 @@
       "secondaryColor": "#703d30",
       "categories": [
         "CATEGORY_STANDARD_PARTS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/BeamSteel"
     },
     {
       "code": "COLOR_ENCASED_INDUSTRIAL_BEAM",
@@ -450,7 +499,8 @@
       "secondaryColor": "#a55a5a",
       "categories": [
         "CATEGORY_STANDARD_PARTS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/BeamIndustrialEncased"
     },
     {
       "code": "COLOR_MODULAR_FRAME",
@@ -459,7 +509,8 @@
       "secondaryColor": "#5d5d5d",
       "categories": [
         "CATEGORY_STANDARD_PARTS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/ModularFrame"
     },
     {
       "code": "COLOR_HEAVY_MODULAR_FRAME",
@@ -468,7 +519,8 @@
       "secondaryColor": "#1b1b1b",
       "categories": [
         "CATEGORY_STANDARD_PARTS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/ModularFrameYHeavy"
     },
     {
       "code": "COLOR_FUSED_MODULAR_FRAME",
@@ -477,7 +529,8 @@
       "secondaryColor": "#fab757",
       "categories": [
         "CATEGORY_STANDARD_PARTS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/ModularFrameYFused"
     },
     {
       "code": "COLOR_FICSITE_TRIGON",
@@ -486,7 +539,8 @@
       "secondaryColor": "#b64c00",
       "categories": [
         "CATEGORY_STANDARD_PARTS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/FICSITMesh"
     },
     {
       "code": "COLOR_FABRIC",
@@ -495,7 +549,8 @@
       "secondaryColor": "#000003",
       "categories": [
         "CATEGORY_STANDARD_PARTS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/Fabric"
     },
     {
       "code": "COLOR_PLASTIC",
@@ -504,7 +559,8 @@
       "secondaryColor": "#221f24",
       "categories": [
         "CATEGORY_STANDARD_PARTS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Categories/Plastic"
     },
     {
       "code": "COLOR_RUBBER",
@@ -513,7 +569,8 @@
       "secondaryColor": "#cfb65e",
       "categories": [
         "CATEGORY_STANDARD_PARTS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Categories/Rubber"
     },
     {
       "code": "COLOR_ROTOR",
@@ -522,7 +579,8 @@
       "secondaryColor": "#744029",
       "categories": [
         "CATEGORY_INDUSTRIAL_PARTS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/Rotor"
     },
     {
       "code": "COLOR_STATOR",
@@ -531,7 +589,8 @@
       "secondaryColor": "#633d31",
       "categories": [
         "CATEGORY_INDUSTRIAL_PARTS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/Stator"
     },
     {
       "code": "COLOR_BATTERY",
@@ -540,7 +599,8 @@
       "secondaryColor": "#aaadbc",
       "categories": [
         "CATEGORY_INDUSTRIAL_PARTS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/Battery"
     },
     {
       "code": "COLOR_MOTOR",
@@ -549,7 +609,8 @@
       "secondaryColor": "#cead1f",
       "categories": [
         "CATEGORY_INDUSTRIAL_PARTS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/Motor"
     },
     {
       "code": "COLOR_HEAT_SINK",
@@ -558,7 +619,8 @@
       "secondaryColor": "#a1663e",
       "categories": [
         "CATEGORY_INDUSTRIAL_PARTS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/HeatSink"
     },
     {
       "code": "COLOR_COOLING_SYSTEM",
@@ -567,7 +629,8 @@
       "secondaryColor": "#d4d6e5",
       "categories": [
         "CATEGORY_INDUSTRIAL_PARTS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/CoolingSystem"
     },
     {
       "code": "COLOR_TURBO_MOTOR",
@@ -576,7 +639,8 @@
       "secondaryColor": "#f4d24d",
       "categories": [
         "CATEGORY_INDUSTRIAL_PARTS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/MotorTurbo"
     },
     {
       "code": "COLOR_WIRE",
@@ -585,7 +649,8 @@
       "secondaryColor": "#846b4f",
       "categories": [
         "CATEGORY_ELECTRONICS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/Wire"
     },
     {
       "code": "COLOR_CABLE",
@@ -594,7 +659,8 @@
       "secondaryColor": "#94a5c6",
       "categories": [
         "CATEGORY_ELECTRONICS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/Cable"
     },
     {
       "code": "COLOR_QUICKWIRE",
@@ -603,7 +669,8 @@
       "secondaryColor": "#2a2e3f",
       "categories": [
         "CATEGORY_ELECTRONICS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/Quickwire"
     },
     {
       "code": "COLOR_CIRCUIT_BOARD",
@@ -612,7 +679,8 @@
       "secondaryColor": "#ffb85f",
       "categories": [
         "CATEGORY_ELECTRONICS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/CircuitBoard"
     },
     {
       "code": "COLOR_AI_LIMITER",
@@ -621,7 +689,8 @@
       "secondaryColor": "#88b6b3",
       "categories": [
         "CATEGORY_ELECTRONICS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/AILimiter"
     },
     {
       "code": "COLOR_HIGH_SPEED_CONNECTOR",
@@ -630,7 +699,8 @@
       "secondaryColor": "#415355",
       "categories": [
         "CATEGORY_ELECTRONICS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/HighSpeedConnector"
     },
     {
       "code": "COLOR_REANIMATED_SAM",
@@ -639,7 +709,8 @@
       "secondaryColor": "#e7904b",
       "categories": [
         "CATEGORY_ELECTRONICS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/SAMAwakened"
     },
     {
       "code": "COLOR_SAM_FLUCTUATOR",
@@ -648,7 +719,8 @@
       "secondaryColor": "#ffab42",
       "categories": [
         "CATEGORY_ELECTRONICS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/SAMFluctuator"
     },
     {
       "code": "COLOR_COMPUTER",
@@ -657,7 +729,8 @@
       "secondaryColor": "#2e3531",
       "categories": [
         "CATEGORY_COMMUNICATIONS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/Computer"
     },
     {
       "code": "COLOR_SUPERCOMPUTER",
@@ -666,7 +739,8 @@
       "secondaryColor": "#e7b779",
       "categories": [
         "CATEGORY_COMMUNICATIONS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/ComputerSuper"
     },
     {
       "code": "COLOR_RADIO_CONTROL_UNIT",
@@ -675,7 +749,8 @@
       "secondaryColor": "#f7e650",
       "categories": [
         "CATEGORY_COMMUNICATIONS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/RadioControlUnit"
     },
     {
       "code": "COLOR_CRYSTAL_OSCILLATOR",
@@ -684,7 +759,8 @@
       "secondaryColor": "#f7cf4e",
       "categories": [
         "CATEGORY_COMMUNICATIONS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/CrystalOscillator"
     },
     {
       "code": "COLOR_SUPERPOSITION_OSCILLATOR",
@@ -693,7 +769,8 @@
       "secondaryColor": "#ea8e1f",
       "categories": [
         "CATEGORY_COMMUNICATIONS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/OscillatorSuperposition"
     },
     {
       "code": "COLOR_DIAMONDS",
@@ -702,7 +779,8 @@
       "secondaryColor": "#da7821",
       "categories": [
         "CATEGORY_QUANTUM_TECHNOLOGY"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/Diamonds"
     },
     {
       "code": "COLOR_TIME_CRYSTAL",
@@ -711,7 +789,8 @@
       "secondaryColor": "#da7821",
       "categories": [
         "CATEGORY_QUANTUM_TECHNOLOGY"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/TimeCrystal"
     },
     {
       "code": "COLOR_DARK_MATTER_CRYSTAL",
@@ -720,7 +799,8 @@
       "secondaryColor": "#33375c",
       "categories": [
         "CATEGORY_QUANTUM_TECHNOLOGY"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/DarkMatter"
     },
     {
       "code": "COLOR_SINGULARITY_CELL",
@@ -729,7 +809,8 @@
       "secondaryColor": "#ffbd67",
       "categories": [
         "CATEGORY_QUANTUM_TECHNOLOGY"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/SingularityCell"
     },
     {
       "code": "COLOR_NEURAL_QUANTUM_PROCESSOR",
@@ -738,7 +819,8 @@
       "secondaryColor": "#ea8e1f",
       "categories": [
         "CATEGORY_QUANTUM_TECHNOLOGY"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/TemporalProcessor"
     },
     {
       "code": "COLOR_ALIEN_POWER_MATRIX",
@@ -747,7 +829,8 @@
       "secondaryColor": "#ffeefe",
       "categories": [
         "CATEGORY_QUANTUM_TECHNOLOGY"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/AlienPowerMatrix"
     },
     {
       "code": "COLOR_EMPTY_CANISTER",
@@ -756,7 +839,8 @@
       "secondaryColor": "#10100e",
       "categories": [
         "CATEGORY_CONTAINERS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/CanisterEmpty"
     },
     {
       "code": "COLOR_EMPTY_FLUID_TANK",
@@ -765,7 +849,8 @@
       "secondaryColor": "#99969b",
       "categories": [
         "CATEGORY_CONTAINERS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/FluidTankEmpty"
     },
     {
       "code": "COLOR_PRESSURE_CONVERSION_CUBE",
@@ -774,7 +859,8 @@
       "secondaryColor": "#1f2133",
       "categories": [
         "CATEGORY_CONTAINERS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/PressureConversionCube"
     },
     {
       "code": "COLOR_PACKAGED_WATER",
@@ -783,7 +869,8 @@
       "secondaryColor": "#0251b8",
       "categories": [
         "CATEGORY_CONTAINERS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/WaterPackaged"
     },
     {
       "code": "COLOR_PACKAGED_ALUMINA_SOLUTION",
@@ -792,7 +879,8 @@
       "secondaryColor": "#fbce79",
       "categories": [
         "CATEGORY_CONTAINERS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/AluminaSolutionPackaged"
     },
     {
       "code": "COLOR_PACKAGED_SULFURIC_ACID",
@@ -801,7 +889,8 @@
       "secondaryColor": "#55585f",
       "categories": [
         "CATEGORY_CONTAINERS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/SulfuricAcidPackaged"
     },
     {
       "code": "COLOR_PACKAGED_NITRIC_ACID",
@@ -810,7 +899,8 @@
       "secondaryColor": "#55585f",
       "categories": [
         "CATEGORY_CONTAINERS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/NitricAcidPackaged"
     },
     {
       "code": "COLOR_PACKAGED_NITROGEN_GAS",
@@ -819,7 +909,8 @@
       "secondaryColor": "#26273b",
       "categories": [
         "CATEGORY_CONTAINERS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/NitrogenGasPackaged"
     },
     {
       "code": "COLOR_LEAVES",
@@ -828,7 +919,8 @@
       "secondaryColor": "#142c12",
       "categories": [
         "CATEGORY_FUELS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/Leaves"
     },
     {
       "code": "COLOR_MYCELIA",
@@ -837,16 +929,8 @@
       "secondaryColor": "#3e3c49",
       "categories": [
         "CATEGORY_FUELS"
-      ]
-    },
-    {
-      "code": "COLOR_FLOWER_PETALS",
-      "defaultName": "Flower Petals",
-      "hex": "#a25544",
-      "secondaryColor": "#a25544",
-      "categories": [
-        "CATEGORY_FUELS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/Mycelia"
     },
     {
       "code": "COLOR_WOOD",
@@ -855,7 +939,8 @@
       "secondaryColor": "#2a1e14",
       "categories": [
         "CATEGORY_FUELS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/Wood"
     },
     {
       "code": "COLOR_BIOMASS",
@@ -864,7 +949,8 @@
       "secondaryColor": "#3e3118",
       "categories": [
         "CATEGORY_FUELS"
-      ]
+      ],
+      "officialEnLocaleKey": "AWESOME_Data.AWESOME/ACategories/Parts/Biomass"
     },
     {
       "code": "COLOR_COMPACTED_COAL",
@@ -873,7 +959,8 @@
       "secondaryColor": "#0d0c0b",
       "categories": [
         "CATEGORY_FUELS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/CompactedCoal"
     },
     {
       "code": "COLOR_PACKAGED_OIL",
@@ -882,7 +969,8 @@
       "secondaryColor": "#f2f4f1",
       "categories": [
         "CATEGORY_FUELS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/CrudeOilPackaged"
     },
     {
       "code": "COLOR_PACKAGED_HEAVY_OIL_RESIDUE",
@@ -891,7 +979,8 @@
       "secondaryColor": "#f2f4f1",
       "categories": [
         "CATEGORY_FUELS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/HeavyOilResiduePackaged"
     },
     {
       "code": "COLOR_SOLID_BIOFUEL",
@@ -900,7 +989,8 @@
       "secondaryColor": "#3c2f25",
       "categories": [
         "CATEGORY_FUELS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/BiofuelSolid"
     },
     {
       "code": "COLOR_PACKAGED_FUEL",
@@ -909,7 +999,8 @@
       "secondaryColor": "#10100e",
       "categories": [
         "CATEGORY_FUELS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/FuelPackaged"
     },
     {
       "code": "COLOR_PACKAGED_LIQUID_BIOFUEL",
@@ -918,7 +1009,8 @@
       "secondaryColor": "#10100e",
       "categories": [
         "CATEGORY_FUELS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/BiofuelLiquidPackaged"
     },
     {
       "code": "COLOR_PACKAGED_TURBOFUEL",
@@ -927,7 +1019,8 @@
       "secondaryColor": "#10100e",
       "categories": [
         "CATEGORY_FUELS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/FuelTurboPackaged"
     },
     {
       "code": "COLOR_PACKAGED_ROCKET_FUEL",
@@ -936,7 +1029,8 @@
       "secondaryColor": "#feeb23",
       "categories": [
         "CATEGORY_FUELS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/RocketFuelPackaged"
     },
     {
       "code": "COLOR_PACKAGED_IONIZED_FUEL",
@@ -945,7 +1039,8 @@
       "secondaryColor": "#ffbd20",
       "categories": [
         "CATEGORY_FUELS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/IonizedFuelPackaged"
     },
     {
       "code": "COLOR_URANIUM_FUEL_ROD",
@@ -954,7 +1049,8 @@
       "secondaryColor": "#a4f6c6",
       "categories": [
         "CATEGORY_FUELS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/UraniumFuelRod"
     },
     {
       "code": "COLOR_PLUTONIUM_FUEL_ROD",
@@ -963,7 +1059,8 @@
       "secondaryColor": "#a8e5e9",
       "categories": [
         "CATEGORY_FUELS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/PlutoniumFuelRod"
     },
     {
       "code": "COLOR_BLACK_POWDER",
@@ -972,7 +1069,8 @@
       "secondaryColor": "#f10907",
       "categories": [
         "CATEGORY_CONSUMED"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/BlackPowder"
     },
     {
       "code": "COLOR_SMOKELESS_POWDER",
@@ -981,7 +1079,8 @@
       "secondaryColor": "#f10907",
       "categories": [
         "CATEGORY_CONSUMED"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/BlackPowderSmokeless"
     },
     {
       "code": "COLOR_GAS_FILTER",
@@ -990,25 +1089,8 @@
       "secondaryColor": "#8e8aa1",
       "categories": [
         "CATEGORY_CONSUMED"
-      ]
-    },
-    {
-      "code": "COLOR_COLOR_CARTRIDGE",
-      "defaultName": "Color Cartridge",
-      "hex": "#9f6053",
-      "secondaryColor": "#9f6053",
-      "categories": [
-        "CATEGORY_CONSUMED"
-      ]
-    },
-    {
-      "code": "COLOR_BEACON",
-      "defaultName": "Beacon",
-      "hex": "#917353",
-      "secondaryColor": "#917353",
-      "categories": [
-        "CATEGORY_CONSUMED"
-      ]
+      ],
+      "officialEnLocaleKey": "Equipment_Data.Health/GasFilter"
     },
     {
       "code": "COLOR_IODINE_INFUSED_FILTER",
@@ -1017,7 +1099,8 @@
       "secondaryColor": "#e3ba51",
       "categories": [
         "CATEGORY_CONSUMED"
-      ]
+      ],
+      "officialEnLocaleKey": "Equipment_Data.Health/IodineInfusedFilter"
     },
     {
       "code": "COLOR_IRON_REBAR",
@@ -1026,7 +1109,8 @@
       "secondaryColor": "#f39f25",
       "categories": [
         "CATEGORY_AMMOS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/IronRebar"
     },
     {
       "code": "COLOR_STUN_REBAR",
@@ -1035,7 +1119,8 @@
       "secondaryColor": "#28b6da",
       "categories": [
         "CATEGORY_AMMOS"
-      ]
+      ],
+      "officialEnLocaleKey": "Equipment_Data.Weapons/Ammo/Rebar/Stun"
     },
     {
       "code": "COLOR_SHATTER_REBAR",
@@ -1044,7 +1129,8 @@
       "secondaryColor": "#8e3d89",
       "categories": [
         "CATEGORY_AMMOS"
-      ]
+      ],
+      "officialEnLocaleKey": "Equipment_Data.Weapons/Ammo/Rebar/Shatter"
     },
     {
       "code": "COLOR_EXPLOSIVE_REBAR",
@@ -1053,7 +1139,8 @@
       "secondaryColor": "#e32531",
       "categories": [
         "CATEGORY_AMMOS"
-      ]
+      ],
+      "officialEnLocaleKey": "Equipment_Data.Weapons/Ammo/Rebar/Explosive"
     },
     {
       "code": "COLOR_RIFLE_AMMO",
@@ -1062,7 +1149,8 @@
       "secondaryColor": "#cc6927",
       "categories": [
         "CATEGORY_AMMOS"
-      ]
+      ],
+      "officialEnLocaleKey": "Equipment_Data.Weapons/Ammo/Rifle/Standard"
     },
     {
       "code": "COLOR_HOMING_RIFLE_AMMO",
@@ -1071,7 +1159,8 @@
       "secondaryColor": "#272a2d",
       "categories": [
         "CATEGORY_AMMOS"
-      ]
+      ],
+      "officialEnLocaleKey": "Equipment_Data.Weapons/Ammo/Rifle/Homing"
     },
     {
       "code": "COLOR_TURBO_RIFLE_AMMO",
@@ -1080,7 +1169,8 @@
       "secondaryColor": "#c12b31",
       "categories": [
         "CATEGORY_AMMOS"
-      ]
+      ],
+      "officialEnLocaleKey": "Equipment_Data.Weapons/Ammo/Rifle/Turbo"
     },
     {
       "code": "COLOR_NOBELISK",
@@ -1089,7 +1179,8 @@
       "secondaryColor": "#901400",
       "categories": [
         "CATEGORY_AMMOS"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/Nobelisk"
     },
     {
       "code": "COLOR_GAS_NOBELISK",
@@ -1098,7 +1189,8 @@
       "secondaryColor": "#4f6f27",
       "categories": [
         "CATEGORY_AMMOS"
-      ]
+      ],
+      "officialEnLocaleKey": "Equipment_Data.Tools/Nobelisk/Gas"
     },
     {
       "code": "COLOR_PULSE_NOBELISK",
@@ -1107,7 +1199,8 @@
       "secondaryColor": "#7e9eaa",
       "categories": [
         "CATEGORY_AMMOS"
-      ]
+      ],
+      "officialEnLocaleKey": "Equipment_Data.Tools/Nobelisk/Pulse"
     },
     {
       "code": "COLOR_CLUSTER_NOBELISK",
@@ -1116,7 +1209,8 @@
       "secondaryColor": "#cc7c00",
       "categories": [
         "CATEGORY_AMMOS"
-      ]
+      ],
+      "officialEnLocaleKey": "Equipment_Data.Tools/Nobelisk/Cluster"
     },
     {
       "code": "COLOR_NUKE_NOBELISK",
@@ -1125,7 +1219,8 @@
       "secondaryColor": "#dac500",
       "categories": [
         "CATEGORY_AMMOS"
-      ]
+      ],
+      "officialEnLocaleKey": "Equipment_Data.Tools/Nobelisk/Nuke"
     },
     {
       "code": "COLOR_ELECTROMAGNETIC_CONTROL_ROD",
@@ -1134,7 +1229,8 @@
       "secondaryColor": "#ecec4e",
       "categories": [
         "CATEGORY_NUCLEAR"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/ElectromagneticControlRod"
     },
     {
       "code": "COLOR_ENCASED_URANIUM_CELL",
@@ -1143,7 +1239,8 @@
       "secondaryColor": "#8bead0",
       "categories": [
         "CATEGORY_NUCLEAR"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/UraniumCell/Encased"
     },
     {
       "code": "COLOR_NON_FISSILE_URANIUM",
@@ -1152,7 +1249,8 @@
       "secondaryColor": "#bbffca",
       "categories": [
         "CATEGORY_NUCLEAR"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/UraniumNonFissible"
     },
     {
       "code": "COLOR_PLUTONIUM_PELLET",
@@ -1161,7 +1259,8 @@
       "secondaryColor": "#80d2e7",
       "categories": [
         "CATEGORY_NUCLEAR"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/PlutoniumPellet"
     },
     {
       "code": "COLOR_ENCASED_PLUTONIUM_CELL",
@@ -1170,7 +1269,8 @@
       "secondaryColor": "#a8e5e9",
       "categories": [
         "CATEGORY_NUCLEAR"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/PlutoniumCell"
     },
     {
       "code": "COLOR_FICSONIUM",
@@ -1179,7 +1279,8 @@
       "secondaryColor": "#988faa",
       "categories": [
         "CATEGORY_NUCLEAR"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/Ficsomium"
     },
     {
       "code": "COLOR_FICSONIUM_FUEL_ROD",
@@ -1188,7 +1289,8 @@
       "secondaryColor": "#ffe62a",
       "categories": [
         "CATEGORY_NUCLEAR"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/FicsomiumFuelRod"
     },
     {
       "code": "COLOR_URANIUM_WASTE",
@@ -1197,7 +1299,8 @@
       "secondaryColor": "#1ced3b",
       "categories": [
         "CATEGORY_WASTE"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/UraniumWaste"
     },
     {
       "code": "COLOR_PLUTONIUM_WASTE",
@@ -1206,7 +1309,8 @@
       "secondaryColor": "#7cd2e9",
       "categories": [
         "CATEGORY_WASTE"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Materials/PlutoniumWaste"
     },
     {
       "code": "COLOR_BLUE_POWER_SLUG",
@@ -1215,7 +1319,8 @@
       "secondaryColor": "#6b74ad",
       "categories": [
         "CATEGORY_SPECIAL"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Enviroment/PowerSlug/Blue"
     },
     {
       "code": "COLOR_YELLOW_POWER_SLUG",
@@ -1224,7 +1329,8 @@
       "secondaryColor": "#e79763",
       "categories": [
         "CATEGORY_SPECIAL"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Enviroment/PowerSlug/Yellow"
     },
     {
       "code": "COLOR_PURPLE_POWER_SLUG",
@@ -1233,7 +1339,8 @@
       "secondaryColor": "#b250d0",
       "categories": [
         "CATEGORY_SPECIAL"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Enviroment/PowerSlug/Purple"
     },
     {
       "code": "COLOR_POWER_SHARD",
@@ -1242,7 +1349,8 @@
       "secondaryColor": "#6bbdde",
       "categories": [
         "CATEGORY_SPECIAL"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Enviroment/PowerShard"
     },
     {
       "code": "COLOR_FICSIT_COUPON",
@@ -1251,7 +1359,8 @@
       "secondaryColor": "#e9a86a",
       "categories": [
         "CATEGORY_SPECIAL"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.Parts/Coupon"
     },
     {
       "code": "COLOR_SMART_PLATING",
@@ -1260,7 +1369,8 @@
       "secondaryColor": "#b04a3e",
       "categories": [
         "CATEGORY_SPECIAL"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.SpaceElevator/Part01"
     },
     {
       "code": "COLOR_VERSATILE_FRAMEWORK",
@@ -1269,7 +1379,8 @@
       "secondaryColor": "#9f3329",
       "categories": [
         "CATEGORY_SPECIAL"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.SpaceElevator/Part02"
     },
     {
       "code": "COLOR_AUTOMATED_WIRING",
@@ -1278,7 +1389,8 @@
       "secondaryColor": "#a8422e",
       "categories": [
         "CATEGORY_SPECIAL"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.SpaceElevator/Part03"
     },
     {
       "code": "COLOR_MODULAR_ENGINE",
@@ -1287,7 +1399,8 @@
       "secondaryColor": "#b94133",
       "categories": [
         "CATEGORY_SPECIAL"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.SpaceElevator/Part04"
     },
     {
       "code": "COLOR_ADAPTIVE_CONTROL_UNIT",
@@ -1296,7 +1409,8 @@
       "secondaryColor": "#e4a258",
       "categories": [
         "CATEGORY_SPECIAL"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.SpaceElevator/Part05"
     },
     {
       "code": "COLOR_ASSEMBLY_DIRECTOR_SYSTEM",
@@ -1305,7 +1419,8 @@
       "secondaryColor": "#ad513a",
       "categories": [
         "CATEGORY_SPECIAL"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.SpaceElevator/Part07"
     },
     {
       "code": "COLOR_MAGNETIC_FIELD_GENERATOR",
@@ -1314,7 +1429,8 @@
       "secondaryColor": "#7af0f0",
       "categories": [
         "CATEGORY_SPECIAL"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.SpaceElevator/Part06"
     },
     {
       "code": "COLOR_THERMAL_PROPULSION_ROCKET",
@@ -1323,7 +1439,8 @@
       "secondaryColor": "#ae4a39",
       "categories": [
         "CATEGORY_SPECIAL"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.SpaceElevator/Part08"
     },
     {
       "code": "COLOR_NUCLEAR_PASTA",
@@ -1332,7 +1449,8 @@
       "secondaryColor": "#7af0f0",
       "categories": [
         "CATEGORY_SPECIAL"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.SpaceElevator/Part09"
     },
     {
       "code": "COLOR_BIOCHEMICAL_SCULPTOR",
@@ -1341,7 +1459,8 @@
       "secondaryColor": "#e95e49",
       "categories": [
         "CATEGORY_SPECIAL"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.SpaceElevator/Part10"
     },
     {
       "code": "COLOR_BALLISTIC_WARP_DRIVE",
@@ -1350,7 +1469,8 @@
       "secondaryColor": "#c83f1f",
       "categories": [
         "CATEGORY_SPECIAL"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.SpaceElevator/Part11"
     },
     {
       "code": "COLOR_AI_EXPANSION_SERVER",
@@ -1359,7 +1479,8 @@
       "secondaryColor": "#c54017",
       "categories": [
         "CATEGORY_SPECIAL"
-      ]
+      ],
+      "officialEnLocaleKey": "Items_Data.SpaceElevator/Part12"
     },
     {
       "code": "LIGHT_CANDLE",
@@ -1368,7 +1489,8 @@
       "secondaryColor": "#FFFFFF",
       "categories": [
         "CATEGORY_LIGHT_KELVIN_HEAT"
-      ]
+      ],
+      "officialEnLocaleKey": null
     },
     {
       "code": "LIGHT_40W_TUNGSTEN",
@@ -1377,7 +1499,8 @@
       "secondaryColor": "#FFFFFF",
       "categories": [
         "CATEGORY_LIGHT_KELVIN_HEAT"
-      ]
+      ],
+      "officialEnLocaleKey": null
     },
     {
       "code": "LIGHT_100W_TUNGSTEN",
@@ -1386,7 +1509,8 @@
       "secondaryColor": "#FFFFFF",
       "categories": [
         "CATEGORY_LIGHT_KELVIN_HEAT"
-      ]
+      ],
+      "officialEnLocaleKey": null
     },
     {
       "code": "LIGHT_HALOGEN",
@@ -1395,7 +1519,8 @@
       "secondaryColor": "#FFFFFF",
       "categories": [
         "CATEGORY_LIGHT_KELVIN_HEAT"
-      ]
+      ],
+      "officialEnLocaleKey": null
     },
     {
       "code": "LIGHT_CARBON_ARC",
@@ -1404,7 +1529,8 @@
       "secondaryColor": "#FFFFFF",
       "categories": [
         "CATEGORY_LIGHT_KELVIN_HEAT"
-      ]
+      ],
+      "officialEnLocaleKey": null
     },
     {
       "code": "LIGHT_HIGH_NOON_SUN",
@@ -1413,7 +1539,8 @@
       "secondaryColor": "#FFFFFF",
       "categories": [
         "CATEGORY_LIGHT_KELVIN_HEAT"
-      ]
+      ],
+      "officialEnLocaleKey": null
     },
     {
       "code": "LIGHT_DIRECT_SUNLIGHT",
@@ -1422,7 +1549,8 @@
       "secondaryColor": "#FFFFFF",
       "categories": [
         "CATEGORY_LIGHT_KELVIN_HEAT"
-      ]
+      ],
+      "officialEnLocaleKey": null
     },
     {
       "code": "LIGHT_OVERCAST_SKY",
@@ -1431,7 +1559,8 @@
       "secondaryColor": "#FFFFFF",
       "categories": [
         "CATEGORY_LIGHT_KELVIN_HEAT"
-      ]
+      ],
+      "officialEnLocaleKey": null
     },
     {
       "code": "LIGHT_CLEAR_BLUE_SKY",
@@ -1440,7 +1569,8 @@
       "secondaryColor": "#FFFFFF",
       "categories": [
         "CATEGORY_LIGHT_KELVIN_HEAT"
-      ]
+      ],
+      "officialEnLocaleKey": null
     },
     {
       "code": "LIGHT_WARM_FLUORESCENT",
@@ -1449,7 +1579,8 @@
       "secondaryColor": "#FFFFFF",
       "categories": [
         "CATEGORY_LIGHT_FLUORESCENT"
-      ]
+      ],
+      "officialEnLocaleKey": null
     },
     {
       "code": "LIGHT_STANDARD_FLUORESCENT",
@@ -1458,7 +1589,8 @@
       "secondaryColor": "#FFFFFF",
       "categories": [
         "CATEGORY_LIGHT_FLUORESCENT"
-      ]
+      ],
+      "officialEnLocaleKey": null
     },
     {
       "code": "LIGHT_COOL_WHITE_FLUORESCENT",
@@ -1467,7 +1599,8 @@
       "secondaryColor": "#FFFFFF",
       "categories": [
         "CATEGORY_LIGHT_FLUORESCENT"
-      ]
+      ],
+      "officialEnLocaleKey": null
     },
     {
       "code": "LIGHT_FULL_SPECTRUM_FLUORESCENT",
@@ -1476,7 +1609,8 @@
       "secondaryColor": "#FFFFFF",
       "categories": [
         "CATEGORY_LIGHT_FLUORESCENT"
-      ]
+      ],
+      "officialEnLocaleKey": null
     },
     {
       "code": "LIGHT_GROW_LIGHT_FLUORESCENT",
@@ -1485,7 +1619,8 @@
       "secondaryColor": "#FFFFFF",
       "categories": [
         "CATEGORY_LIGHT_FLUORESCENT"
-      ]
+      ],
+      "officialEnLocaleKey": null
     },
     {
       "code": "LIGHT_BLACK_LIGHT_FLUORESCENT",
@@ -1494,7 +1629,8 @@
       "secondaryColor": "#FFFFFF",
       "categories": [
         "CATEGORY_LIGHT_FLUORESCENT"
-      ]
+      ],
+      "officialEnLocaleKey": null
     },
     {
       "code": "LIGHT_MERCURY_VAPOR",
@@ -1503,7 +1639,8 @@
       "secondaryColor": "#FFFFFF",
       "categories": [
         "CATEGORY_LIGHT_GASEOUS"
-      ]
+      ],
+      "officialEnLocaleKey": null
     },
     {
       "code": "LIGHT_SODIUM_VAPOR",
@@ -1512,7 +1649,8 @@
       "secondaryColor": "#FFFFFF",
       "categories": [
         "CATEGORY_LIGHT_GASEOUS"
-      ]
+      ],
+      "officialEnLocaleKey": null
     },
     {
       "code": "LIGHT_METAL_HALIDE",
@@ -1521,7 +1659,8 @@
       "secondaryColor": "#FFFFFF",
       "categories": [
         "CATEGORY_LIGHT_GASEOUS"
-      ]
+      ],
+      "officialEnLocaleKey": null
     },
     {
       "code": "LIGHT_HIGH_PRESSURE_SODIUM",
@@ -1530,7 +1669,8 @@
       "secondaryColor": "#FFFFFF",
       "categories": [
         "CATEGORY_LIGHT_GASEOUS"
-      ]
+      ],
+      "officialEnLocaleKey": null
     }
   ]
 }

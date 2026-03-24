@@ -1,5 +1,5 @@
 import colorsData from "@/data/colors.json";
-import englishColorTranslations from "@/i18n/locales/en/colors.json";
+import { getCategoryName, getColorName } from "@/i18n";
 
 const HEX_COLOR_REGEX = /^#[0-9a-fA-F]{6}$/;
 const COLOR_CODE_PREFIX = "COLOR_";
@@ -75,9 +75,6 @@ export interface SatisfactoryPalette {
 }
 
 export type Category = string;
-
-const colorNameTranslations = (englishColorTranslations as { colors?: Record<string, string> }).colors ?? {};
-const categoryNameTranslations = (englishColorTranslations as { categories?: Record<string, string> }).categories ?? {};
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null;
@@ -181,10 +178,10 @@ const normalizeColorFileEntry = (
 };
 
 const resolveColorName = (code: ColorCode, defaultName: string): string =>
-  colorNameTranslations[code] ?? defaultName;
+  getColorName(code, defaultName);
 
 const resolveCategoryName = (code: CategoryCode): string =>
-  categoryNameTranslations[code] ?? code;
+  getCategoryName(code);
 
 const normalizeColorsFile = (input: unknown): { paletteCode: string; colors: SatisfactoryColorRecord[] } => {
   if (!isRecord(input)) {
@@ -252,13 +249,10 @@ export const exportColorsFile = (palette: SatisfactoryPalette): ColorsFile => ({
   })),
 });
 
-const defaultPalette = createPalette(colorsData);
-
 export const colorPalettes = {
-  default: defaultPalette,
+  get default(): SatisfactoryPalette {
+    return createPalette(colorsData);
+  },
 } as const;
 
 export type PaletteId = keyof typeof colorPalettes;
-
-export const categories = colorPalettes.default.categories;
-export const colors = colorPalettes.default.colors;

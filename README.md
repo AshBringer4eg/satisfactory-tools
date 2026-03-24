@@ -64,11 +64,14 @@ pnpm preview
 - `pnpm build:dev` - build using development mode
 - `pnpm preview` - preview production build locally
 - `pnpm lint` - run ESLint
-- `pnpm test` - run Vitest once
+- `pnpm tsc` - run TypeScript type-check (`--noEmit`)
+- `pnpm test` - run unit tests, then Playwright E2E tests
+- `pnpm test:unit` - run Vitest once
 - `pnpm test:watch` - run Vitest in watch mode
 - `pnpm test:e2e` - run Playwright E2E tests
 - `pnpm test:e2e:ui` - run Playwright in UI mode
 - `pnpm bump:patch:package` - bump package version `x.y.z -> x.y.(z+1)`
+- `pnpm prepare` - configure git hooks path to `.githooks`
 
 ## Deployment (GitHub Pages)
 

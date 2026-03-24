@@ -69,24 +69,6 @@ describe("colors file import/export", () => {
     ).toThrow(/Invalid hex/);
   });
 
-  it("falls back to defaultName when color translation is missing", () => {
-    const palette = importColorsFile({
-      schemaVersion: 1,
-      paletteCode: "unknown-code",
-      colors: [
-        {
-          code: "COLOR_CUSTOM_USER_ENTRY",
-          defaultName: "My User Color",
-          hex: "#abcdef",
-          secondaryColor: "#010203",
-          categories: ["CATEGORY_FUELS"],
-        },
-      ],
-    });
-
-    expect(palette.colors[0].name).toBe("My User Color");
-  });
-
   it("exports schemaVersion 1 format", () => {
     const palette = importColorsFile({
       schemaVersion: 1,

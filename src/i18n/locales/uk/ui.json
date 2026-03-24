@@ -1,0 +1,53 @@
+{
+  "tabs": {
+    "solo": "SOLO",
+    "duo": "DUO",
+    "own": "OWN"
+  },
+  "header": {
+    "title": "ТЕРМІНАЛ_ДОВІДКИ_ІНЖЕНЕРА",
+    "manualInstruction": "[ЗАПИС З ІНСТРУКЦІЇ ЗАВОДУ #1337]: КЛАЦНІТЬ АБО НАТИСНІТЬ БУДЬ-ЯКУ КОЛЬОРОВУ ЗОНУ ЗРАЗКА, ЩОБ ПЕРЕНЕСТИ ЦЕ HEX-ЗНАЧЕННЯ В БУФЕР ОБМІНУ. ЯКЩО ДОСТУП ДО БУФЕРА ОБМІНУ ОБМЕЖЕНИЙ БРАУЗЕРОМ, КЛАЦНІТЬ АБО НАТИСНІТЬ ПОЛЕ ТЕКСТУ HEX, ЩОБ АВТОМАТИЧНО ВИДІЛИТИ ЙОГО, А ПОТІМ НАТИСНІТЬ CTRL+C ДЛЯ РУЧНОГО КОПІЮВАННЯ."
+  },
+  "footer": {
+    "toolkit": "НАБІР_ІНСТРУМЕНТІВ_СПІВРОБІТНИКА_FICSIT",
+    "clickToCopy": "КЛАЦНІТЬ_ЗРАЗОК_ЩОБ_СКОПІЮВАТИ_HEX",
+    "resetCounters": "СКИНУТИ_ЛІЧИЛЬНИКИ",
+    "thanksForColorData": "ДЯКУЄМО_ЗА_ДАНІ_КОЛЬОРІВ:",
+    "feedbackGithub": "ВІДГУК_GH",
+    "feedbackReddit": "ВІДГУК_REDDIT",
+    "changelog": "ЖУРНАЛ_ЗМІН",
+    "feedbackGithubAria": "Відкрити сторінку відгуків GitHub Issues",
+    "feedbackRedditAria": "Відкрити тему відгуків на Reddit",
+    "changelogAria": "Відкрити сторінку журналу змін"
+  },
+  "ownTab": {
+    "title": "АЛЬТЕРНАТИВА_2",
+    "description": "- у розробці"
+  },
+  "notFound": {
+    "message": "От халепа! Сторінку не знайдено",
+    "returnHome": "Повернутися на головну"
+  },
+  "colors": {
+    "searchPlaceholder": "Пошук серед {{total}} кольорів",
+    "clearSearchAria": "Очистити пошук",
+    "openMenuAria": "Відкрити меню",
+    "menu": "Меню",
+    "categories": "Категорії",
+    "resultsSummary": "{{filtered}} / {{total}} РЕЗУЛЬТАТІВ",
+    "noData": "ДАНИХ_НЕ_ЗНАЙДЕНО: ПЕРЕВІРТЕ_ФІЛЬТРИ"
+  },
+  "swatch": {
+    "copied": "СКОПІЙОВАНО",
+    "selectHex": "ВИДІЛИТИ HEX",
+    "copy": "КОПІЯ",
+    "aria": {
+      "copyHex": "Скопіювати HEX-код {{hex}} для {{name}}",
+      "copyPrimaryHex": "Скопіювати основний HEX-код {{hex}} для {{name}}",
+      "copySecondaryHex": "Скопіювати додатковий HEX-код {{hex}} для {{name}}",
+      "hexCode": "HEX-код {{name}}: {{hex}}",
+      "primaryHexCode": "Основний HEX-код {{name}}: {{hex}}",
+      "secondaryHexCode": "Додатковий HEX-код {{name}}: {{hex}}"
+    }
+  }
+}

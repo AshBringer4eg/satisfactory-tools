@@ -1,11 +1,15 @@
 import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
 import { Menu, Search, X } from "lucide-react";
-import { colorPalettes, type ColorCode, type SatisfactoryColor } from "@/data/colors";
+import {
+  colorPalettes,
+  type ColorCode,
+  type SatisfactoryColor,
+} from "@/data/colors";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import ColorSwatch from "./ColorSwatch";
 import { AppTabId } from "@/config/tabs";
-import { t } from "@/i18n";
+import { t, useLocale } from "@/i18n";
 
 const COPY_COUNTS_STORAGE_KEY = "ficsit-color-copy-counts";
 const RESET_COPY_COUNTS_EVENT = "ficsit:reset-copy-counters";
@@ -55,14 +59,23 @@ const readCopyCounts = (): CopyCounts => {
   }
 };
 
-const defaultPalette = colorPalettes.default;
-const categories = defaultPalette.categories;
-const colors = defaultPalette.colors;
-const getFilteredColors = (search: string, activeCategories: Set<string>, counts: CopyCounts) =>
-  colors
+const getFilteredColors = (
+  allColors: SatisfactoryColor[],
+  search: string,
+  activeCategoryCodes: Set<string>,
+  counts: CopyCounts,
+) =>
+  allColors
     .filter((c) => {
-      const matchSearch = !search || c.name.toLowerCase().includes(search.toLowerCase()) || c.hex.toLowerCase().includes(search.toLowerCase());
-      const matchCat = activeCategories.size === 0 || c.categories.some((cat) => activeCategories.has(cat));
+      const matchSearch =
+        !search ||
+        c.name.toLowerCase().includes(search.toLowerCase()) ||
+        c.hex.toLowerCase().includes(search.toLowerCase());
+      const matchCat =
+        activeCategoryCodes.size === 0 ||
+        c.categoryCodes.some((categoryCode) =>
+          activeCategoryCodes.has(categoryCode),
+        );
       return matchSearch && matchCat;
     })
     .sort((a, b) => {
@@ -76,11 +89,28 @@ interface ColorsTabProps {
 }
 
 const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
+  const activeLocale = useLocale();
+  const defaultPalette = useMemo(() => colorPalettes.default, [activeLocale]);
+  const colors = defaultPalette.colors;
+  const categoryFiltersList = useMemo(
+    () =>
+      defaultPalette.categoryCodes.map((code, index) => ({
+        code,
+        label: defaultPalette.categories[index] ?? code,
+      })),
+    [defaultPalette],
+  );
   const [search, setSearch] = useState("");
-  const [activeCategories, setActiveCategories] = useState<Set<string>>(new Set());
-  const [copyCounts, setCopyCounts] = useState<CopyCounts>(() => readCopyCounts());
+  const [activeCategories, setActiveCategories] = useState<Set<string>>(
+    new Set(),
+  );
+  const [copyCounts, setCopyCounts] = useState<CopyCounts>(() =>
+    readCopyCounts(),
+  );
   const [pendingCopyCounts, setPendingCopyCounts] = useState<CopyCounts>({});
-  const [movingColorCode, setMovingColorCode] = useState<ColorCode | null>(null);
+  const [movingColorCode, setMovingColorCode] = useState<ColorCode | null>(
+    null,
+  );
   const [floatingMove, setFloatingMove] = useState<FloatingMove | null>(null);
   const movingIndicatorTimeoutRef = useRef<number | null>(null);
   const previousOrderRef = useRef<ColorCode[]>([]);
@@ -90,7 +120,10 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
   useEffect(() => {
     if (typeof window === "undefined") return;
     try {
-      window.localStorage.setItem(COPY_COUNTS_STORAGE_KEY, JSON.stringify(copyCounts));
+      window.localStorage.setItem(
+        COPY_COUNTS_STORAGE_KEY,
+        JSON.stringify(copyCounts),
+      );
     } catch {
       // Ignore storage write failures (private mode / quota restrictions).
     }
@@ -130,7 +163,8 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
     };
 
     window.addEventListener(RESET_COPY_COUNTS_EVENT, handleResetCounters);
-    return () => window.removeEventListener(RESET_COPY_COUNTS_EVENT, handleResetCounters);
+    return () =>
+      window.removeEventListener(RESET_COPY_COUNTS_EVENT, handleResetCounters);
   }, []);
 
   const toggleCategory = (cat: string) => {
@@ -149,7 +183,10 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
     }));
   }, []);
 
-  const filtered = useMemo(() => getFilteredColors(search, activeCategories, copyCounts), [search, activeCategories, copyCounts]);
+  const filtered = useMemo(
+    () => getFilteredColors(colors, search, activeCategories, copyCounts),
+    [colors, search, activeCategories, copyCounts],
+  );
 
   const flushQueuedCopyCount = useCallback(
     (colorCode: ColorCode) => {
@@ -162,27 +199,39 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
         return next;
       });
 
-      const currentIndex = filtered.findIndex((color) => color.code === colorCode);
+      const currentIndex = filtered.findIndex(
+        (color) => color.code === colorCode,
+      );
       const nextCounts: CopyCounts = {
         ...copyCounts,
         [colorCode]: (copyCounts[colorCode] ?? 0) + pendingCount,
       };
-      const nextFiltered = getFilteredColors(search, activeCategories, nextCounts);
-      const targetIndex = nextFiltered.findIndex((color) => color.code === colorCode);
+      const nextFiltered = getFilteredColors(
+        colors,
+        search,
+        activeCategories,
+        nextCounts,
+      );
+      const targetIndex = nextFiltered.findIndex(
+        (color) => color.code === colorCode,
+      );
 
       setCopyCounts(nextCounts);
       setMovingColorCode(colorCode);
 
       const sourceNode = swatchNodeRefs.current[colorCode];
       const sourceRect = sourceNode?.getBoundingClientRect();
-      const movingColor = nextFiltered.find((color) => color.code === colorCode);
+      const movingColor = nextFiltered.find(
+        (color) => color.code === colorCode,
+      );
 
-      const canUseFloatingMove = !floatingMove
-        && sourceRect !== undefined
-        && movingColor !== undefined
-        && currentIndex >= 0
-        && targetIndex >= 0
-        && currentIndex !== targetIndex;
+      const canUseFloatingMove =
+        !floatingMove &&
+        sourceRect !== undefined &&
+        movingColor !== undefined &&
+        currentIndex >= 0 &&
+        targetIndex >= 0 &&
+        currentIndex !== targetIndex;
 
       if (canUseFloatingMove) {
         setFloatingMove({
@@ -202,10 +251,22 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
 
       scheduleMovingIndicatorReset(850);
     },
-    [pendingCopyCounts, filtered, copyCounts, search, activeCategories, floatingMove, scheduleMovingIndicatorReset],
+    [
+      pendingCopyCounts,
+      filtered,
+      copyCounts,
+      colors,
+      search,
+      activeCategories,
+      floatingMove,
+      scheduleMovingIndicatorReset,
+    ],
   );
 
-  const currentOrder = useMemo(() => filtered.map((color) => color.code), [filtered]);
+  const currentOrder = useMemo(
+    () => filtered.map((color) => color.code),
+    [filtered],
+  );
 
   const previousIndexByName = (() => {
     const indexByName = new Map<ColorCode, number>();
@@ -220,7 +281,10 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
     if (!movingColorCode) return delays;
 
     const previousOrder = previousOrderRef.current;
-    if (previousOrder.length !== currentOrder.length || currentOrder.length === 0) {
+    if (
+      previousOrder.length !== currentOrder.length ||
+      currentOrder.length === 0
+    ) {
       return delays;
     }
 
@@ -231,7 +295,11 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
     const movedPrevIndex = previousIndexByName.get(movingColorCode);
     const movedNextIndex = currentOrder.indexOf(movingColorCode);
 
-    if (movedPrevIndex === undefined || movedNextIndex < 0 || movedPrevIndex === movedNextIndex) {
+    if (
+      movedPrevIndex === undefined ||
+      movedNextIndex < 0 ||
+      movedPrevIndex === movedNextIndex
+    ) {
       return delays;
     }
 
@@ -243,7 +311,10 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
         if (prevIndex === undefined) return;
         if (prevIndex >= movedNextIndex && prevIndex < movedPrevIndex) {
           const step = movedPrevIndex - 1 - prevIndex;
-          delays.set(name, Math.min(step * REORDER_STAGGER_STEP, REORDER_STAGGER_MAX));
+          delays.set(
+            name,
+            Math.min(step * REORDER_STAGGER_STEP, REORDER_STAGGER_MAX),
+          );
         }
       });
     } else {
@@ -254,7 +325,10 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
         if (prevIndex === undefined) return;
         if (prevIndex > movedPrevIndex && prevIndex <= movedNextIndex) {
           const step = prevIndex - (movedPrevIndex + 1);
-          delays.set(name, Math.min(step * REORDER_STAGGER_STEP, REORDER_STAGGER_MAX));
+          delays.set(
+            name,
+            Math.min(step * REORDER_STAGGER_STEP, REORDER_STAGGER_MAX),
+          );
         }
       });
     }
@@ -267,9 +341,16 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
       return filtered.map((color) => ({ kind: "color", color }));
     }
 
-    const withoutMoving = filtered.filter((color) => color.code !== floatingMove.colorCode);
-    const insertIndex = Math.max(0, Math.min(floatingMove.targetIndex, withoutMoving.length));
-    const tokens = withoutMoving.map((color) => ({ kind: "color", color } as GridToken));
+    const withoutMoving = filtered.filter(
+      (color) => color.code !== floatingMove.colorCode,
+    );
+    const insertIndex = Math.max(
+      0,
+      Math.min(floatingMove.targetIndex, withoutMoving.length),
+    );
+    const tokens = withoutMoving.map(
+      (color) => ({ kind: "color", color }) as GridToken,
+    );
     tokens.splice(insertIndex, 0, {
       kind: "placeholder",
       key: `floating-placeholder-${floatingMove.colorCode}`,
@@ -285,7 +366,10 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
     const distance = Math.hypot(dx, dy);
     const duration = distance / FLOAT_MOVE_PIXELS_PER_SECOND;
 
-    return Math.min(FLOAT_MOVE_MAX_DURATION, Math.max(FLOAT_MOVE_MIN_DURATION, duration));
+    return Math.min(
+      FLOAT_MOVE_MAX_DURATION,
+      Math.max(FLOAT_MOVE_MIN_DURATION, duration),
+    );
   }, [floatingMove]);
 
   useEffect(() => {
@@ -348,13 +432,15 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
 
   const categoryFilters = (
     <div className="flex flex-col gap-1">
-      {categories.map((cat) => {
-        const isActive = activeCategories.has(cat);
-        const count = colors.filter((c) => c.categories.includes(cat)).length;
+      {categoryFiltersList.map((category) => {
+        const isActive = activeCategories.has(category.code);
+        const count = colors.filter((c) =>
+          c.categoryCodes.includes(category.code),
+        ).length;
         return (
           <button
-            key={cat}
-            onClick={() => toggleCategory(cat)}
+            key={category.code}
+            onClick={() => toggleCategory(category.code)}
             className={`flex items-center gap-2 px-3 py-1.5 text-[12px] uppercase tracking-wider font-bold transition-all duration-150 text-left ${
               isActive
                 ? "text-primary bg-primary/10"
@@ -368,7 +454,7 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
               }`}
               style={{ borderRadius: "1px" }}
             />
-            <span className="truncate">{cat}</span>
+            <span className="truncate">{category.label}</span>
             <span className="ml-auto text-muted-foreground font-mono text-[11px]">
               {count}
             </span>
@@ -380,7 +466,10 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
 
   const resultsSummary = (
     <div className="text-muted-foreground text-[11px] font-mono mt-2 px-3">
-      {t("colors.resultsSummary", { filtered: filtered.length, total: colors.length })}
+      {t("colors.resultsSummary", {
+        filtered: filtered.length,
+        total: colors.length,
+      })}
     </div>
   );
 
@@ -407,7 +496,10 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
               {t("colors.menu")}
             </button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-[85vw] max-w-sm overflow-y-auto">
+          <SheetContent
+            side="left"
+            className="w-[85vw] max-w-sm overflow-y-auto"
+          >
             <div className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground mb-4">
               {t("colors.categories")}
             </div>
@@ -428,7 +520,12 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
         <div className="mb-2 font-mono text-[9px] leading-tight text-orange-400/90">
           {t("header.manualInstruction")}
         </div>
-        <div className="grid gap-2" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))" }}>
+        <div
+          className="grid gap-2"
+          style={{
+            gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+          }}
+        >
           {gridTokens.map((token) => {
             if (token.kind === "placeholder") {
               return (
@@ -474,12 +571,19 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
                   },
                   scale: { duration: 0.22, ease: "easeOut" },
                 }}
-                animate={movingColorCode === color.code ? { scale: [1, 1.035, 1] } : { scale: 1 }}
+                animate={
+                  movingColorCode === color.code
+                    ? { scale: [1, 1.035, 1] }
+                    : { scale: 1 }
+                }
               >
                 <ColorSwatch
                   color={color}
                   mode={variant}
-                  copyCount={(copyCounts[color.code] ?? 0) + (pendingCopyCounts[color.code] ?? 0)}
+                  copyCount={
+                    (copyCounts[color.code] ?? 0) +
+                    (pendingCopyCounts[color.code] ?? 0)
+                  }
                   onCopy={() => queueCopyCount(color.code)}
                   onSwatchLeave={() => flushQueuedCopyCount(color.code)}
                   isReordering={movingColorCode === color.code && !floatingMove}
@@ -505,18 +609,22 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
             transformOrigin: "top left",
           }}
           initial={false}
-          animate={floatingMove.toRect
-            ? {
-              x: floatingMove.toRect.left - floatingMove.fromRect.left,
-              y: floatingMove.toRect.top - floatingMove.fromRect.top,
-            }
-            : { x: 0, y: 0 }}
-          transition={floatingMove.toRect
-            ? {
-              duration: floatingMoveDuration,
-              ease: "easeIn",
-            }
-            : { duration: 0 }}
+          animate={
+            floatingMove.toRect
+              ? {
+                  x: floatingMove.toRect.left - floatingMove.fromRect.left,
+                  y: floatingMove.toRect.top - floatingMove.fromRect.top,
+                }
+              : { x: 0, y: 0 }
+          }
+          transition={
+            floatingMove.toRect
+              ? {
+                  duration: floatingMoveDuration,
+                  ease: "easeIn",
+                }
+              : { duration: 0 }
+          }
           onAnimationComplete={() => {
             if (!floatingMove.toRect) return;
             setFloatingMove(null);
