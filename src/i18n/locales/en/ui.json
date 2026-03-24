@@ -21,8 +21,71 @@
     "changelogAria": "Open changelog page"
   },
   "ownTab": {
-    "title": "ALTERNATIVE_2",
-    "description": "- under construction"
+    "title": "OWN_PALETTE",
+    "description": "Customize your local palette",
+    "mode": {
+      "use": "VIEW",
+      "edit": "EDIT"
+    },
+    "use": {
+      "description": "OWN palette with independent counters"
+    },
+    "edit": {
+      "addRow": "ADD_ROW",
+      "removeRow": "REMOVE",
+      "clear": "CLEAR_ALL",
+      "reset": "RESET_TO_DEFAULT",
+      "save": "SAVE",
+      "writeYourOwn": "Write your own",
+      "columns": {
+        "code": "Code",
+        "defaultName": "Default Name",
+        "primary": "Primary",
+        "secondary": "Secondary",
+        "actions": "Actions"
+      },
+      "placeholders": {
+        "defaultName": "Custom color name",
+        "secondaryFallback": "Blank = copy primary"
+      },
+      "export": {
+        "button": "EXPORT",
+        "title": "Export (Saved Palette)",
+        "copy": "COPY",
+        "placeholder": "Save a valid palette to enable export."
+      },
+      "import": {
+        "button": "IMPORT",
+        "title": "Import Base64",
+        "load": "LOAD_TO_DRAFT",
+        "placeholder": "Paste base64 palette string here."
+      },
+      "status": {
+        "saved": "Palette saved.",
+        "saveStorageFailed": "Palette saved in memory, but localStorage write failed.",
+        "resetDone": "Palette reset to default.",
+        "resetStorageFailed": "Palette reset in memory, but localStorage write failed.",
+        "cleared": "Palette cleared.",
+        "clearStorageFailed": "Palette cleared in memory, but localStorage write failed.",
+        "importLoaded": "Import loaded into draft. Click SAVE to apply.",
+        "importFailed": "Import failed.",
+        "copyUnavailable": "Clipboard is unavailable. Select and copy manually.",
+        "copyFailed": "Copy failed.",
+        "exportCopied": "Export string copied."
+      },
+      "warnings": {
+        "title": "Warning",
+        "exportPreviewBlocked": "To export or preview colors you need to fix errors and save this draft"
+      },
+      "errors": {
+        "title": "Validation Errors",
+        "savedPaletteInvalidJson": "Stored ownPalette JSON is invalid. Using default palette copy.",
+        "savedPaletteStorageReadFailed": "Stored ownPalette cannot be read from localStorage. Using default palette copy.",
+        "savedPaletteInvalidStructure": "Stored ownPalette structure is invalid. Using default palette copy.",
+        "savedPaletteFailedBuild": "Stored ownPalette failed validation. Using default palette copy.",
+        "importUnknown": "Import failed for unknown reasons."
+      }
+    }
   },
   "notFound": {
     "message": "Oops! Page not found",

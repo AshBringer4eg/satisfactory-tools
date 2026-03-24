@@ -237,31 +237,42 @@
 
         <hr class="divider" />
 
-        <h2 class="version">1.4 - Added EN/UA language support and locale updates</h2>
+        <h2 class="version">
+          1.4 - Added OWN palette workflow, validation gate, and reliability
+          upgrades
+        </h2>
         <p class="summary">
-          Expanded localization support and improved the workflow for keeping
-          translations in sync.
+          Introduced full local palette authoring with import/export controls,
+          stricter validation, and stronger accessibility/testing coverage.
         </p>
         <ul>
           <li>
-            Added EN/UA language switch in the header with remembered selection
-            between sessions.
+            Added `OWN` tab with dual modes: `VIEW` for swatch usage and `EDIT`
+            for local palette authoring.
           </li>
           <li>
-            Added Ukrainian interface text for terminal controls, labels, and
-            accessibility copy.
+            Implemented dedicated OWN copy counters stored separately from
+            default SOLO/DUO usage stats.
           </li>
           <li>
-            Localized Ukrainian category labels and translated all light source
-            palette names.
+            Added draft editor capabilities for row add/remove, clear-all, and
+            reset-to-default operations.
           </li>
           <li>
-            Improved runtime localization flow so color and category names
-            update with active language.
+            Added base64 import/export flow for OWN palette payloads with
+            modal-based forms and copy-to-clipboard output.
           </li>
           <li>
-            Added locale maintenance scripts to speed future translation refresh
-            from official source files.
+            Added validation/error gate that blocks preview/export until draft
+            issues are resolved and changes are saved.
+          </li>
+          <li>
+            Implemented secondary-color fallback rule: empty secondary value
+            automatically resolves to primary color on normalize/save/import.
+          </li>
+          <li>
+            Expanded HEX support to accept both `#RGB` and `#RRGGBB` patterns
+            across validation and import paths.
           </li>
         </ul>
       </section>

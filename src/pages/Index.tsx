@@ -4,10 +4,12 @@ import AppHeader from "@/components/layout/AppHeader";
 import AppTabBar from "@/components/layout/AppTabBar";
 import AppTabContent from "@/components/layout/AppTabContent";
 import AppFooter from "@/components/layout/AppFooter";
+import {
+  ALL_COPY_COUNT_STORAGE_KEYS,
+  RESET_COPY_COUNTS_EVENT,
+} from "@/config/storage";
 import { useLocale } from "@/i18n";
 
-const COPY_COUNTS_STORAGE_KEY = "ficsit-color-copy-counts";
-const RESET_COPY_COUNTS_EVENT = "ficsit:reset-copy-counters";
 const ACTIVE_TAB_STORAGE_KEY = "ficsit-active-tab";
 
 const DEFAULT_TAB_ID: AppTabId = "solo";
@@ -30,6 +32,16 @@ const Index = () => {
   const activeLocale = useLocale();
   const [activeTab, setActiveTab] = useState<AppTabId>(() => readStoredTab());
 
+  const clearAllCopyCounters = useCallback(() => {
+    for (const storageKey of ALL_COPY_COUNT_STORAGE_KEYS) {
+      try {
+        window.localStorage.removeItem(storageKey);
+      } catch {
+        // Ignore storage failures.
+      }
+    }
+  }, []);
+
   useEffect(() => {
     try {
       window.localStorage.setItem(ACTIVE_TAB_STORAGE_KEY, activeTab);
@@ -38,15 +50,22 @@ const Index = () => {
     }
   }, [activeTab]);
 
+  useEffect(() => {
+    const handleResetCounters = () => {
+      clearAllCopyCounters();
+    };
+
+    window.addEventListener(RESET_COPY_COUNTS_EVENT, handleResetCounters);
+    return () => {
+      window.removeEventListener(RESET_COPY_COUNTS_EVENT, handleResetCounters);
+    };
+  }, [clearAllCopyCounters]);
+
   const handleResetCounters = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    try {
-      window.localStorage.removeItem(COPY_COUNTS_STORAGE_KEY);
-    } catch {
-      // Ignore storage failures.
-    }
+    clearAllCopyCounters();
     window.dispatchEvent(new Event(RESET_COPY_COUNTS_EVENT));
-  }, []);
+  }, [clearAllCopyCounters]);
 
   return (
     <div className="min-h-screen min-w-[220px] bg-background flex flex-col" data-locale={activeLocale}>

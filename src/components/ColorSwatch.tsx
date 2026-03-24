@@ -1,7 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import type { SatisfactoryColor } from "@/data/colors";
 import { t } from "@/i18n";
-import { AppTabId } from "@/config/tabs";
 
 interface ColorSwatchProps {
   color: SatisfactoryColor;
@@ -9,7 +8,7 @@ interface ColorSwatchProps {
   onCopy?: () => void;
   onSwatchLeave?: () => void;
   isReordering?: boolean;
-  mode?: AppTabId;
+  mode?: "solo" | "duo";
 }
 
 type SwatchPart = "primary" | "secondary";

@@ -1,18 +1,16 @@
-import { useState, useMemo, useEffect, useCallback, useRef } from "react";
+import { useState, useMemo, useEffect, useCallback, useRef, type ReactNode } from "react";
 import { motion } from "framer-motion";
 import { Menu, Search, X } from "lucide-react";
 import {
-  colorPalettes,
   type ColorCode,
+  type SatisfactoryPalette,
   type SatisfactoryColor,
 } from "@/data/colors";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import ColorSwatch from "./ColorSwatch";
-import { AppTabId } from "@/config/tabs";
+import { DEFAULT_COPY_COUNTS_STORAGE_KEY, RESET_COPY_COUNTS_EVENT } from "@/config/storage";
 import { t, useLocale } from "@/i18n";
 
-const COPY_COUNTS_STORAGE_KEY = "ficsit-color-copy-counts";
-const RESET_COPY_COUNTS_EVENT = "ficsit:reset-copy-counters";
 const REORDER_STAGGER_STEP = 0.018;
 const REORDER_STAGGER_MAX = 0.42;
 const FLOAT_MOVE_MIN_DURATION = 0.28;
@@ -37,11 +35,11 @@ type GridToken =
   | { kind: "color"; color: SatisfactoryColor }
   | { kind: "placeholder"; key: string };
 
-const readCopyCounts = (): CopyCounts => {
+const readCopyCounts = (storageKey: string): CopyCounts => {
   if (typeof window === "undefined") return {};
 
   try {
-    const raw = window.localStorage.getItem(COPY_COUNTS_STORAGE_KEY);
+    const raw = window.localStorage.getItem(storageKey);
     if (!raw) return {};
 
     const parsed = JSON.parse(raw) as Record<string, unknown>;
@@ -85,27 +83,34 @@ const getFilteredColors = (
     });
 
 interface ColorsTabProps {
-  variant?: AppTabId;
+  palette: SatisfactoryPalette;
+  swatchMode?: "solo" | "duo";
+  copyCountsStorageKey?: string;
+  topContent?: ReactNode;
 }
 
-const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
-  const activeLocale = useLocale();
-  const defaultPalette = useMemo(() => colorPalettes.default, [activeLocale]);
-  const colors = defaultPalette.colors;
+const ColorsTab = ({
+  palette,
+  swatchMode = "solo",
+  copyCountsStorageKey = DEFAULT_COPY_COUNTS_STORAGE_KEY,
+  topContent,
+}: ColorsTabProps) => {
+  useLocale();
+  const colors = palette.colors;
   const categoryFiltersList = useMemo(
     () =>
-      defaultPalette.categoryCodes.map((code, index) => ({
+      palette.categoryCodes.map((code, index) => ({
         code,
-        label: defaultPalette.categories[index] ?? code,
+        label: palette.categories[index] ?? code,
       })),
-    [defaultPalette],
+    [palette],
   );
   const [search, setSearch] = useState("");
   const [activeCategories, setActiveCategories] = useState<Set<string>>(
     new Set(),
   );
   const [copyCounts, setCopyCounts] = useState<CopyCounts>(() =>
-    readCopyCounts(),
+    readCopyCounts(copyCountsStorageKey),
   );
   const [pendingCopyCounts, setPendingCopyCounts] = useState<CopyCounts>({});
   const [movingColorCode, setMovingColorCode] = useState<ColorCode | null>(
@@ -121,13 +126,20 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
     if (typeof window === "undefined") return;
     try {
       window.localStorage.setItem(
-        COPY_COUNTS_STORAGE_KEY,
+        copyCountsStorageKey,
         JSON.stringify(copyCounts),
       );
     } catch {
       // Ignore storage write failures (private mode / quota restrictions).
     }
-  }, [copyCounts]);
+  }, [copyCounts, copyCountsStorageKey]);
+
+  useEffect(() => {
+    setCopyCounts(readCopyCounts(copyCountsStorageKey));
+    setPendingCopyCounts({});
+    setMovingColorCode(null);
+    setFloatingMove(null);
+  }, [copyCountsStorageKey]);
 
   useEffect(() => {
     return () => {
@@ -155,11 +167,6 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
       setPendingCopyCounts({});
       setMovingColorCode(null);
       setFloatingMove(null);
-      try {
-        window.localStorage.removeItem(COPY_COUNTS_STORAGE_KEY);
-      } catch {
-        // Ignore storage failures.
-      }
     };
 
     window.addEventListener(RESET_COPY_COUNTS_EVENT, handleResetCounters);
@@ -517,6 +524,7 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
       </div>
 
       <div className="flex-1 min-w-0">
+        {topContent ? <div className="mb-2">{topContent}</div> : null}
         <div className="mb-2 font-mono text-[9px] leading-tight text-orange-400/90">
           {t("header.manualInstruction")}
         </div>
@@ -579,7 +587,7 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
               >
                 <ColorSwatch
                   color={color}
-                  mode={variant}
+                  mode={swatchMode}
                   copyCount={
                     (copyCounts[color.code] ?? 0) +
                     (pendingCopyCounts[color.code] ?? 0)
@@ -633,7 +641,7 @@ const ColorsTab = ({ variant = "solo" }: ColorsTabProps) => {
         >
           <ColorSwatch
             color={floatingMove.color}
-            mode={variant}
+            mode={swatchMode}
             copyCount={copyCounts[floatingMove.colorCode] ?? 0}
             isReordering
           />

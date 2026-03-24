@@ -1,8 +1,9 @@
 import colorsData from "@/data/colors.json";
 import { getCategoryName, getColorName } from "@/i18n";
 
-const HEX_COLOR_REGEX = /^#[0-9a-fA-F]{6}$/;
+const HEX_COLOR_REGEX = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
 const COLOR_CODE_PREFIX = "COLOR_";
+const LIGHT_CODE_PREFIX = "LIGHT_";
 
 export const knownCategoryCodes = [
   "CATEGORY_ALIENS",
@@ -32,7 +33,9 @@ export const knownCategoryCodes = [
 const knownCategoryCodeSet = new Set<string>(knownCategoryCodes);
 
 export type CategoryCode = (typeof knownCategoryCodes)[number];
-export type ColorCode = `${typeof COLOR_CODE_PREFIX}${string}`;
+type ItemColorCode = `${typeof COLOR_CODE_PREFIX}${string}`;
+type LightColorCode = `${typeof LIGHT_CODE_PREFIX}${string}`;
+export type ColorCode = ItemColorCode | LightColorCode;
 
 export interface ColorFileEntry {
   code?: string;
@@ -82,6 +85,9 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
 const isKnownCategoryCode = (value: string): value is CategoryCode =>
   knownCategoryCodeSet.has(value);
 
+const isColorCode = (value: string): value is ColorCode =>
+  value.startsWith(COLOR_CODE_PREFIX) || value.startsWith(LIGHT_CODE_PREFIX);
+
 const cleanCodePart = (input: string): string => {
   const cleaned = input
     .trim()
@@ -94,12 +100,12 @@ const cleanCodePart = (input: string): string => {
   return cleaned || "ITEM";
 };
 
-const generateColorCodeBase = (defaultName: string): ColorCode =>
-  `${COLOR_CODE_PREFIX}${cleanCodePart(defaultName)}` as ColorCode;
+const generateColorCodeBase = (defaultName: string): ItemColorCode =>
+  `${COLOR_CODE_PREFIX}${cleanCodePart(defaultName)}`;
 
 const assertHexColor = (value: unknown, field: string, index: number): string => {
   if (typeof value !== "string" || !HEX_COLOR_REGEX.test(value)) {
-    throw new Error(`Invalid ${field} at color index ${index}. Expected #RRGGBB.`);
+    throw new Error(`Invalid ${field} at color index ${index}. Expected #RGB or #RRGGBB.`);
   }
   return value;
 };
@@ -124,11 +130,16 @@ const normalizeColorCode = (
 ): ColorCode => {
   if (typeof rawCode === "string" && rawCode.trim().length > 0) {
     const normalized = rawCode.trim().toUpperCase();
+    if (!isColorCode(normalized)) {
+      throw new Error(
+        `Invalid color code format: ${normalized}. Expected COLOR_* or LIGHT_*.`,
+      );
+    }
     if (usedCodes.has(normalized)) {
       throw new Error(`Duplicate color code provided: ${normalized}`);
     }
     usedCodes.add(normalized);
-    return normalized as ColorCode;
+    return normalized;
   }
 
   const baseCode = generateColorCodeBase(defaultName);
@@ -139,10 +150,10 @@ const normalizeColorCode = (
 
   let suffix = 2;
   while (true) {
-    const candidate = `${baseCode}_${suffix}`;
+    const candidate: ItemColorCode = `${baseCode}_${suffix}`;
     if (!usedCodes.has(candidate)) {
       usedCodes.add(candidate);
-      return candidate as ColorCode;
+      return candidate;
     }
     suffix += 1;
   }
