@@ -1360,6 +1360,177 @@
       "categories": [
         "CATEGORY_SPECIAL"
       ]
+    },
+    {
+      "code": "LIGHT_CANDLE",
+      "defaultName": "Candle",
+      "hex": "#FF9329",
+      "secondaryColor": "#FFFFFF",
+      "categories": [
+        "CATEGORY_LIGHT_KELVIN_HEAT"
+      ]
+    },
+    {
+      "code": "LIGHT_40W_TUNGSTEN",
+      "defaultName": "40W Tungsten",
+      "hex": "#FFC58F",
+      "secondaryColor": "#FFFFFF",
+      "categories": [
+        "CATEGORY_LIGHT_KELVIN_HEAT"
+      ]
+    },
+    {
+      "code": "LIGHT_100W_TUNGSTEN",
+      "defaultName": "100W Tungsten",
+      "hex": "#FFD6AA",
+      "secondaryColor": "#FFFFFF",
+      "categories": [
+        "CATEGORY_LIGHT_KELVIN_HEAT"
+      ]
+    },
+    {
+      "code": "LIGHT_HALOGEN",
+      "defaultName": "Halogen",
+      "hex": "#FFF1E0",
+      "secondaryColor": "#FFFFFF",
+      "categories": [
+        "CATEGORY_LIGHT_KELVIN_HEAT"
+      ]
+    },
+    {
+      "code": "LIGHT_CARBON_ARC",
+      "defaultName": "Carbon Arc",
+      "hex": "#FFFAF4",
+      "secondaryColor": "#FFFFFF",
+      "categories": [
+        "CATEGORY_LIGHT_KELVIN_HEAT"
+      ]
+    },
+    {
+      "code": "LIGHT_HIGH_NOON_SUN",
+      "defaultName": "High Noon Sun",
+      "hex": "#FFFFFB",
+      "secondaryColor": "#FFFFFF",
+      "categories": [
+        "CATEGORY_LIGHT_KELVIN_HEAT"
+      ]
+    },
+    {
+      "code": "LIGHT_DIRECT_SUNLIGHT",
+      "defaultName": "Direct Sunlight",
+      "hex": "#FFFFFF",
+      "secondaryColor": "#FFFFFF",
+      "categories": [
+        "CATEGORY_LIGHT_KELVIN_HEAT"
+      ]
+    },
+    {
+      "code": "LIGHT_OVERCAST_SKY",
+      "defaultName": "Overcast Sky",
+      "hex": "#C9E1FF",
+      "secondaryColor": "#FFFFFF",
+      "categories": [
+        "CATEGORY_LIGHT_KELVIN_HEAT"
+      ]
+    },
+    {
+      "code": "LIGHT_CLEAR_BLUE_SKY",
+      "defaultName": "Clear Blue Sky",
+      "hex": "#409CFF",
+      "secondaryColor": "#FFFFFF",
+      "categories": [
+        "CATEGORY_LIGHT_KELVIN_HEAT"
+      ]
+    },
+    {
+      "code": "LIGHT_WARM_FLUORESCENT",
+      "defaultName": "Warm Fluorescent",
+      "hex": "#FFF4E5",
+      "secondaryColor": "#FFFFFF",
+      "categories": [
+        "CATEGORY_LIGHT_FLUORESCENT"
+      ]
+    },
+    {
+      "code": "LIGHT_STANDARD_FLUORESCENT",
+      "defaultName": "Standard Fluorescent",
+      "hex": "#F4FFFA",
+      "secondaryColor": "#FFFFFF",
+      "categories": [
+        "CATEGORY_LIGHT_FLUORESCENT"
+      ]
+    },
+    {
+      "code": "LIGHT_COOL_WHITE_FLUORESCENT",
+      "defaultName": "Cool White Fluorescent",
+      "hex": "#D4F5FF",
+      "secondaryColor": "#FFFFFF",
+      "categories": [
+        "CATEGORY_LIGHT_FLUORESCENT"
+      ]
+    },
+    {
+      "code": "LIGHT_FULL_SPECTRUM_FLUORESCENT",
+      "defaultName": "Full Spectrum Fluorescent",
+      "hex": "#FFF4F2",
+      "secondaryColor": "#FFFFFF",
+      "categories": [
+        "CATEGORY_LIGHT_FLUORESCENT"
+      ]
+    },
+    {
+      "code": "LIGHT_GROW_LIGHT_FLUORESCENT",
+      "defaultName": "Grow Light Fluorescent",
+      "hex": "#FFF9F7",
+      "secondaryColor": "#FFFFFF",
+      "categories": [
+        "CATEGORY_LIGHT_FLUORESCENT"
+      ]
+    },
+    {
+      "code": "LIGHT_BLACK_LIGHT_FLUORESCENT",
+      "defaultName": "Black Light Fluorescent",
+      "hex": "#A700FF",
+      "secondaryColor": "#FFFFFF",
+      "categories": [
+        "CATEGORY_LIGHT_FLUORESCENT"
+      ]
+    },
+    {
+      "code": "LIGHT_MERCURY_VAPOR",
+      "defaultName": "Mercury Vapor",
+      "hex": "#D8F7FF",
+      "secondaryColor": "#FFFFFF",
+      "categories": [
+        "CATEGORY_LIGHT_GASEOUS"
+      ]
+    },
+    {
+      "code": "LIGHT_SODIUM_VAPOR",
+      "defaultName": "Sodium Vapor",
+      "hex": "#FFD1B2",
+      "secondaryColor": "#FFFFFF",
+      "categories": [
+        "CATEGORY_LIGHT_GASEOUS"
+      ]
+    },
+    {
+      "code": "LIGHT_METAL_HALIDE",
+      "defaultName": "Metal Halide",
+      "hex": "#F2FCFF",
+      "secondaryColor": "#FFFFFF",
+      "categories": [
+        "CATEGORY_LIGHT_GASEOUS"
+      ]
+    },
+    {
+      "code": "LIGHT_HIGH_PRESSURE_SODIUM",
+      "defaultName": "High Pressure Sodium",
+      "hex": "#FFB84C",
+      "secondaryColor": "#FFFFFF",
+      "categories": [
+        "CATEGORY_LIGHT_GASEOUS"
+      ]
     }
   ]
 }

@@ -63,6 +63,15 @@ const AppFooter = ({ onResetCounters }: AppFooterProps) => (
             </a>
             <span>|</span>
             <a
+              href="https://www.reddit.com/r/SatisfactoryGame/comments/1fr57ze/reference_hex_values_for_various_realworld_lights/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline underline-offset-2 hover:text-foreground"
+            >
+              u/RosieQParker
+            </a>
+            <span>|</span>
+            <a
               href="https://www.reddit.com/user/Ok_Hall4730/"
               target="_blank"
               rel="noopener noreferrer"
@@ -92,6 +101,17 @@ const AppFooter = ({ onResetCounters }: AppFooterProps) => (
                 className="underline underline-offset-2 hover:text-foreground"
               >
                 u/Squidcraft_101
+              </a>
+              {" |"}
+            </span>
+            <span>
+              <a
+                href="https://www.reddit.com/r/SatisfactoryGame/comments/1fr57ze/reference_hex_values_for_various_realworld_lights/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-2 hover:text-foreground"
+              >
+                u/RosieQParker
               </a>
               {" |"}
             </span>
