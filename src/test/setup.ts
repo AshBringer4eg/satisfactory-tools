@@ -1,5 +1,10 @@
 import "@testing-library/jest-dom";
 
+Object.defineProperty(globalThis, "__APP_VERSION__", {
+  value: "test",
+  configurable: true,
+});
+
 Object.defineProperty(window, "matchMedia", {
   writable: true,
   value: (query: string) => ({

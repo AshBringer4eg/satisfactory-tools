@@ -10,7 +10,7 @@ const CATEGORY_ORES = "CATEGORY_ORES";
 const CATEGORY_OTHER = "CATEGORY_OTHER";
 
 const desktopSearchInput = (page: Page) =>
-  page.locator("input[placeholder*='Search'][type='text']:visible").first();
+  page.locator("[data-testid='colors-search-input']:visible").first();
 
 const getSoloSwatchByName = (page: Page, name: string) =>
   page.getByRole("button", { name: new RegExp(`Copy hex code .* for ${name}$`, "i") });
@@ -73,16 +73,16 @@ const getOwnResetButton = (page: Page) =>
 const getOwnRows = (page: Page) => page.locator("tbody tr");
 
 const getOwnFirstRowPrimaryInput = (page: Page) =>
-  getOwnRows(page).first().locator("input[placeholder='#112233']");
+  getOwnRows(page).first().getByTestId("own-row-primary-input");
 
 const getOwnFirstRowSecondaryInput = (page: Page) =>
-  getOwnRows(page).first().locator("input[placeholder='Blank = copy primary']");
+  getOwnRows(page).first().getByTestId("own-row-secondary-input");
 
 const getOwnFirstRowCustomNameInput = (page: Page) =>
-  getOwnRows(page).first().locator("input[placeholder='Custom color name']");
+  getOwnRows(page).first().getByTestId("own-row-default-name-input");
 
 const getOwnKnownCodeSelectInFirstRow = (page: Page) =>
-  getOwnRows(page).first().getByRole("combobox");
+  getOwnRows(page).first().getByTestId("own-row-code-select");
 
 const encodeBase64Json = (value: unknown): string =>
   Buffer.from(JSON.stringify(value), "utf-8").toString("base64");
@@ -478,10 +478,8 @@ test.describe("OWN tab", () => {
     };
 
     await getOwnImportButton(page).click();
-    await page
-      .getByPlaceholder("Paste base64 palette string here.")
-      .fill(encodeBase64Json(importPayload));
-    await page.getByRole("button", { name: /^LOAD_TO_DRAFT$/i }).click();
+    await page.getByTestId("own-import-base64-input").fill(encodeBase64Json(importPayload));
+    await page.getByTestId("own-import-load-button").click();
 
     await expect(
       page.getByRole("dialog", { name: /Import Base64/i }),
@@ -549,14 +547,14 @@ test.describe("OWN tab", () => {
     await expect(getOwnExportButton(page)).toBeDisabled();
 
     const firstRow = getOwnRows(page).first();
-    await firstRow.getByRole("combobox").click();
+    await firstRow.getByTestId("own-row-code-select").click();
     await page.getByRole("option", { name: /^Write your own$/i }).click();
     await firstRow
-      .locator("input[placeholder='Custom color name']")
+      .getByTestId("own-row-default-name-input")
       .fill("Draft Export Color");
-    await firstRow.locator("input[placeholder='#112233']").fill("#224466");
+    await firstRow.getByTestId("own-row-primary-input").fill("#224466");
     await firstRow
-      .locator("input[placeholder='Blank = copy primary']")
+      .getByTestId("own-row-secondary-input")
       .fill("");
 
     await expect(getOwnSaveButton(page)).toBeVisible();
@@ -569,12 +567,11 @@ test.describe("OWN tab", () => {
     await expect(page.getByRole("dialog", { name: /Export \(Saved Palette\)/i })).toBeVisible();
 
     const exportValue = await page
-      .getByRole("dialog", { name: /Export \(Saved Palette\)/i })
-      .locator("textarea")
+      .getByTestId("own-export-base64-output")
       .inputValue();
     expect(exportValue.length).toBeGreaterThan(0);
 
-    await page.getByRole("button", { name: /^COPY$/i }).click();
+    await page.getByTestId("own-export-copy-button").click();
 
     await expect(
       page.getByRole("dialog", { name: /Export \(Saved Palette\)/i }),
@@ -618,22 +615,20 @@ test.describe("OWN tab", () => {
     await expect(viewButton).toBeVisible();
 
     await openImportButton.click();
-    await page.getByPlaceholder("Paste base64 palette string here.").fill("%%%");
-    await page.getByRole("button", { name: /^LOAD_TO_DRAFT$/i }).click();
+    await page.getByTestId("own-import-base64-input").fill("%%%");
+    await page.getByTestId("own-import-load-button").click();
     await expect(page.getByText("Malformed base64 string.")).toBeVisible();
     await expect(saveButton).toHaveCount(0);
     await expect(viewButton).toBeVisible();
 
     await openImportButton.click();
-    await page.getByPlaceholder("Paste base64 palette string here.").fill("");
+    await page.getByTestId("own-import-base64-input").fill("");
     await page.getByRole("button", { name: /^Close$/i }).click();
     await expect(saveButton).toHaveCount(0);
     await expect(viewButton).toBeVisible();
 
-    const firstPrimary = page.locator("input[placeholder='#112233']").first();
-    const firstSecondary = page
-      .locator("input[placeholder='Blank = copy primary']")
-      .first();
+    const firstPrimary = page.getByTestId("own-row-primary-input").first();
+    const firstSecondary = page.getByTestId("own-row-secondary-input").first();
     await firstPrimary.fill("#112233");
     await firstSecondary.fill("");
     await expect(saveButton).toBeVisible();

@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import type { KeyboardEvent } from "react";
 import { appTabs, type AppTabId } from "@/config/tabs";
 import { t } from "@/i18n";
 
@@ -10,45 +11,67 @@ interface AppTabBarProps {
 const getTabId = (tabId: AppTabId): string => `app-tab-${tabId}`;
 const getTabPanelId = (tabId: AppTabId): string => `app-tabpanel-${tabId}`;
 
-const AppTabBar = ({ activeTab, onTabChange }: AppTabBarProps) => (
-  <nav
-    className="border-b border-border px-6 flex gap-0 shrink-0 min-w-0"
-    aria-label="Palette tabs"
-    role="tablist"
-  >
-    {appTabs.map((tab) => {
-      const Icon = tab.icon;
-      const isActive = activeTab === tab.id;
-      return (
-        <button
-          key={tab.id}
-          id={getTabId(tab.id)}
-          role="tab"
-          type="button"
-          aria-selected={isActive}
-          aria-controls={getTabPanelId(tab.id)}
-          aria-label={t(tab.labelKey)}
-          tabIndex={isActive ? 0 : -1}
-          onClick={() => onTabChange(tab.id)}
-          className={`relative flex min-w-0 flex-1 items-center justify-center gap-2 px-4 py-3 text-[12px] font-bold uppercase tracking-wider transition-colors duration-150 ${
-            isActive
-              ? "text-primary"
-              : "text-muted-foreground hover:text-foreground"
-          }`}
-        >
-          <Icon className="w-4 h-4 shrink-0" />
-          <span className="truncate">{t(tab.labelKey)}</span>
-          {isActive && (
-            <motion.div
-              layoutId="tab-indicator"
-              className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary"
-              transition={{ duration: 0.15, ease: [0.2, 0, 0, 1] }}
-            />
-          )}
-        </button>
-      );
-    })}
-  </nav>
-);
+const AppTabBar = ({ activeTab, onTabChange }: AppTabBarProps) => {
+  const handleTabKeyDown = (
+    event: KeyboardEvent<HTMLButtonElement>,
+    tabId: AppTabId,
+  ) => {
+    if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") {
+      return;
+    }
+
+    event.preventDefault();
+    const currentIndex = appTabs.findIndex((tab) => tab.id === tabId);
+    if (currentIndex < 0) return;
+
+    const direction = event.key === "ArrowRight" ? 1 : -1;
+    const nextIndex =
+      (currentIndex + direction + appTabs.length) % appTabs.length;
+    const nextTab = appTabs[nextIndex];
+    onTabChange(nextTab.id);
+  };
+
+  return (
+    <nav
+      className="border-b border-border px-6 flex gap-0 shrink-0 min-w-0"
+      aria-label="Palette tabs"
+      role="tablist"
+    >
+      {appTabs.map((tab) => {
+        const Icon = tab.icon;
+        const isActive = activeTab === tab.id;
+        return (
+          <button
+            key={tab.id}
+            id={getTabId(tab.id)}
+            role="tab"
+            type="button"
+            aria-selected={isActive}
+            aria-controls={getTabPanelId(tab.id)}
+            aria-label={t(tab.labelKey)}
+            tabIndex={isActive ? 0 : -1}
+            onClick={() => onTabChange(tab.id)}
+            onKeyDown={(event) => handleTabKeyDown(event, tab.id)}
+            className={`relative flex min-w-0 flex-1 items-center justify-center gap-2 px-4 py-3 text-[12px] font-bold uppercase tracking-wider transition-colors duration-150 ${
+              isActive
+                ? "text-primary"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <Icon className="w-4 h-4 shrink-0" />
+            <span className="truncate">{t(tab.labelKey)}</span>
+            {isActive && (
+              <motion.div
+                layoutId="tab-indicator"
+                className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary"
+                transition={{ duration: 0.15, ease: [0.2, 0, 0, 1] }}
+              />
+            )}
+          </button>
+        );
+      })}
+    </nav>
+  );
+};
 
 export default AppTabBar;

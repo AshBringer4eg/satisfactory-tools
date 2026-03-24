@@ -26,6 +26,9 @@ const AppHeader = () => {
             <button
               type="button"
               onClick={() => setLocale(language.value)}
+              aria-pressed={activeLocale === language.value}
+              aria-label={`Switch language to ${language.label}`}
+              data-testid={`language-${language.value}`}
               className={`underline underline-offset-2 transition-colors ${
                 activeLocale === language.value
                   ? "text-foreground"

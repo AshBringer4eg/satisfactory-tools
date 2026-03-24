@@ -20,6 +20,7 @@ type ColorInputWithPreviewProps = {
   previewIsValid: boolean;
   previewLabel: string;
   inputAriaLabel: string;
+  inputTestId?: string;
   onChange: (value: string) => void;
 };
 
@@ -50,6 +51,7 @@ const ColorInputWithPreview = ({
   previewIsValid,
   previewLabel,
   inputAriaLabel,
+  inputTestId,
   onChange,
 }: ColorInputWithPreviewProps) => (
   <div className="flex items-center gap-2">
@@ -58,6 +60,7 @@ const ColorInputWithPreview = ({
       onChange={(event) => onChange(event.target.value)}
       placeholder={placeholder}
       aria-label={inputAriaLabel}
+      data-testid={inputTestId}
       className="font-mono"
     />
     <div
@@ -107,6 +110,7 @@ const OwnEditRow = memo(
           >
             <SelectTrigger
               aria-label={`Code selector for row ${rowIndex + 1}`}
+              data-testid="own-row-code-select"
             >
               <SelectValue />
             </SelectTrigger>
@@ -131,6 +135,7 @@ const OwnEditRow = memo(
         <TableCell className="min-w-[200px]">
           {row.selectedCode ? (
             <div
+              data-testid="own-row-default-name-label"
               className="h-10 px-3 border border-input rounded-md bg-muted/30 flex items-center text-sm"
               title={selectedCodeLabel ?? row.defaultName}
             >
@@ -144,6 +149,7 @@ const OwnEditRow = memo(
               }
               placeholder={defaultNamePlaceholder}
               aria-label={`Default name for row ${rowIndex + 1}`}
+              data-testid="own-row-default-name-input"
             />
           )}
         </TableCell>
@@ -153,6 +159,7 @@ const OwnEditRow = memo(
             onChange={(value) => onDraftFieldChange(row.id, "hex", value)}
             placeholder="#112233"
             inputAriaLabel={`Primary color for row ${rowIndex + 1}`}
+            inputTestId="own-row-primary-input"
             previewHex={primaryHex}
             previewIsValid={primaryPreviewIsValid}
             previewLabel={
@@ -168,6 +175,7 @@ const OwnEditRow = memo(
             }
             placeholder={secondaryPlaceholder}
             inputAriaLabel={`Secondary color for row ${rowIndex + 1}`}
+            inputTestId="own-row-secondary-input"
             previewHex={secondaryPreviewHex}
             previewIsValid={secondaryPreviewIsValid}
             previewLabel={

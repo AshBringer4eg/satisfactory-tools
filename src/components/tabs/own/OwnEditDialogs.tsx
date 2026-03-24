@@ -44,6 +44,7 @@ const OwnEditDialogs = ({
           onChange={(event) => onImportBase64Change(event.target.value)}
           placeholder={t("ownTab.edit.import.placeholder")}
           aria-label={t("ownTab.edit.import.title")}
+          data-testid="own-import-base64-input"
           className="font-mono text-[11px]"
         />
         <DialogFooter>
@@ -52,6 +53,7 @@ const OwnEditDialogs = ({
             size="sm"
             variant="outline"
             onClick={onImportToDraft}
+            data-testid="own-import-load-button"
           >
             {t("ownTab.edit.import.load")}
           </Button>
@@ -70,6 +72,7 @@ const OwnEditDialogs = ({
           value={exportBase64}
           placeholder={t("ownTab.edit.export.placeholder")}
           aria-label={t("ownTab.edit.export.title")}
+          data-testid="own-export-base64-output"
           className="font-mono text-[11px]"
         />
         <DialogFooter>
@@ -79,6 +82,7 @@ const OwnEditDialogs = ({
             variant="outline"
             onClick={onCopyExport}
             disabled={!exportBase64}
+            data-testid="own-export-copy-button"
           >
             {t("ownTab.edit.export.copy")}
           </Button>

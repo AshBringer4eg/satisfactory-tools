@@ -105,6 +105,15 @@ const ColorsTab = ({
       })),
     [palette],
   );
+  const categoryCountsByCode = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const color of colors) {
+      for (const categoryCode of color.categoryCodes) {
+        counts.set(categoryCode, (counts.get(categoryCode) ?? 0) + 1);
+      }
+    }
+    return counts;
+  }, [colors]);
   const [search, setSearch] = useState("");
   const [activeCategories, setActiveCategories] = useState<Set<string>>(
     new Set(),
@@ -418,6 +427,8 @@ const ColorsTab = ({
         placeholder={t("colors.searchPlaceholder", { total: colors.length })}
         value={search}
         onChange={(e) => setSearch(e.target.value)}
+        aria-label={t("colors.searchPlaceholder", { total: colors.length })}
+        data-testid="colors-search-input"
         className="w-full bg-surface pl-10 pr-9 py-2 text-[13px] font-mono text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
         style={{
           borderRadius: "2px",
@@ -441,13 +452,15 @@ const ColorsTab = ({
     <div className="flex flex-col gap-1">
       {categoryFiltersList.map((category) => {
         const isActive = activeCategories.has(category.code);
-        const count = colors.filter((c) =>
-          c.categoryCodes.includes(category.code),
-        ).length;
+        const count = categoryCountsByCode.get(category.code) ?? 0;
         return (
           <button
             key={category.code}
+            type="button"
             onClick={() => toggleCategory(category.code)}
+            aria-pressed={isActive}
+            aria-label={category.label}
+            data-testid={`category-toggle-${category.code}`}
             className={`flex items-center gap-2 px-3 py-1.5 text-[12px] uppercase tracking-wider font-bold transition-all duration-150 text-left ${
               isActive
                 ? "text-primary bg-primary/10"
