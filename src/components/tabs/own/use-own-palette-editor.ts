@@ -1,13 +1,10 @@
-import { useCallback, useMemo, useState } from "react";
-import { OWN_PALETTE_STORAGE_KEY } from "@/config/storage";
+import { useCallback, useMemo, useReducer } from "react";
 import {
   buildOwnPaletteFromDraftRows,
   createDefaultOwnPalette,
-  createEmptyOwnPaletteDraftRow,
   createOwnPaletteDraftRowsFromPalette,
   exportOwnPaletteFileToBase64,
   getOwnPaletteKnownCodeOptions,
-  getOwnPaletteKnownRecord,
   importOwnPaletteBase64ToDraftRows,
   importOwnPaletteObjectToDraftRows,
   validateAndNormalizeOwnPaletteDraft,
@@ -20,57 +17,56 @@ import {
   type SatisfactoryPalette,
 } from "@/data/colors";
 import { getColorName, t, useLocale } from "@/i18n";
-import type { KnownCodeOption, OwnEditableField, OwnInitialState, OwnMode } from "./types";
+import type {
+  KnownCodeOption,
+  OwnEditableField,
+  OwnInitialState,
+  OwnMode,
+} from "./types";
 import {
   areComparableDraftRowsEqual,
-  OWN_CUSTOM_CODE_SENTINEL,
   toComparableDraftRow,
   toComparableDraftRowsFromPalette,
 } from "./utils";
+import {
+  createOwnPaletteEditorState,
+  ownPaletteEditorReducer,
+} from "./own-palette-editor.reducer";
+import {
+  copyTextToClipboard,
+  readOwnPaletteStorage,
+  writeOwnPaletteStorage,
+} from "./own-palette-editor.services";
 
 const readInitialOwnState = (): OwnInitialState => {
   const fallbackPalette = createDefaultOwnPalette();
   const fallbackDraftRows =
     createOwnPaletteDraftRowsFromPalette(fallbackPalette);
+  const fallbackState: OwnInitialState = {
+    savedPalette: fallbackPalette,
+    savedPaletteFile: null,
+    draftRows: fallbackDraftRows,
+    loadErrors: [],
+  };
 
-  if (typeof window === "undefined") {
+  const stored = readOwnPaletteStorage();
+  if (stored.status === "read_error") {
     return {
-      savedPalette: fallbackPalette,
-      savedPaletteFile: null,
-      draftRows: fallbackDraftRows,
-      loadErrors: [],
-    };
-  }
-
-  let rawStored: string | null = null;
-  try {
-    rawStored = window.localStorage.getItem(OWN_PALETTE_STORAGE_KEY);
-  } catch {
-    return {
-      savedPalette: fallbackPalette,
-      savedPaletteFile: null,
-      draftRows: fallbackDraftRows,
+      ...fallbackState,
       loadErrors: [t("ownTab.edit.errors.savedPaletteStorageReadFailed")],
     };
   }
 
-  if (!rawStored) {
-    return {
-      savedPalette: fallbackPalette,
-      savedPaletteFile: null,
-      draftRows: fallbackDraftRows,
-      loadErrors: [],
-    };
+  if (!stored.value) {
+    return fallbackState;
   }
 
   let parsed: unknown;
   try {
-    parsed = JSON.parse(rawStored) as unknown;
+    parsed = JSON.parse(stored.value) as unknown;
   } catch {
     return {
-      savedPalette: fallbackPalette,
-      savedPaletteFile: null,
-      draftRows: fallbackDraftRows,
+      ...fallbackState,
       loadErrors: [t("ownTab.edit.errors.savedPaletteInvalidJson")],
     };
   }
@@ -78,9 +74,7 @@ const readInitialOwnState = (): OwnInitialState => {
   const imported = importOwnPaletteObjectToDraftRows(parsed);
   if (!imported.rows || imported.errors.length > 0) {
     return {
-      savedPalette: fallbackPalette,
-      savedPaletteFile: null,
-      draftRows: fallbackDraftRows,
+      ...fallbackState,
       loadErrors:
         imported.errors.length > 0
           ? imported.errors
@@ -91,9 +85,7 @@ const readInitialOwnState = (): OwnInitialState => {
   const built = buildOwnPaletteFromDraftRows(imported.rows);
   if (!built.palette || !built.normalizedFile) {
     return {
-      savedPalette: fallbackPalette,
-      savedPaletteFile: null,
-      draftRows: fallbackDraftRows,
+      ...fallbackState,
       loadErrors:
         built.errors.length > 0
           ? built.errors
@@ -109,31 +101,27 @@ const readInitialOwnState = (): OwnInitialState => {
   };
 };
 
+const toBuildErrors = (errors: string[]): string[] =>
+  errors.length > 0
+    ? errors
+    : [t("ownTab.edit.errors.savedPaletteFailedBuild")];
+
+type ApplySavedPaletteParams = {
+  savedPalette: SatisfactoryPalette;
+  savedPaletteFile: ColorsFile | null;
+  draftRows: OwnPaletteDraftRow[];
+  statusMessage: string;
+  storageFailureStatusMessage: string;
+  clearImportBase64: boolean;
+};
+
 export const useOwnPaletteEditor = () => {
   const locale = useLocale();
-  const [activeMode, setActiveMode] = useState<OwnMode>("use");
-  const [initialState] = useState<OwnInitialState>(() => readInitialOwnState());
-  const [savedPalette, setSavedPalette] = useState<SatisfactoryPalette>(
-    initialState.savedPalette,
-  );
-  const [savedPaletteFile, setSavedPaletteFile] = useState<ColorsFile | null>(
-    initialState.savedPaletteFile,
-  );
-  const [draftRows, setDraftRows] = useState<OwnPaletteDraftRow[]>(
-    initialState.draftRows,
-  );
-  const [loadErrors, setLoadErrors] = useState<string[]>(
-    initialState.loadErrors,
-  );
-  const [importBase64, setImportBase64] = useState("");
-  const [importErrors, setImportErrors] = useState<string[]>([]);
-  const [saveErrors, setSaveErrors] = useState<string[]>([]);
-  const [statusMessage, setStatusMessage] = useState<string | null>(null);
-  const [openCodeSelectRowId, setOpenCodeSelectRowId] = useState<string | null>(
+  const [state, dispatch] = useReducer(
+    ownPaletteEditorReducer,
     null,
+    () => createOwnPaletteEditorState(readInitialOwnState()),
   );
-  const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
-  const [isExportDialogOpen, setIsExportDialogOpen] = useState(false);
 
   const knownCodeOptions = useMemo<KnownCodeOption[]>(() => {
     // getColorName resolves from current locale; touch locale to force relabeling on locale switch.
@@ -153,164 +141,130 @@ export const useOwnPaletteEditor = () => {
   const localizedSavedPalette = useMemo(() => {
     void locale;
     try {
-      return importColorsFile(exportColorsFile(savedPalette));
+      return importColorsFile(exportColorsFile(state.savedPalette));
     } catch {
-      return savedPalette;
+      return state.savedPalette;
     }
-  }, [locale, savedPalette]);
+  }, [locale, state.savedPalette]);
 
   const normalizedDraft = useMemo(
-    () => validateAndNormalizeOwnPaletteDraft(draftRows),
-    [draftRows],
+    () => validateAndNormalizeOwnPaletteDraft(state.draftRows),
+    [state.draftRows],
   );
 
   const hasUnsavedChanges = useMemo(() => {
-    const savedComparableRows = toComparableDraftRowsFromPalette(savedPalette);
-    const draftComparableRows = draftRows.map(toComparableDraftRow);
+    const savedComparableRows = toComparableDraftRowsFromPalette(
+      state.savedPalette,
+    );
+    const draftComparableRows = state.draftRows.map(toComparableDraftRow);
     return !areComparableDraftRowsEqual(
       draftComparableRows,
       savedComparableRows,
     );
-  }, [draftRows, savedPalette]);
+  }, [state.draftRows, state.savedPalette]);
 
   const validationErrors = normalizedDraft.errors;
   const isSaveDisabled =
     !hasUnsavedChanges ||
     !normalizedDraft.normalizedFile ||
-    importErrors.length > 0;
+    state.importErrors.length > 0;
 
   const exportBase64 = useMemo(() => {
-    if (!savedPaletteFile) return "";
-    return exportOwnPaletteFileToBase64(savedPaletteFile);
-  }, [savedPaletteFile]);
+    if (!state.savedPaletteFile) return "";
+    return exportOwnPaletteFileToBase64(state.savedPaletteFile);
+  }, [state.savedPaletteFile]);
 
   const allEditErrors = useMemo(
-    () => [...loadErrors, ...importErrors, ...saveErrors, ...validationErrors],
-    [importErrors, loadErrors, saveErrors, validationErrors],
+    () => [
+      ...state.loadErrors,
+      ...state.importErrors,
+      ...state.saveErrors,
+      ...validationErrors,
+    ],
+    [state.importErrors, state.loadErrors, state.saveErrors, validationErrors],
   );
 
   const isExportBlocked = hasUnsavedChanges || allEditErrors.length > 0;
 
-  const clearEditStatuses = useCallback(() => {
-    setImportErrors([]);
-    setSaveErrors([]);
-    setStatusMessage(null);
+  const setActiveMode = useCallback((mode: OwnMode) => {
+    dispatch({ type: "set_active_mode", mode });
   }, []);
 
-  const updateDraftRow = useCallback(
-    (
-      rowId: string,
-      updater: (row: OwnPaletteDraftRow) => OwnPaletteDraftRow,
-    ) => {
-      setDraftRows((previous) =>
-        previous.map((row) => (row.id === rowId ? updater(row) : row)),
-      );
-      clearEditStatuses();
+  const applySavedPalette = useCallback(
+    (params: ApplySavedPaletteParams) => {
+      dispatch({
+        type: "apply_saved_palette",
+        savedPalette: params.savedPalette,
+        savedPaletteFile: params.savedPaletteFile,
+        draftRows: params.draftRows,
+        statusMessage: params.statusMessage,
+        clearImportBase64: params.clearImportBase64,
+      });
+
+      if (
+        params.savedPaletteFile &&
+        !writeOwnPaletteStorage(params.savedPaletteFile)
+      ) {
+        dispatch({
+          type: "set_status_message",
+          statusMessage: params.storageFailureStatusMessage,
+        });
+      }
     },
-    [clearEditStatuses],
+    [],
   );
 
   const handleDraftFieldChange = useCallback(
     (rowId: string, field: OwnEditableField, value: string) => {
-      updateDraftRow(rowId, (row) => ({
-        ...row,
-        [field]: value,
-      }));
+      dispatch({ type: "update_draft_field", rowId, field, value });
     },
-    [updateDraftRow],
+    [],
   );
 
   const handleCodeSelectOpenChange = useCallback(
     (rowId: string, isOpen: boolean) => {
-      if (isOpen) {
-        setOpenCodeSelectRowId(rowId);
-        return;
-      }
-
-      setOpenCodeSelectRowId((previous) =>
-        previous === rowId ? null : previous,
-      );
+      dispatch({ type: "set_code_select_open", rowId, isOpen });
     },
     [],
   );
 
   const handleKnownCodeChange = useCallback(
     (rowId: string, rawValue: string) => {
-      updateDraftRow(rowId, (row) => {
-        if (rawValue === OWN_CUSTOM_CODE_SENTINEL) {
-          return {
-            ...row,
-            selectedCode: null,
-          };
-        }
-
-        const knownRecord = getOwnPaletteKnownRecord(rawValue);
-        if (!knownRecord) {
-          return {
-            ...row,
-            selectedCode: null,
-          };
-        }
-
-        return {
-          ...row,
-          selectedCode: knownRecord.code,
-          defaultName: knownRecord.defaultName,
-          hex: knownRecord.hex,
-          secondaryColor: knownRecord.secondaryColor,
-        };
-      });
+      dispatch({ type: "set_known_code", rowId, rawValue });
     },
-    [updateDraftRow],
+    [],
   );
 
   const handleAddRow = useCallback(() => {
-    setDraftRows((previous) => [createEmptyOwnPaletteDraftRow(), ...previous]);
-    clearEditStatuses();
-  }, [clearEditStatuses]);
+    dispatch({ type: "add_row" });
+  }, []);
 
   const handleRemoveRow = useCallback(
     (rowId: string) => {
-      setDraftRows((previous) => previous.filter((row) => row.id !== rowId));
-      setOpenCodeSelectRowId((previous) =>
-        previous === rowId ? null : previous,
-      );
-      clearEditStatuses();
+      dispatch({ type: "remove_row", rowId });
     },
-    [clearEditStatuses],
+    [],
   );
 
   const handleSave = useCallback(() => {
-    const builtDraft = buildOwnPaletteFromDraftRows(draftRows);
+    const builtDraft = buildOwnPaletteFromDraftRows(state.draftRows);
     if (!builtDraft.palette || !builtDraft.normalizedFile) {
-      setSaveErrors(
-        builtDraft.errors.length > 0
-          ? builtDraft.errors
-          : [t("ownTab.edit.errors.savedPaletteFailedBuild")],
-      );
-      setStatusMessage(null);
+      dispatch({
+        type: "apply_save_failure",
+        errors: toBuildErrors(builtDraft.errors),
+      });
       return;
     }
 
-    setSavedPalette(builtDraft.palette);
-    setSavedPaletteFile(builtDraft.normalizedFile);
-    setDraftRows(createOwnPaletteDraftRowsFromPalette(builtDraft.palette));
-    setOpenCodeSelectRowId(null);
-    setLoadErrors([]);
-    setImportErrors([]);
-    setSaveErrors([]);
-    setStatusMessage(t("ownTab.edit.status.saved"));
-
-    if (typeof window === "undefined") return;
-    try {
-      window.localStorage.setItem(
-        OWN_PALETTE_STORAGE_KEY,
-        JSON.stringify(builtDraft.normalizedFile),
-      );
-    } catch {
-      setStatusMessage(t("ownTab.edit.status.saveStorageFailed"));
-    }
-  }, [draftRows]);
+    applySavedPalette({
+      savedPalette: builtDraft.palette,
+      savedPaletteFile: builtDraft.normalizedFile,
+      draftRows: createOwnPaletteDraftRowsFromPalette(builtDraft.palette),
+      statusMessage: t("ownTab.edit.status.saved"),
+      storageFailureStatusMessage: t("ownTab.edit.status.saveStorageFailed"),
+      clearImportBase64: false,
+    });
+  }, [applySavedPalette, state.draftRows]);
 
   const handleResetToDefault = useCallback(() => {
     const defaultPalette = createDefaultOwnPalette();
@@ -318,151 +272,137 @@ export const useOwnPaletteEditor = () => {
       createOwnPaletteDraftRowsFromPalette(defaultPalette);
     const builtDefault = buildOwnPaletteFromDraftRows(defaultDraftRows);
 
-    setSavedPalette(defaultPalette);
-    setSavedPaletteFile(builtDefault.normalizedFile);
-    setDraftRows(defaultDraftRows);
-    setOpenCodeSelectRowId(null);
-    setLoadErrors([]);
-    setImportErrors([]);
-    setSaveErrors([]);
-    setImportBase64("");
-    setStatusMessage(t("ownTab.edit.status.resetDone"));
-
-    if (typeof window === "undefined" || !builtDefault.normalizedFile) return;
-    try {
-      window.localStorage.setItem(
-        OWN_PALETTE_STORAGE_KEY,
-        JSON.stringify(builtDefault.normalizedFile),
-      );
-    } catch {
-      setStatusMessage(t("ownTab.edit.status.resetStorageFailed"));
-    }
-  }, []);
+    applySavedPalette({
+      savedPalette: defaultPalette,
+      savedPaletteFile: builtDefault.normalizedFile,
+      draftRows: defaultDraftRows,
+      statusMessage: t("ownTab.edit.status.resetDone"),
+      storageFailureStatusMessage: t("ownTab.edit.status.resetStorageFailed"),
+      clearImportBase64: true,
+    });
+  }, [applySavedPalette]);
 
   const handleClearPalette = useCallback(() => {
     const builtEmpty = buildOwnPaletteFromDraftRows([]);
     if (!builtEmpty.palette || !builtEmpty.normalizedFile) {
-      setSaveErrors(
-        builtEmpty.errors.length > 0
-          ? builtEmpty.errors
-          : [t("ownTab.edit.errors.savedPaletteFailedBuild")],
-      );
-      setStatusMessage(null);
+      dispatch({
+        type: "apply_save_failure",
+        errors: toBuildErrors(builtEmpty.errors),
+      });
       return;
     }
 
-    setSavedPalette(builtEmpty.palette);
-    setSavedPaletteFile(builtEmpty.normalizedFile);
-    setDraftRows([]);
-    setOpenCodeSelectRowId(null);
-    setLoadErrors([]);
-    setImportErrors([]);
-    setSaveErrors([]);
-    setImportBase64("");
-    setStatusMessage(t("ownTab.edit.status.cleared"));
-
-    if (typeof window === "undefined") return;
-    try {
-      window.localStorage.setItem(
-        OWN_PALETTE_STORAGE_KEY,
-        JSON.stringify(builtEmpty.normalizedFile),
-      );
-    } catch {
-      setStatusMessage(t("ownTab.edit.status.clearStorageFailed"));
-    }
-  }, []);
+    applySavedPalette({
+      savedPalette: builtEmpty.palette,
+      savedPaletteFile: builtEmpty.normalizedFile,
+      draftRows: [],
+      statusMessage: t("ownTab.edit.status.cleared"),
+      storageFailureStatusMessage: t("ownTab.edit.status.clearStorageFailed"),
+      clearImportBase64: true,
+    });
+  }, [applySavedPalette]);
 
   const handleImportToDraft = useCallback(() => {
-    setIsImportDialogOpen(false);
-    const imported = importOwnPaletteBase64ToDraftRows(importBase64);
+    dispatch({ type: "set_import_dialog_open", isOpen: false });
+    const imported = importOwnPaletteBase64ToDraftRows(state.importBase64);
     if (!imported.rows || imported.errors.length > 0) {
-      setImportErrors(
-        imported.errors.length > 0
-          ? imported.errors
-          : [t("ownTab.edit.errors.importUnknown")],
-      );
-      setStatusMessage(t("ownTab.edit.status.importFailed"));
+      dispatch({
+        type: "apply_import_failure",
+        errors:
+          imported.errors.length > 0
+            ? imported.errors
+            : [t("ownTab.edit.errors.importUnknown")],
+        statusMessage: t("ownTab.edit.status.importFailed"),
+      });
       return;
     }
 
-    setDraftRows(imported.rows);
-    setOpenCodeSelectRowId(null);
-    setImportErrors([]);
-    setSaveErrors([]);
-    setStatusMessage(t("ownTab.edit.status.importLoaded"));
-  }, [importBase64]);
+    dispatch({
+      type: "apply_import_success",
+      rows: imported.rows,
+      statusMessage: t("ownTab.edit.status.importLoaded"),
+    });
+  }, [state.importBase64]);
 
   const handleCopyExport = useCallback(() => {
     if (!exportBase64) return;
-    if (typeof navigator === "undefined" || !navigator.clipboard?.writeText) {
-      setStatusMessage(t("ownTab.edit.status.copyUnavailable"));
-      return;
-    }
+    void copyTextToClipboard(exportBase64).then((copyResult) => {
+      if (copyResult === "copied") {
+        dispatch({
+          type: "set_status_message",
+          statusMessage: t("ownTab.edit.status.exportCopied"),
+        });
+        dispatch({ type: "set_export_dialog_open", isOpen: false });
+        return;
+      }
 
-    void navigator.clipboard.writeText(exportBase64).then(
-      () => {
-        setStatusMessage(t("ownTab.edit.status.exportCopied"));
-        setIsExportDialogOpen(false);
-      },
-      () => {
-        setStatusMessage(t("ownTab.edit.status.copyFailed"));
-      },
-    );
+      dispatch({
+        type: "set_status_message",
+        statusMessage:
+          copyResult === "unavailable"
+            ? t("ownTab.edit.status.copyUnavailable")
+            : t("ownTab.edit.status.copyFailed"),
+      });
+    });
   }, [exportBase64]);
 
   const handleImportBase64Change = useCallback((value: string) => {
-    setImportBase64(value);
-    setImportErrors([]);
-    setStatusMessage(null);
+    dispatch({ type: "set_import_base64", value });
   }, []);
 
   const handleImportDialogOpenChange = useCallback((isOpen: boolean) => {
-    setIsImportDialogOpen(isOpen);
+    dispatch({ type: "set_import_dialog_open", isOpen });
   }, []);
 
   const handleExportDialogOpenChange = useCallback((isOpen: boolean) => {
-    setIsExportDialogOpen(isOpen);
+    dispatch({ type: "set_export_dialog_open", isOpen });
   }, []);
 
   const openImportDialog = useCallback(() => {
-    setIsImportDialogOpen(true);
+    dispatch({ type: "set_import_dialog_open", isOpen: true });
   }, []);
 
   const openExportDialog = useCallback(() => {
-    setIsExportDialogOpen(true);
+    dispatch({ type: "set_export_dialog_open", isOpen: true });
   }, []);
 
   return {
-    activeMode,
-    setActiveMode,
-    savedPalette: localizedSavedPalette,
-    draftRows,
-    knownCodeOptions,
-    knownCodeLabelsByCode,
-    openCodeSelectRowId,
-    isImportDialogOpen,
-    isExportDialogOpen,
-    importBase64,
-    exportBase64,
-    statusMessage,
-    allEditErrors,
-    hasUnsavedChanges,
-    isSaveDisabled,
-    isExportBlocked,
-    handleDraftFieldChange,
-    handleCodeSelectOpenChange,
-    handleKnownCodeChange,
-    handleAddRow,
-    handleRemoveRow,
-    handleSave,
-    handleResetToDefault,
-    handleClearPalette,
-    handleImportToDraft,
-    handleCopyExport,
-    handleImportBase64Change,
-    handleImportDialogOpenChange,
-    handleExportDialogOpenChange,
-    openImportDialog,
-    openExportDialog,
+    state: {
+      activeMode: state.activeMode,
+      savedPalette: localizedSavedPalette,
+      draftRows: state.draftRows,
+      openCodeSelectRowId: state.openCodeSelectRowId,
+      isImportDialogOpen: state.isImportDialogOpen,
+      isExportDialogOpen: state.isExportDialogOpen,
+      importBase64: state.importBase64,
+      statusMessage: state.statusMessage,
+    },
+    derived: {
+      knownCodeOptions,
+      knownCodeLabelsByCode,
+      exportBase64,
+      allEditErrors,
+      hasUnsavedChanges,
+      isSaveDisabled,
+      isExportBlocked,
+    },
+    actions: {
+      setActiveMode,
+      handleDraftFieldChange,
+      handleCodeSelectOpenChange,
+      handleKnownCodeChange,
+      handleAddRow,
+      handleRemoveRow,
+      handleSave,
+      handleResetToDefault,
+      handleClearPalette,
+      handleImportToDraft,
+      handleCopyExport,
+      handleImportBase64Change,
+      handleImportDialogOpenChange,
+      handleExportDialogOpenChange,
+      openImportDialog,
+      openExportDialog,
+    },
   };
 };
