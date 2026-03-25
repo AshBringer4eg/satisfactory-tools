@@ -1,16 +1,22 @@
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { useState } from "react";
 import ColorsTab from "@/components/ColorsTab";
 import AppHeader from "@/components/layout/AppHeader";
 import AppTabBar from "@/components/layout/AppTabBar";
+import AppTabContent from "@/components/layout/AppTabContent";
 import { type AppTabId } from "@/config/tabs";
 import { colorPalettes } from "@/data/colors";
 import { setLocale } from "@/i18n";
 
 const TabBarHarness = () => {
   const [activeTab, setActiveTab] = useState<AppTabId>("solo");
-  return <AppTabBar activeTab={activeTab} onTabChange={setActiveTab} />;
+  return (
+    <>
+      <AppTabBar activeTab={activeTab} onTabChange={setActiveTab} />
+      <AppTabContent activeTab={activeTab} />
+    </>
+  );
 };
 
 describe("accessibility controls", () => {
@@ -43,7 +49,7 @@ describe("accessibility controls", () => {
     expect(enButton).toHaveAttribute("aria-pressed", "false");
   });
 
-  it("uses tab roles and supports arrow-key navigation", () => {
+  it("uses tab roles and supports arrow-key navigation", async () => {
     render(<TabBarHarness />);
 
     const tabs = screen.getAllByRole("tab");
@@ -60,6 +66,13 @@ describe("accessibility controls", () => {
 
     expect(secondTab).toHaveAttribute("aria-selected", "true");
     expect(firstTab).toHaveAttribute("aria-selected", "false");
+    expect(secondTab).toHaveAttribute("aria-controls", "app-tabpanel-duo");
+    await waitFor(() =>
+      expect(screen.getByRole("tabpanel")).toHaveAttribute(
+        "aria-labelledby",
+        "app-tab-duo",
+      ),
+    );
   });
 
   it("provides accessible search label and category toggle state", () => {

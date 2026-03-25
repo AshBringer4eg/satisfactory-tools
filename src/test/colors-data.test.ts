@@ -69,6 +69,23 @@ describe("colors file import/export", () => {
     ).toThrow(/Invalid hex/);
   });
 
+  it("falls back to CATEGORY_OTHER when categories are empty", () => {
+    const palette = importColorsFile({
+      schemaVersion: 1,
+      paletteCode: "empty-categories",
+      colors: [
+        {
+          defaultName: "No Category",
+          hex: "#111111",
+          secondaryColor: "#222222",
+          categories: [],
+        },
+      ],
+    });
+
+    expect(palette.colorRecords[0].categories).toEqual(["CATEGORY_OTHER"]);
+  });
+
   it("exports schemaVersion 1 format", () => {
     const palette = importColorsFile({
       schemaVersion: 1,

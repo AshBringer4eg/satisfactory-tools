@@ -7,6 +7,7 @@ import {
   getOwnPaletteCode,
   getOwnPaletteKnownCodeOptions,
   importOwnPaletteBase64ToDraftRows,
+  importOwnPaletteObjectToDraftRows,
   validateAndNormalizeOwnPaletteDraft,
   type OwnPaletteDraftRow,
 } from "@/data/own-palette";
@@ -115,5 +116,77 @@ describe("own palette draft helpers", () => {
     expect(imported.errors.some((error) => /invalid colors field/i.test(error))).toBe(
       true,
     );
+  });
+
+  it("requires defaultName when selectedCode is custom", () => {
+    const rows: OwnPaletteDraftRow[] = [
+      {
+        id: "row-1",
+        selectedCode: null,
+        defaultName: "",
+        hex: "#112233",
+        secondaryColor: "#445566",
+      },
+    ];
+
+    const result = validateAndNormalizeOwnPaletteDraft(rows);
+
+    expect(result.normalizedFile).toBeNull();
+    expect(
+      result.errors.some((error) =>
+        /defaultName is required when no known code is selected/i.test(error),
+      ),
+    ).toBe(true);
+  });
+
+  it("normalizes known selected code and falls back to known name", () => {
+    const known = getOwnPaletteKnownCodeOptions()[0];
+    const rows: OwnPaletteDraftRow[] = [
+      {
+        id: "row-1",
+        selectedCode: known.code.toLowerCase() as OwnPaletteDraftRow["selectedCode"],
+        defaultName: "",
+        hex: "#112233",
+        secondaryColor: "#445566",
+      },
+    ];
+
+    const result = validateAndNormalizeOwnPaletteDraft(rows);
+
+    expect(result.errors).toEqual([]);
+    expect(result.normalizedFile?.colors[0].code).toBe(known.code);
+    expect(result.normalizedFile?.colors[0].defaultName).toBe(known.defaultName);
+  });
+
+  it("rejects decoded base64 content that is not JSON", () => {
+    const rawText = "not-json";
+    const encoded = Buffer.from(rawText, "utf-8").toString("base64");
+
+    const imported = importOwnPaletteBase64ToDraftRows(encoded);
+
+    expect(imported.rows).toBeNull();
+    expect(imported.errors).toContain("Decoded base64 is not valid JSON.");
+  });
+
+  it("rejects import objects with non-string categories entries", () => {
+    const imported = importOwnPaletteObjectToDraftRows({
+      schemaVersion: 1,
+      paletteCode: "external",
+      colors: [
+        {
+          defaultName: "Custom",
+          hex: "#112233",
+          secondaryColor: "#445566",
+          categories: ["CATEGORY_OTHER", 1],
+        },
+      ],
+    });
+
+    expect(imported.rows).toBeNull();
+    expect(
+      imported.errors.some((error) =>
+        /categories must contain strings only/i.test(error),
+      ),
+    ).toBe(true);
   });
 });
