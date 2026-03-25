@@ -1,6 +1,7 @@
 import { memo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Trash2 } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -197,8 +198,10 @@ const OwnEditRow = memo(
             variant="outline"
             onClick={() => onRemoveRow(row.id)}
             aria-label={`${removeLabel} row ${rowIndex + 1}`}
+            className="px-2 lg:px-3"
           >
-            {removeLabel}
+            <Trash2 aria-hidden="true" />
+            <span className="hidden lg:inline">{removeLabel}</span>
           </Button>
         </TableCell>
       </TableRow>

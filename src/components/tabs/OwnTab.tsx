@@ -1,7 +1,19 @@
 import ColorsTab from "@/components/ColorsTab";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, Palette, Pipette } from "lucide-react";
+import {
+  Eraser,
+  ExternalLink,
+  Eye,
+  FileDown,
+  FileUp,
+  Palette,
+  Pencil,
+  Pipette,
+  Plus,
+  RotateCcw,
+  Save,
+} from "lucide-react";
 import {
   Table,
   TableBody,
@@ -73,8 +85,11 @@ const OwnTab = () => {
                 variant="outline"
                 onClick={() => setActiveMode("edit")}
                 aria-pressed={false}
+                aria-label={t("ownTab.mode.edit")}
+                className="px-2 lg:px-3"
               >
-                {t("ownTab.mode.edit")}
+                <Pencil aria-hidden="true" />
+                <span className="hidden lg:inline">{t("ownTab.mode.edit")}</span>
               </Button>
 
               <div className="font-mono text-[11px] text-muted-foreground">
@@ -138,8 +153,15 @@ const OwnTab = () => {
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex flex-wrap items-center gap-2">
               {!isSaveDisabled ? (
-                <Button type="button" size="sm" onClick={handleSave}>
-                  {t("ownTab.edit.save")}
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={handleSave}
+                  aria-label={t("ownTab.edit.save")}
+                  className="px-2 lg:px-3"
+                >
+                  <Save aria-hidden="true" />
+                  <span className="hidden lg:inline">{t("ownTab.edit.save")}</span>
                 </Button>
               ) : null}
               {!hasUnsavedChanges ? (
@@ -148,8 +170,11 @@ const OwnTab = () => {
                   size="sm"
                   onClick={() => setActiveMode("use")}
                   aria-pressed={false}
+                  aria-label={t("ownTab.mode.use")}
+                  className="px-2 lg:px-3"
                 >
-                  {t("ownTab.mode.use")}
+                  <Eye aria-hidden="true" />
+                  <span className="hidden lg:inline">{t("ownTab.mode.use")}</span>
                 </Button>
               ) : null}
               <Button
@@ -157,8 +182,11 @@ const OwnTab = () => {
                 size="sm"
                 variant="outline"
                 onClick={openImportDialog}
+                aria-label={t("ownTab.edit.import.button")}
+                className="px-2 lg:px-3"
               >
-                {t("ownTab.edit.import.button")}
+                <FileUp aria-hidden="true" />
+                <span className="hidden lg:inline">{t("ownTab.edit.import.button")}</span>
               </Button>
               <Button
                 type="button"
@@ -166,10 +194,13 @@ const OwnTab = () => {
                 variant="outline"
                 onClick={openExportDialog}
                 disabled={isExportBlocked}
+                aria-label={t("ownTab.edit.export.button")}
+                className="px-2 lg:px-3"
               >
-                {t("ownTab.edit.export.button")}
+                <FileDown aria-hidden="true" />
+                <span className="hidden lg:inline">{t("ownTab.edit.export.button")}</span>
               </Button>
-              <Button size="sm" variant="outline" asChild>
+              <Button size="sm" variant="outline" asChild className="px-2 xl:px-3">
                 <a
                   href="https://www.canva.com/colors/color-wheel"
                   target="_blank"
@@ -177,11 +208,11 @@ const OwnTab = () => {
                   aria-label="Open Canva Color Wheel in a new tab"
                 >
                   <Palette className="size-3.5" aria-hidden="true" />
-                  Color Wheel
-                  <ExternalLink className="size-3.5" aria-hidden="true" />
+                  <span className="hidden xl:inline">Color Wheel</span>
+                  <ExternalLink className="hidden xl:inline size-3.5" aria-hidden="true" />
                 </a>
               </Button>
-              <Button size="sm" variant="outline" asChild>
+              <Button size="sm" variant="outline" asChild className="px-2 xl:px-3">
                 <a
                   href="https://htmlcolorcodes.com/color-picker/"
                   target="_blank"
@@ -189,8 +220,8 @@ const OwnTab = () => {
                   aria-label="Open HTML Color Codes Color Picker in a new tab"
                 >
                   <Pipette className="size-3.5" aria-hidden="true" />
-                  Color Picker
-                  <ExternalLink className="size-3.5" aria-hidden="true" />
+                  <span className="hidden xl:inline">Color Picker</span>
+                  <ExternalLink className="hidden xl:inline size-3.5" aria-hidden="true" />
                 </a>
               </Button>
             </div>
@@ -201,24 +232,33 @@ const OwnTab = () => {
                 size="sm"
                 variant="outline"
                 onClick={handleAddRow}
+                aria-label={t("ownTab.edit.addRow")}
+                className="px-2 lg:px-3"
               >
-                {t("ownTab.edit.addRow")}
+                <Plus aria-hidden="true" />
+                <span className="hidden lg:inline">{t("ownTab.edit.addRow")}</span>
               </Button>
               <Button
                 type="button"
                 size="sm"
                 variant="outline"
                 onClick={handleClearPalette}
+                aria-label={t("ownTab.edit.clear")}
+                className="px-2 lg:px-3"
               >
-                {t("ownTab.edit.clear")}
+                <Eraser aria-hidden="true" />
+                <span className="hidden lg:inline">{t("ownTab.edit.clear")}</span>
               </Button>
               <Button
                 type="button"
                 size="sm"
                 variant="outline"
                 onClick={handleResetToDefault}
+                aria-label={t("ownTab.edit.reset")}
+                className="px-2 lg:px-3"
               >
-                {t("ownTab.edit.reset")}
+                <RotateCcw aria-hidden="true" />
+                <span className="hidden lg:inline">{t("ownTab.edit.reset")}</span>
               </Button>
             </div>
           </div>
