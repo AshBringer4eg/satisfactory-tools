@@ -326,6 +326,29 @@ test.describe("OWN tab", () => {
       .toBe(exportValue);
   });
 
+  test("export from fresh edit mode provides default saved palette", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await openOwnEdit(page);
+
+    await expect(getOwnExportButton(page)).toBeEnabled();
+    await getOwnExportButton(page).click();
+    await expect(
+      page.getByRole("dialog", { name: /Export \(Saved Palette\)/i }),
+    ).toBeVisible();
+
+    const exportValue = await page
+      .getByTestId("own-export-base64-output")
+      .inputValue();
+    expect(exportValue.length).toBeGreaterThan(0);
+
+    await page.getByRole("button", { name: /^Close$/i }).click();
+    await expect(
+      page.getByRole("dialog", { name: /Export \(Saved Palette\)/i }),
+    ).toHaveCount(0);
+  });
+
   test("use mode keeps copy counters in dedicated own storage key", async ({
     page,
   }) => {

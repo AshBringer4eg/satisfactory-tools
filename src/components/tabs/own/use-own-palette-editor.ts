@@ -43,9 +43,10 @@ const readInitialOwnState = (): OwnInitialState => {
   const fallbackPalette = createDefaultOwnPalette();
   const fallbackDraftRows =
     createOwnPaletteDraftRowsFromPalette(fallbackPalette);
+  const fallbackBuilt = buildOwnPaletteFromDraftRows(fallbackDraftRows);
   const fallbackState: OwnInitialState = {
-    savedPalette: fallbackPalette,
-    savedPaletteFile: null,
+    savedPalette: fallbackBuilt.palette ?? fallbackPalette,
+    savedPaletteFile: fallbackBuilt.normalizedFile,
     draftRows: fallbackDraftRows,
     loadErrors: [],
   };
