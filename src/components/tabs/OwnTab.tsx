@@ -1,6 +1,7 @@
 import ColorsTab from "@/components/ColorsTab";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { ExternalLink, Palette, Pipette } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -168,6 +169,30 @@ const OwnTab = () => {
               >
                 {t("ownTab.edit.export.button")}
               </Button>
+              <Button size="sm" variant="outline" asChild>
+                <a
+                  href="https://www.canva.com/colors/color-wheel"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Open Canva Color Wheel in a new tab"
+                >
+                  <Palette className="size-3.5" aria-hidden="true" />
+                  Color Wheel
+                  <ExternalLink className="size-3.5" aria-hidden="true" />
+                </a>
+              </Button>
+              <Button size="sm" variant="outline" asChild>
+                <a
+                  href="https://htmlcolorcodes.com/color-picker/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Open HTML Color Codes Color Picker in a new tab"
+                >
+                  <Pipette className="size-3.5" aria-hidden="true" />
+                  Color Picker
+                  <ExternalLink className="size-3.5" aria-hidden="true" />
+                </a>
+              </Button>
             </div>
 
             <div className="flex flex-wrap items-center gap-2 ml-auto">
@@ -220,8 +245,7 @@ const OwnTab = () => {
                 knownCodeOptions={knownCodeOptions}
                 selectedCodeLabel={
                   row.selectedCode
-                    ? (knownCodeLabelsByCode.get(row.selectedCode) ??
-                      row.selectedCode)
+                    ? (knownCodeLabelsByCode.get(row.selectedCode) ?? null)
                     : null
                 }
                 isCodeSelectOpen={openCodeSelectRowId === row.id}

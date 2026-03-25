@@ -92,6 +92,11 @@ const OwnEditRow = memo(
   }: OwnEditRowProps) => {
     const primaryHex = row.hex.trim();
     const primaryPreviewIsValid = isHexColor(primaryHex);
+    const hasKnownSelectedCode = Boolean(row.selectedCode && selectedCodeLabel);
+    const selectedCodeValue = hasKnownSelectedCode && row.selectedCode
+      ? row.selectedCode
+      : OWN_CUSTOM_CODE_SENTINEL;
+    const selectedCodeText = selectedCodeLabel ?? row.defaultName;
 
     const secondaryRaw = row.secondaryColor.trim();
     const secondaryPreviewHex = secondaryRaw || primaryHex;
@@ -101,7 +106,7 @@ const OwnEditRow = memo(
       <TableRow>
         <TableCell className="min-w-[220px]">
           <Select
-            value={row.selectedCode ?? OWN_CUSTOM_CODE_SENTINEL}
+            value={selectedCodeValue}
             open={isCodeSelectOpen}
             onOpenChange={(nextOpen) =>
               onCodeSelectOpenChange(row.id, nextOpen)
@@ -133,13 +138,13 @@ const OwnEditRow = memo(
           </Select>
         </TableCell>
         <TableCell className="min-w-[200px]">
-          {row.selectedCode ? (
+          {hasKnownSelectedCode ? (
             <div
               data-testid="own-row-default-name-label"
               className="h-10 px-3 border border-input rounded-md bg-muted/30 flex items-center text-sm"
-              title={selectedCodeLabel ?? row.defaultName}
+              title={selectedCodeText}
             >
-              {selectedCodeLabel ?? row.defaultName}
+              {selectedCodeText}
             </div>
           ) : (
             <Input
