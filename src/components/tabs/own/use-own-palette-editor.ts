@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useReducer } from "react";
+import { useMutation } from "@tanstack/react-query";
 import {
   buildOwnPaletteFromDraftRows,
   createDefaultOwnPalette,
@@ -190,6 +191,52 @@ export const useOwnPaletteEditor = () => {
     dispatch({ type: "set_active_mode", mode });
   }, []);
 
+  const { mutate: importDraftRows } = useMutation({
+    mutationFn: async (rawBase64: string) =>
+      importOwnPaletteBase64ToDraftRows(rawBase64),
+    onSuccess: (imported) => {
+      if (!imported.rows || imported.errors.length > 0) {
+        dispatch({
+          type: "apply_import_failure",
+          errors:
+            imported.errors.length > 0
+              ? imported.errors
+              : [t("ownTab.edit.errors.importUnknown")],
+          statusMessage: t("ownTab.edit.status.importFailed"),
+        });
+        return;
+      }
+
+      dispatch({
+        type: "apply_import_success",
+        rows: imported.rows,
+        statusMessage: t("ownTab.edit.status.importLoaded"),
+      });
+    },
+  });
+
+  const { mutate: copyExportBase64 } = useMutation({
+    mutationFn: copyTextToClipboard,
+    onSuccess: (copyResult) => {
+      if (copyResult === "copied") {
+        dispatch({
+          type: "set_status_message",
+          statusMessage: t("ownTab.edit.status.exportCopied"),
+        });
+        dispatch({ type: "set_export_dialog_open", isOpen: false });
+        return;
+      }
+
+      dispatch({
+        type: "set_status_message",
+        statusMessage:
+          copyResult === "unavailable"
+            ? t("ownTab.edit.status.copyUnavailable")
+            : t("ownTab.edit.status.copyFailed"),
+      });
+    },
+  });
+
   const applySavedPalette = useCallback(
     (params: ApplySavedPaletteParams) => {
       dispatch({
@@ -304,47 +351,13 @@ export const useOwnPaletteEditor = () => {
 
   const handleImportToDraft = useCallback(() => {
     dispatch({ type: "set_import_dialog_open", isOpen: false });
-    const imported = importOwnPaletteBase64ToDraftRows(state.importBase64);
-    if (!imported.rows || imported.errors.length > 0) {
-      dispatch({
-        type: "apply_import_failure",
-        errors:
-          imported.errors.length > 0
-            ? imported.errors
-            : [t("ownTab.edit.errors.importUnknown")],
-        statusMessage: t("ownTab.edit.status.importFailed"),
-      });
-      return;
-    }
-
-    dispatch({
-      type: "apply_import_success",
-      rows: imported.rows,
-      statusMessage: t("ownTab.edit.status.importLoaded"),
-    });
-  }, [state.importBase64]);
+    importDraftRows(state.importBase64);
+  }, [importDraftRows, state.importBase64]);
 
   const handleCopyExport = useCallback(() => {
     if (!exportBase64) return;
-    void copyTextToClipboard(exportBase64).then((copyResult) => {
-      if (copyResult === "copied") {
-        dispatch({
-          type: "set_status_message",
-          statusMessage: t("ownTab.edit.status.exportCopied"),
-        });
-        dispatch({ type: "set_export_dialog_open", isOpen: false });
-        return;
-      }
-
-      dispatch({
-        type: "set_status_message",
-        statusMessage:
-          copyResult === "unavailable"
-            ? t("ownTab.edit.status.copyUnavailable")
-            : t("ownTab.edit.status.copyFailed"),
-      });
-    });
-  }, [exportBase64]);
+    copyExportBase64(exportBase64);
+  }, [copyExportBase64, exportBase64]);
 
   const handleImportBase64Change = useCallback((value: string) => {
     dispatch({ type: "set_import_base64", value });
