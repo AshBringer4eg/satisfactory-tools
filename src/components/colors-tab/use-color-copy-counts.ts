@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
-import type { ColorCode, SatisfactoryColor } from "@/data/colors";
+import type { ColorCode } from "@/data/colors";
 import { RESET_COPY_COUNTS_EVENT } from "@/config/storage";
-import { getFilteredColors } from "./filtering";
+import { getFilteredColors, type IndexedSearchColor } from "./filtering";
 import type { CopyCounts, ReorderCommit } from "./types";
 
 interface UseColorCopyCountsParams {
   storageKey: string;
-  allColors: SatisfactoryColor[];
-  search: string;
+  indexedColors: IndexedSearchColor[];
+  searchQuery: string;
   activeCategoryCodes: Set<string>;
   onCopyCountCommitted?: (event: ReorderCommit) => void;
   onReset?: () => void;
@@ -44,8 +44,8 @@ const readCopyCounts = (storageKey: string): CopyCounts => {
 
 export const useColorCopyCounts = ({
   storageKey,
-  allColors,
-  search,
+  indexedColors,
+  searchQuery,
   activeCategoryCodes,
   onCopyCountCommitted,
   onReset,
@@ -104,8 +104,8 @@ export const useColorCopyCounts = ({
       });
 
       const currentFiltered = getFilteredColors(
-        allColors,
-        search,
+        indexedColors,
+        searchQuery,
         activeCategoryCodes,
         copyCounts,
       );
@@ -117,8 +117,8 @@ export const useColorCopyCounts = ({
         [colorCode]: (copyCounts[colorCode] ?? 0) + pendingCount,
       };
       const nextFiltered = getFilteredColors(
-        allColors,
-        search,
+        indexedColors,
+        searchQuery,
         activeCategoryCodes,
         nextCounts,
       );
@@ -145,8 +145,8 @@ export const useColorCopyCounts = ({
     },
     [
       pendingCopyCounts,
-      allColors,
-      search,
+      indexedColors,
+      searchQuery,
       activeCategoryCodes,
       copyCounts,
       onCopyCountCommitted,

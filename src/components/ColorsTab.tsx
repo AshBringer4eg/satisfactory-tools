@@ -1,11 +1,20 @@
-import { useCallback, useMemo, useRef, type ReactNode } from "react";
+import {
+  useCallback,
+  useDeferredValue,
+  useMemo,
+  useRef,
+  type ReactNode,
+} from "react";
 import type { SatisfactoryPalette } from "@/data/colors";
 import { DEFAULT_COPY_COUNTS_STORAGE_KEY } from "@/config/storage";
 import { t, useLocale } from "@/i18n";
 import ColorsTabFilterControls from "./colors-tab/ColorsTabFilterControls";
 import ColorsTabFloatingSwatch from "./colors-tab/ColorsTabFloatingSwatch";
 import ColorsTabGrid from "./colors-tab/ColorsTabGrid";
-import { getFilteredColors } from "./colors-tab/filtering";
+import {
+  createIndexedSearchColors,
+  getFilteredColors,
+} from "./colors-tab/filtering";
 import type { ReorderCommit } from "./colors-tab/types";
 import { useColorCopyCounts } from "./colors-tab/use-color-copy-counts";
 import { useColorFilters } from "./colors-tab/use-color-filters";
@@ -29,6 +38,7 @@ const ColorsTab = ({
   const {
     colors,
     search,
+    searchQuery,
     setSearch,
     clearSearch,
     activeCategories,
@@ -39,6 +49,11 @@ const ColorsTab = ({
 
   const startReorderRef = useRef((_params: ReorderCommit) => {});
   const resetReorderRef = useRef(() => {});
+  const deferredSearchQuery = useDeferredValue(searchQuery);
+  const indexedColors = useMemo(
+    () => createIndexedSearchColors(colors),
+    [colors],
+  );
 
   const handleCopyCountCommitted = useCallback((params: ReorderCommit) => {
     startReorderRef.current(params);
@@ -55,16 +70,22 @@ const ColorsTab = ({
     flushQueuedCopyCount,
   } = useColorCopyCounts({
     storageKey: copyCountsStorageKey,
-    allColors: colors,
-    search,
+    indexedColors,
+    searchQuery: deferredSearchQuery,
     activeCategoryCodes: activeCategories,
     onCopyCountCommitted: handleCopyCountCommitted,
     onReset: handleCopyCountsReset,
   });
 
   const filteredColors = useMemo(
-    () => getFilteredColors(colors, search, activeCategories, copyCounts),
-    [colors, search, activeCategories, copyCounts],
+    () =>
+      getFilteredColors(
+        indexedColors,
+        deferredSearchQuery,
+        activeCategories,
+        copyCounts,
+      ),
+    [indexedColors, deferredSearchQuery, activeCategories, copyCounts],
   );
 
   const {

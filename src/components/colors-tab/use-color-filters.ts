@@ -1,11 +1,13 @@
 import { useCallback, useMemo, useState } from "react";
 import type { SatisfactoryPalette } from "@/data/colors";
+import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import { getCategoryCountsByCode } from "./filtering";
 import type { CategoryFilterOption } from "./types";
 
 interface UseColorFiltersResult {
   colors: SatisfactoryPalette["colors"];
   search: string;
+  searchQuery: string;
   setSearch: (value: string) => void;
   clearSearch: () => void;
   activeCategories: Set<string>;
@@ -19,6 +21,7 @@ export const useColorFilters = (
 ): UseColorFiltersResult => {
   const colors = palette.colors;
   const [search, setSearch] = useState("");
+  const debouncedSearch = useDebouncedValue(search, 120);
   const [activeCategories, setActiveCategories] = useState<Set<string>>(
     new Set(),
   );
@@ -35,6 +38,11 @@ export const useColorFilters = (
   const categoryCountsByCode = useMemo(
     () => getCategoryCountsByCode(colors),
     [colors],
+  );
+
+  const searchQuery = useMemo(
+    () => debouncedSearch.trim().toLowerCase(),
+    [debouncedSearch],
   );
 
   const clearSearch = useCallback(() => {
@@ -55,6 +63,7 @@ export const useColorFilters = (
   return {
     colors,
     search,
+    searchQuery,
     setSearch,
     clearSearch,
     activeCategories,

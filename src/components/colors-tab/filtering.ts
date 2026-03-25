@@ -1,32 +1,48 @@
 import type { SatisfactoryColor } from "@/data/colors";
 import type { CopyCounts } from "./types";
 
-export const getFilteredColors = (
+export interface IndexedSearchColor {
+  color: SatisfactoryColor;
+  searchableText: string;
+}
+
+export const createIndexedSearchColors = (
   allColors: SatisfactoryColor[],
-  search: string,
+): IndexedSearchColor[] =>
+  allColors.map((color) => ({
+    color,
+    searchableText: `${color.name} ${color.hex} ${color.code}`.toLowerCase(),
+  }));
+
+export const getFilteredColors = (
+  indexedColors: IndexedSearchColor[],
+  normalizedSearch: string,
   activeCategoryCodes: Set<string>,
   counts: CopyCounts,
 ) => {
-  const normalizedSearch = search.toLowerCase();
+  const filtered: SatisfactoryColor[] = [];
 
-  return allColors
-    .filter((color) => {
-      const matchSearch =
-        !normalizedSearch ||
-        color.name.toLowerCase().includes(normalizedSearch) ||
-        color.hex.toLowerCase().includes(normalizedSearch);
-      const matchCategory =
-        activeCategoryCodes.size === 0 ||
-        color.categoryCodes.some((categoryCode) =>
-          activeCategoryCodes.has(categoryCode),
-        );
-      return matchSearch && matchCategory;
-    })
-    .sort((a, b) => {
-      const byCount = (counts[b.code] ?? 0) - (counts[a.code] ?? 0);
-      if (byCount !== 0) return byCount;
-      return a.name.localeCompare(b.name);
-    });
+  for (const entry of indexedColors) {
+    const { color, searchableText } = entry;
+    const matchSearch =
+      normalizedSearch.length === 0 || searchableText.includes(normalizedSearch);
+    if (!matchSearch) continue;
+
+    const matchCategory =
+      activeCategoryCodes.size === 0 ||
+      color.categoryCodes.some((categoryCode) =>
+        activeCategoryCodes.has(categoryCode),
+      );
+    if (!matchCategory) continue;
+
+    filtered.push(color);
+  }
+
+  return filtered.sort((a, b) => {
+    const byCount = (counts[b.code] ?? 0) - (counts[a.code] ?? 0);
+    if (byCount !== 0) return byCount;
+    return a.name.localeCompare(b.name);
+  });
 };
 
 export const getCategoryCountsByCode = (colors: SatisfactoryColor[]) => {
