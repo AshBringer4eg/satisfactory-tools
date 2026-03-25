@@ -5,6 +5,7 @@ import {
   Eraser,
   ExternalLink,
   Eye,
+  EyeOff,
   FileDown,
   FileUp,
   Palette,
@@ -25,11 +26,14 @@ import {
   OWN_COPY_COUNTS_STORAGE_KEY,
 } from "@/config/storage";
 import { t } from "@/i18n";
+import { useState } from "react";
 import OwnEditDialogs from "./own/OwnEditDialogs";
 import OwnEditRow from "./own/OwnEditRow";
 import { useOwnPaletteEditor } from "./own/use-own-palette-editor";
 
 const OwnTab = () => {
+  const [isDefaultNameColumnVisible, setIsDefaultNameColumnVisible] =
+    useState(true);
   const {
     state: {
       activeMode,
@@ -103,7 +107,7 @@ const OwnTab = () => {
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex h-full min-h-0 flex-col gap-4">
       <OwnEditDialogs
         isImportDialogOpen={isImportDialogOpen}
         onImportDialogOpenChange={handleImportDialogOpenChange}
@@ -148,7 +152,7 @@ const OwnTab = () => {
         </Alert>
       )}
 
-      <div className="border border-border rounded-sm overflow-hidden">
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-sm border border-border">
         <div className="px-3 py-2 border-b bg-background sticky top-0 z-20">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex flex-wrap items-center gap-2">
@@ -264,14 +268,43 @@ const OwnTab = () => {
           </div>
         </div>
 
-        <Table containerClassName="max-h-[60vh]">
-          <TableHeader className="[&_th]:sticky [&_th]:top-0 [&_th]:z-10 [&_th]:bg-background">
+        <Table className="min-w-[900px]" containerClassName="min-h-0 flex-1">
+          <TableHeader className="[&_th]:sticky [&_th]:top-0 [&_th]:z-10 [&_th]:bg-background [&_th]:px-2 md:[&_th]:px-4">
             <TableRow>
               <TableHead>{t("ownTab.edit.columns.code")}</TableHead>
-              <TableHead>{t("ownTab.edit.columns.defaultName")}</TableHead>
+              {isDefaultNameColumnVisible ? (
+                <TableHead>
+                  <div className="flex items-center gap-2">
+                    <span>{t("ownTab.edit.columns.defaultName")}</span>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="ghost"
+                      className="h-6 w-6 p-0"
+                      aria-label="Hide default name column"
+                      onClick={() => setIsDefaultNameColumnVisible(false)}
+                    >
+                      <EyeOff aria-hidden="true" />
+                    </Button>
+                  </div>
+                </TableHead>
+              ) : (
+                <TableHead>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="ghost"
+                    className="h-6 px-2"
+                    aria-label="Show default name column"
+                    onClick={() => setIsDefaultNameColumnVisible(true)}
+                  >
+                    <Eye aria-hidden="true" />
+                  </Button>
+                </TableHead>
+              )}
               <TableHead>{t("ownTab.edit.columns.primary")}</TableHead>
               <TableHead>{t("ownTab.edit.columns.secondary")}</TableHead>
-              <TableHead className="w-[110px]">
+              <TableHead className="lg:w-[110px]">
                 {t("ownTab.edit.columns.actions")}
               </TableHead>
             </TableRow>
@@ -289,6 +322,7 @@ const OwnTab = () => {
                     : null
                 }
                 isCodeSelectOpen={openCodeSelectRowId === row.id}
+                isDefaultNameColumnVisible={isDefaultNameColumnVisible}
                 writeYourOwnLabel={t("ownTab.edit.writeYourOwn")}
                 defaultNamePlaceholder={t("ownTab.edit.placeholders.defaultName")}
                 secondaryPlaceholder={t(

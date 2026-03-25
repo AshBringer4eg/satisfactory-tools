@@ -31,6 +31,7 @@ type OwnEditRowProps = {
   knownCodeOptions: KnownCodeOption[];
   selectedCodeLabel: string | null;
   isCodeSelectOpen: boolean;
+  isDefaultNameColumnVisible: boolean;
   writeYourOwnLabel: string;
   defaultNamePlaceholder: string;
   secondaryPlaceholder: string;
@@ -65,7 +66,7 @@ const ColorInputWithPreview = ({
       className="font-mono"
     />
     <div
-      className="h-8 w-8 shrink-0 rounded-sm border border-border grid place-items-center font-mono text-[9px] text-muted-foreground"
+      className="hidden h-8 w-8 shrink-0 rounded-sm border border-border sm:grid place-items-center font-mono text-[9px] text-muted-foreground"
       style={previewIsValid ? { backgroundColor: previewHex } : undefined}
       title={previewLabel}
       aria-label={previewLabel}
@@ -82,6 +83,7 @@ const OwnEditRow = memo(
     knownCodeOptions,
     selectedCodeLabel,
     isCodeSelectOpen,
+    isDefaultNameColumnVisible,
     writeYourOwnLabel,
     defaultNamePlaceholder,
     secondaryPlaceholder,
@@ -105,7 +107,7 @@ const OwnEditRow = memo(
 
     return (
       <TableRow>
-        <TableCell className="min-w-[220px]">
+        <TableCell className="p-2 md:p-4 lg:min-w-[220px]">
           <Select
             value={selectedCodeValue}
             open={isCodeSelectOpen}
@@ -138,28 +140,30 @@ const OwnEditRow = memo(
             </SelectContent>
           </Select>
         </TableCell>
-        <TableCell className="min-w-[200px]">
-          {hasKnownSelectedCode ? (
-            <div
-              data-testid="own-row-default-name-label"
-              className="h-10 px-3 border border-input rounded-md bg-muted/30 flex items-center text-sm"
-              title={selectedCodeText}
-            >
-              {selectedCodeText}
-            </div>
-          ) : (
-            <Input
-              value={row.defaultName}
-              onChange={(event) =>
-                onDraftFieldChange(row.id, "defaultName", event.target.value)
-              }
-              placeholder={defaultNamePlaceholder}
-              aria-label={`Default name for row ${rowIndex + 1}`}
-              data-testid="own-row-default-name-input"
-            />
-          )}
-        </TableCell>
-        <TableCell className="min-w-[190px]">
+        {isDefaultNameColumnVisible ? (
+          <TableCell className="p-2 md:p-4 lg:min-w-[200px]">
+            {hasKnownSelectedCode ? (
+              <div
+                data-testid="own-row-default-name-label"
+                className="h-10 px-3 border border-input rounded-md bg-muted/30 flex items-center text-sm"
+                title={selectedCodeText}
+              >
+                {selectedCodeText}
+              </div>
+            ) : (
+              <Input
+                value={row.defaultName}
+                onChange={(event) =>
+                  onDraftFieldChange(row.id, "defaultName", event.target.value)
+                }
+                placeholder={defaultNamePlaceholder}
+                aria-label={`Default name for row ${rowIndex + 1}`}
+                data-testid="own-row-default-name-input"
+              />
+            )}
+          </TableCell>
+        ) : null}
+        <TableCell className="p-2 md:p-4 lg:min-w-[190px]">
           <ColorInputWithPreview
             value={row.hex}
             onChange={(value) => onDraftFieldChange(row.id, "hex", value)}
@@ -173,7 +177,7 @@ const OwnEditRow = memo(
             }
           />
         </TableCell>
-        <TableCell className="min-w-[190px]">
+        <TableCell className="p-2 md:p-4 lg:min-w-[190px]">
           <ColorInputWithPreview
             value={row.secondaryColor}
             onChange={(value) =>
@@ -191,7 +195,7 @@ const OwnEditRow = memo(
             }
           />
         </TableCell>
-        <TableCell>
+        <TableCell className="p-2 md:p-4">
           <Button
             type="button"
             size="sm"
@@ -201,7 +205,6 @@ const OwnEditRow = memo(
             className="px-2 lg:px-3"
           >
             <Trash2 aria-hidden="true" />
-            <span className="hidden lg:inline">{removeLabel}</span>
           </Button>
         </TableCell>
       </TableRow>

@@ -18,6 +18,7 @@ const AppTabContent = ({ activeTab }: AppTabContentProps) => {
       <AnimatePresence mode="wait">
         <motion.div
           key={activeTab}
+          className="h-full min-h-0"
           id={getTabPanelId(activeTab)}
           role="tabpanel"
           aria-labelledby={getTabId(activeTab)}
