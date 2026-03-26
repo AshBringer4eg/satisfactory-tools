@@ -5,8 +5,24 @@ import type { OwnComparableDraftRow } from "./types";
 export const OWN_CUSTOM_CODE_SENTINEL = "__OWN_CUSTOM_CODE__";
 
 const HEX_COLOR_REGEX = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
+const NON_HEX_CHARACTERS_REGEX = /[^0-9a-fA-F]/g;
+const HEX_INPUT_MAX_DIGITS = 6;
 
 export const isHexColor = (value: string): boolean => HEX_COLOR_REGEX.test(value.trim());
+
+export const maskHexColorInput = (rawValue: string): string => {
+  const trimmed = rawValue.trim();
+  if (trimmed.length === 0) {
+    return "";
+  }
+
+  const rawDigits = trimmed.startsWith("#") ? trimmed.slice(1) : trimmed;
+  const digits = rawDigits
+    .replace(NON_HEX_CHARACTERS_REGEX, "")
+    .slice(0, HEX_INPUT_MAX_DIGITS);
+
+  return `#${digits}`;
+};
 
 const toCanonicalComparableRow = (
   row: OwnComparableDraftRow,

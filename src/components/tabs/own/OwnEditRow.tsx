@@ -12,7 +12,7 @@ import {
 import { TableCell, TableRow } from "@/components/ui/table";
 import type { OwnPaletteDraftRow } from "@/data/own-palette";
 import type { OwnEditableField, KnownCodeOption } from "./types";
-import { isHexColor, OWN_CUSTOM_CODE_SENTINEL } from "./utils";
+import { isHexColor, maskHexColorInput, OWN_CUSTOM_CODE_SENTINEL } from "./utils";
 
 type ColorInputWithPreviewProps = {
   value: string;
@@ -59,7 +59,7 @@ const ColorInputWithPreview = ({
   <div className="flex items-center gap-2">
     <Input
       value={value}
-      onChange={(event) => onChange(event.target.value)}
+      onChange={(event) => onChange(maskHexColorInput(event.target.value))}
       placeholder={placeholder}
       aria-label={inputAriaLabel}
       data-testid={inputTestId}

@@ -157,6 +157,25 @@ test.describe("OWN tab", () => {
     await expect(getOwnSaveButton(page)).toBeVisible();
   });
 
+  test("hex inputs apply # prefixed mask and keep only hex digits", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await openOwnEdit(page);
+
+    const firstPrimary = getOwnFirstRowPrimaryInput(page);
+    const firstSecondary = getOwnFirstRowSecondaryInput(page);
+
+    await firstPrimary.fill("12abgg9988");
+    await expect(firstPrimary).toHaveValue("#12ab99");
+
+    await firstSecondary.fill("abcd");
+    await expect(firstSecondary).toHaveValue("#abcd");
+
+    await firstSecondary.fill("   ");
+    await expect(firstSecondary).toHaveValue("");
+  });
+
   test("secondary color falls back to primary when empty on save", async ({
     page,
   }) => {

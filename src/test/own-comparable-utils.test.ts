@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { importColorsFile } from "@/data/colors";
-import { areComparableDraftRowsEqual, toComparableDraftRow, toComparableDraftRowsFromPalette } from "@/components/tabs/own/utils";
+import {
+  areComparableDraftRowsEqual,
+  maskHexColorInput,
+  toComparableDraftRow,
+  toComparableDraftRowsFromPalette,
+} from "@/components/tabs/own/utils";
 import { getOwnPaletteKnownCodeOptions, type OwnPaletteDraftRow } from "@/data/own-palette";
 
 describe("own comparable row utils", () => {
@@ -48,5 +53,15 @@ describe("own comparable row utils", () => {
 
     expect(comparable.selectedCode).toBe(known.code);
     expect(comparable.defaultName).toBe(known.defaultName);
+  });
+
+  it("masks hex input to always start with # and limits to six hex digits", () => {
+    expect(maskHexColorInput("a1b2c3")).toBe("#a1b2c3");
+    expect(maskHexColorInput("#a1b2c3ff")).toBe("#a1b2c3");
+  });
+
+  it("removes non-hex characters and supports fully clearing the input", () => {
+    expect(maskHexColorInput("zz-12")).toBe("#12");
+    expect(maskHexColorInput("   ")).toBe("");
   });
 });
