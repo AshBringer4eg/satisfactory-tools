@@ -133,6 +133,38 @@ test.describe("OWN tab", () => {
     await expect(customNameInput).toHaveValue("Custom Limestone");
   });
 
+  test("code selector hides already used known codes in current draft", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await openOwnEdit(page);
+
+    await getOwnAddRowButton(page).click();
+
+    const firstRowCodeSelect = getOwnRows(page)
+      .first()
+      .getByTestId("own-row-code-select");
+    await firstRowCodeSelect.click();
+
+    await expect(page.getByRole("option")).toHaveCount(1);
+    await expect(
+      page.getByRole("option", { name: /^Write your own$/i }),
+    ).toBeVisible();
+    await page.keyboard.press("Escape");
+
+    const secondRowCodeSelect = getOwnRows(page)
+      .nth(1)
+      .getByTestId("own-row-code-select");
+    await secondRowCodeSelect.click();
+    await page.getByRole("option", { name: /^Write your own$/i }).click();
+
+    await firstRowCodeSelect.click();
+    await expect(page.getByRole("option")).toHaveCount(2);
+    await expect(
+      page.getByRole("option", { name: /^Write your own$/i }),
+    ).toBeVisible();
+  });
+
   test("hex validation accepts #RGB and #RRGGBB and rejects malformed values", async ({
     page,
   }) => {

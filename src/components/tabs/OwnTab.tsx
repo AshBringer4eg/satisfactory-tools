@@ -26,7 +26,7 @@ import {
   OWN_COPY_COUNTS_STORAGE_KEY,
 } from "@/config/storage";
 import { t } from "@/i18n";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import OwnEditDialogs from "./own/OwnEditDialogs";
 import OwnEditRow from "./own/OwnEditRow";
 import { useOwnPaletteEditor } from "./own/use-own-palette-editor";
@@ -73,6 +73,26 @@ const OwnTab = () => {
       openExportDialog,
     },
   } = useOwnPaletteEditor();
+
+  const knownCodeOptionsByRowId = useMemo(() => {
+    const selectedKnownCodes = new Set<string>();
+    draftRows.forEach((draftRow) => {
+      if (draftRow.selectedCode) {
+        selectedKnownCodes.add(draftRow.selectedCode);
+      }
+    });
+
+    return new Map(
+      draftRows.map((draftRow) => [
+        draftRow.id,
+        knownCodeOptions.filter(
+          (option) =>
+            option.code === draftRow.selectedCode ||
+            !selectedKnownCodes.has(option.code),
+        ),
+      ]),
+    );
+  }, [draftRows, knownCodeOptions]);
 
   if (activeMode === "use") {
     return (
@@ -315,7 +335,7 @@ const OwnTab = () => {
                 key={row.id}
                 rowIndex={rowIndex}
                 row={row}
-                knownCodeOptions={knownCodeOptions}
+                knownCodeOptions={knownCodeOptionsByRowId.get(row.id) ?? []}
                 selectedCodeLabel={
                   row.selectedCode
                     ? (knownCodeLabelsByCode.get(row.selectedCode) ?? null)
