@@ -8,6 +8,22 @@
     "title": "ENGINEER_REFERENCE_TERMINAL",
     "manualInstruction": "[FACTORY MANUAL ENTRY #1337]: CLICK OR PRESS ANY SWATCH COLOR ZONE TO TRANSFER THAT HEX VALUE TO CLIPBOARD MEMORY. IF CLIPBOARD ACCESS IS RESTRICTED BY THE BROWSER, CLICK OR PRESS THE HEX TEXT FIELD TO AUTO-SELECT IT, THEN EXECUTE CTRL+C FOR MANUAL TRANSFER."
   },
+  "accessibility": {
+    "trigger": "A11Y",
+    "openAria": "Open palette accessibility checker",
+    "title": "Palette Accessibility",
+    "description": "Simulate color vision and add non-color swatch cues.",
+    "simulation": "Simulation",
+    "overlays": "Assist Overlays",
+    "symbols": "Symbols",
+    "patterns": "Patterns",
+    "modes": {
+      "normal": "Default",
+      "protan": "Protan",
+      "deutan": "Deutan",
+      "tritan": "Tritan"
+    }
+  },
   "footer": {
     "toolkit": "FICSIT_EMPLOYEE_TOOLKIT",
     "clickToCopy": "CLICK_SWATCH_TO_COPY_HEX",

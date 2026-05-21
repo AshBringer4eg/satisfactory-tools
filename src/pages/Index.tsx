@@ -4,6 +4,7 @@ import AppHeader from "@/components/layout/AppHeader";
 import AppTabBar from "@/components/layout/AppTabBar";
 import AppTabContent from "@/components/layout/AppTabContent";
 import AppFooter from "@/components/layout/AppFooter";
+import { ColorAccessibilityProvider } from "@/components/accessibility/ColorAccessibilityProvider";
 import {
   ALL_COPY_COUNT_STORAGE_KEYS,
   RESET_COPY_COUNTS_EVENT,
@@ -68,12 +69,14 @@ const Index = () => {
   }, [clearAllCopyCounters]);
 
   return (
-    <div className="min-h-screen min-w-[220px] bg-background flex flex-col" data-locale={activeLocale}>
-      <AppHeader />
-      <AppTabBar activeTab={activeTab} onTabChange={setActiveTab} />
-      <AppTabContent activeTab={activeTab} />
-      <AppFooter onResetCounters={handleResetCounters} />
-    </div>
+    <ColorAccessibilityProvider>
+      <div className="min-h-screen min-w-[220px] bg-background flex flex-col" data-locale={activeLocale}>
+        <AppHeader />
+        <AppTabBar activeTab={activeTab} onTabChange={setActiveTab} />
+        <AppTabContent activeTab={activeTab} />
+        <AppFooter onResetCounters={handleResetCounters} />
+      </div>
+    </ColorAccessibilityProvider>
   );
 };
 

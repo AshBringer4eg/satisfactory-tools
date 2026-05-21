@@ -7,6 +7,7 @@ export const TURBOFUEL_SECONDARY_HEX = "#0d0d0d";
 export const DEFAULT_COPY_COUNTS_KEY = "ficsit-color-copy-counts";
 export const OWN_COPY_COUNTS_KEY = "ficsit-color-copy-counts-own";
 export const OWN_PALETTE_STORAGE_KEY = "ownPalette";
+export const ACCESSIBILITY_SETTINGS_KEY = "ficsit-accessibility-settings";
 export const CATEGORY_ORES = "CATEGORY_ORES";
 export const CATEGORY_OTHER = "CATEGORY_OTHER";
 

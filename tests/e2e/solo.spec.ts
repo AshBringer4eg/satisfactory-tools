@@ -1,5 +1,6 @@
 import { expect, test } from "./fixtures";
 import {
+  ACCESSIBILITY_SETTINGS_KEY,
   DEFAULT_COPY_COUNTS_KEY,
   TURBOFUEL_HEX,
   TURBOFUEL_NAME,
@@ -97,5 +98,53 @@ test.describe("SOLO tab", () => {
         }, DEFAULT_COPY_COUNTS_KEY),
       )
       .toBe(true);
+  });
+
+  test("palette accessibility settings persist from the header menu", async ({
+    page,
+  }) => {
+    await page.goto("/");
+
+    await page.getByTestId("accessibility-menu-trigger").click();
+    await expect(page.getByText("Palette Accessibility")).toBeVisible();
+    await expect(page.getByText("Report")).toHaveCount(0);
+
+    await page.getByTestId("accessibility-mode-deutan").click();
+    await page.getByTestId("accessibility-symbols-toggle").click();
+    await page.getByTestId("accessibility-patterns-toggle").click();
+
+    await expect(page.getByTestId("accessibility-mode-deutan")).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    await expect(page.getByTestId("accessibility-symbols-toggle")).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    await expect(page.getByTestId("accessibility-patterns-toggle")).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+
+    await page.reload();
+    await page.getByTestId("accessibility-menu-trigger").click();
+
+    await expect(page.getByTestId("accessibility-mode-deutan")).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    await expect(page.getByTestId("accessibility-symbols-toggle")).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    await expect(page.getByTestId("accessibility-patterns-toggle")).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    await expect
+      .poll(() =>
+        page.evaluate((key) => localStorage.getItem(key), ACCESSIBILITY_SETTINGS_KEY),
+      )
+      .toContain("\"visionMode\":\"deutan\"");
   });
 });

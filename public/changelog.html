@@ -280,6 +280,46 @@
             immediately.
           </li>
         </ul>
+
+        <hr class="divider" />
+
+        <h2 class="version">
+          1.5 - Added accessible palette assist and color vision simulation
+        </h2>
+        <p class="summary">
+          Added a header-accessible assist panel for players who need non-color
+          cues or color vision simulation while browsing palettes.
+        </p>
+        <ul>
+          <li>
+            Added an `A11Y` button in the application header to open palette
+            accessibility controls from any tab.
+          </li>
+          <li>
+            Added live `Normal`, `Protan`, `Deutan`, and `Tritan` display modes
+            for SOLO, DUO, and OWN swatches.
+          </li>
+          <li>
+            Added optional symbol overlays and pattern overlays so swatches can
+            be distinguished without relying on color alone.
+          </li>
+          <li>
+            Ensured primary and secondary zones on the same DUO swatch receive
+            different symbol/pattern assignments.
+          </li>
+          <li>
+            Persisted accessibility assist settings in localStorage so selected
+            simulation and overlay options survive reloads.
+          </li>
+          <li>
+            Kept copy behavior unchanged: assist overlays and simulated display
+            colors do not modify the original HEX values copied from swatches.
+          </li>
+          <li>
+            Added unit, component, and Playwright coverage for assist settings,
+            overlay rendering, persistence, and original HEX copy behavior.
+          </li>
+        </ul>
       </section>
     </main>
   </body>

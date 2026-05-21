@@ -1,6 +1,12 @@
 import { useState, useCallback, useEffect, useRef } from "react";
+import { useColorAccessibility } from "@/components/accessibility/color-accessibility-context";
 import type { SatisfactoryColor } from "@/data/colors";
 import { t } from "@/i18n";
+import {
+  getSwatchOverlayToken,
+  simulateHexColor,
+  type SwatchOverlayToken,
+} from "@/lib/color-accessibility";
 
 interface ColorSwatchProps {
   color: SatisfactoryColor;
@@ -12,6 +18,72 @@ interface ColorSwatchProps {
 }
 
 type SwatchPart = "primary" | "secondary";
+
+const getPatternStyle = (pattern: SwatchOverlayToken["pattern"]) => {
+  const white = "rgba(255, 255, 255, 0.42)";
+  const black = "rgba(0, 0, 0, 0.2)";
+
+  switch (pattern) {
+    case "diagonal":
+      return {
+        backgroundImage: `repeating-linear-gradient(45deg, ${white} 0 1px, transparent 1px 9px)`,
+      };
+    case "backslash":
+      return {
+        backgroundImage: `repeating-linear-gradient(135deg, ${white} 0 1px, transparent 1px 9px)`,
+      };
+    case "horizontal":
+      return {
+        backgroundImage: `repeating-linear-gradient(0deg, ${black} 0 2px, transparent 2px 10px)`,
+      };
+    case "vertical":
+      return {
+        backgroundImage: `repeating-linear-gradient(90deg, ${white} 0 1px, transparent 1px 9px)`,
+      };
+    case "grid":
+      return {
+        backgroundImage: `linear-gradient(${white} 1px, transparent 1px), linear-gradient(90deg, ${white} 1px, transparent 1px)`,
+        backgroundSize: "10px 10px",
+      };
+    case "dots":
+      return {
+        backgroundImage: `radial-gradient(circle at center, ${white} 1px, transparent 1.5px)`,
+        backgroundSize: "10px 10px",
+      };
+    default:
+      return {};
+  }
+};
+
+const SwatchAssistOverlay = ({
+  token,
+  showPattern,
+  showSymbol,
+}: {
+  token: SwatchOverlayToken;
+  showPattern: boolean;
+  showSymbol: boolean;
+}) => (
+  <>
+    {showPattern && (
+      <div
+        className="absolute inset-0 z-[1] pointer-events-none opacity-55 mix-blend-overlay"
+        style={getPatternStyle(token.pattern)}
+        aria-hidden="true"
+        data-testid="swatch-pattern-overlay"
+      />
+    )}
+    {showSymbol && (
+      <div
+        className="absolute inset-0 z-[2] grid place-items-center pointer-events-none text-[38px] font-mono font-bold leading-none text-white/55 mix-blend-overlay"
+        aria-hidden="true"
+        data-testid="swatch-symbol-overlay"
+      >
+        {token.symbol}
+      </div>
+    )}
+  </>
+);
 
 const ColorSwatch = ({
   color,
@@ -26,6 +98,14 @@ const ColorSwatch = ({
   const [hoveredPart, setHoveredPart] = useState<SwatchPart | null>(null);
   const feedbackResetTimeoutRef = useRef<number | null>(null);
   const isDuo = mode === "duo";
+  const { settings } = useColorAccessibility();
+  const primaryDisplayHex = simulateHexColor(color.hex, settings.visionMode);
+  const secondaryDisplayHex = simulateHexColor(
+    color.secondaryColor,
+    settings.visionMode,
+  );
+  const primaryAssistToken = getSwatchOverlayToken(color.code, "primary");
+  const secondaryAssistToken = getSwatchOverlayToken(color.code, "secondary");
 
   const scheduleFeedbackReset = useCallback(() => {
     if (feedbackResetTimeoutRef.current !== null) {
@@ -127,9 +207,14 @@ const ColorSwatch = ({
         )}
         <div
           className="relative w-full aspect-[5/3]"
-          style={{ backgroundColor: color.hex }}
+          style={{ backgroundColor: primaryDisplayHex }}
         >
           <div className="absolute inset-0 pointer-events-none" style={bottomTintStyle} />
+          <SwatchAssistOverlay
+            token={primaryAssistToken}
+            showPattern={settings.showPatterns}
+            showSymbol={settings.showSymbols}
+          />
           {isPartActive("primary") && (
             <div
               className="absolute left-2 top-2 z-10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white bg-black/45 rounded-[2px] pointer-events-none"
@@ -138,10 +223,10 @@ const ColorSwatch = ({
               {getPartLabel("primary")}
             </div>
           )}
-          <div className="absolute right-2 top-2 px-2 py-0.5 text-[12px] font-semibold text-white bg-black/35 rounded-[2px] pointer-events-none">
+          <div className="absolute right-2 top-2 z-10 px-2 py-0.5 text-[12px] font-semibold text-white bg-black/35 rounded-[2px] pointer-events-none">
             {copyCount}x
           </div>
-          <div className="absolute inset-x-0 px-3 pt-2 flex flex-col gap-0" style={{ bottom: "0.2rem" }}>
+          <div className="absolute inset-x-0 z-10 px-3 pt-2 flex flex-col gap-0" style={{ bottom: "0.2rem" }}>
             <span className="text-[14px] font-semibold tracking-normal text-white leading-tight truncate">
               {color.name}
             </span>
@@ -191,10 +276,15 @@ const ColorSwatch = ({
           onMouseEnter={() => setHoveredPart("primary")}
           onClick={() => handleCopy("primary")}
           className="relative basis-[70%] grow-0 shrink-0 text-left overflow-hidden"
-          style={{ backgroundColor: color.hex }}
+          style={{ backgroundColor: primaryDisplayHex }}
           aria-label={t("swatch.aria.copyPrimaryHex", { hex: color.hex, name: color.name })}
         >
           <div className="absolute inset-0 pointer-events-none" style={bottomTintStyle} />
+          <SwatchAssistOverlay
+            token={primaryAssistToken}
+            showPattern={settings.showPatterns}
+            showSymbol={settings.showSymbols}
+          />
           {isPartActive("primary") && (
             <>
               <div className="absolute inset-0 bg-white/10 pointer-events-none" />
@@ -206,7 +296,7 @@ const ColorSwatch = ({
               </div>
             </>
           )}
-          <div className="absolute left-3" style={{ bottom: "0.2rem" }}>
+          <div className="absolute left-3 z-10" style={{ bottom: "0.2rem" }}>
             <code
               className="text-[13px] font-mono tracking-normal text-white select-text cursor-text"
               aria-label={t("swatch.aria.primaryHexCode", { hex: color.hex, name: color.name })}
@@ -223,16 +313,21 @@ const ColorSwatch = ({
           onMouseEnter={() => setHoveredPart("secondary")}
           onClick={() => handleCopy("secondary")}
           className="relative basis-[30%] grow-0 shrink-0 text-left overflow-hidden"
-          style={{ backgroundColor: color.secondaryColor }}
+          style={{ backgroundColor: secondaryDisplayHex }}
           aria-label={t("swatch.aria.copySecondaryHex", { hex: color.secondaryColor, name: color.name })}
         >
           <div className="absolute inset-0 pointer-events-none" style={bottomTintStyle} />
+          <SwatchAssistOverlay
+            token={secondaryAssistToken}
+            showPattern={settings.showPatterns}
+            showSymbol={settings.showSymbols}
+          />
           {isPartActive("secondary") && (
             <>
               <div className="absolute inset-0 bg-white/10 pointer-events-none" />
             </>
           )}
-          <div className="absolute inset-x-0 px-1 overflow-hidden" style={{ bottom: "0.2rem" }}>
+          <div className="absolute inset-x-0 z-10 px-1 overflow-hidden" style={{ bottom: "0.2rem" }}>
             <code
               className="block w-full truncate text-center text-[11px] font-mono tracking-tight text-white select-text cursor-text"
               aria-label={t("swatch.aria.secondaryHexCode", { hex: color.secondaryColor, name: color.name })}
@@ -244,7 +339,7 @@ const ColorSwatch = ({
           </div>
         </button>
 
-        <div className="absolute left-3 right-3 pointer-events-none" style={{ bottom: "1.6rem" }}>
+        <div className="absolute left-3 right-3 z-10 pointer-events-none" style={{ bottom: "1.6rem" }}>
           <span className="text-[14px] font-semibold tracking-normal text-white leading-tight truncate block">
             {color.name}
           </span>

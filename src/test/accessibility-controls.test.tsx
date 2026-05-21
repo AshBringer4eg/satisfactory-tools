@@ -1,10 +1,14 @@
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { useState } from "react";
 import ColorsTab from "@/components/ColorsTab";
+import {
+  ColorAccessibilityProvider,
+} from "@/components/accessibility/ColorAccessibilityProvider";
 import AppHeader from "@/components/layout/AppHeader";
 import AppTabBar from "@/components/layout/AppTabBar";
 import AppTabContent from "@/components/layout/AppTabContent";
+import { ACCESSIBILITY_SETTINGS_STORAGE_KEY } from "@/config/storage";
 import { type AppTabId } from "@/config/tabs";
 import { colorPalettes } from "@/data/colors";
 import { setLocale } from "@/i18n";
@@ -31,6 +35,7 @@ describe("accessibility controls", () => {
     act(() => {
       setLocale("en");
     });
+    vi.restoreAllMocks();
     window.localStorage.clear();
   });
 
@@ -92,5 +97,66 @@ describe("accessibility controls", () => {
     fireEvent.click(categoryToggle);
 
     expect(categoryToggle).toHaveAttribute("aria-pressed", "true");
+  });
+
+  it("opens palette accessibility controls and persists settings", async () => {
+    render(
+      <ColorAccessibilityProvider>
+        <AppHeader />
+      </ColorAccessibilityProvider>,
+    );
+
+    fireEvent.click(screen.getByTestId("accessibility-menu-trigger"));
+
+    const deutanButton = screen.getByTestId("accessibility-mode-deutan");
+    const symbolsButton = screen.getByTestId("accessibility-symbols-toggle");
+    const patternsButton = screen.getByTestId("accessibility-patterns-toggle");
+
+    fireEvent.click(deutanButton);
+    fireEvent.click(symbolsButton);
+    fireEvent.click(patternsButton);
+
+    expect(deutanButton).toHaveAttribute("aria-pressed", "true");
+    expect(symbolsButton).toHaveAttribute("aria-pressed", "true");
+    expect(patternsButton).toHaveAttribute("aria-pressed", "true");
+    expect(screen.queryByText("Report")).not.toBeInTheDocument();
+
+    await waitFor(() =>
+      expect(
+        window.localStorage.getItem(ACCESSIBILITY_SETTINGS_STORAGE_KEY),
+      ).toContain("\"visionMode\":\"deutan\""),
+    );
+  });
+
+  it("keeps original hex copy values while assist rendering is enabled", async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "clipboard", {
+      value: { writeText },
+      configurable: true,
+    });
+    window.localStorage.setItem(
+      ACCESSIBILITY_SETTINGS_STORAGE_KEY,
+      JSON.stringify({
+        visionMode: "deutan",
+        showSymbols: true,
+        showPatterns: true,
+      }),
+    );
+
+    render(
+      <ColorAccessibilityProvider>
+        <ColorsTab palette={colorPalettes.default} swatchMode="solo" />
+      </ColorAccessibilityProvider>,
+    );
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: /Copy hex code #d4292e for Turbofuel/i,
+      }),
+    );
+
+    await waitFor(() => expect(writeText).toHaveBeenCalledWith("#d4292e"));
+    expect(screen.getAllByTestId("swatch-symbol-overlay").length).toBeGreaterThan(0);
+    expect(screen.getAllByTestId("swatch-pattern-overlay").length).toBeGreaterThan(0);
   });
 });
