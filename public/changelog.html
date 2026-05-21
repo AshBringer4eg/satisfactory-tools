@@ -284,11 +284,12 @@
         <hr class="divider" />
 
         <h2 class="version">
-          1.5 - Added accessible palette assist and color vision simulation
+          1.5 - Added accessible palette assist and Discord share cards
         </h2>
         <p class="summary">
           Added a header-accessible assist panel for players who need non-color
-          cues or color vision simulation while browsing palettes.
+          cues or color vision simulation while browsing palettes, plus static
+          Discord share pages for built-in colors.
         </p>
         <ul>
           <li>
@@ -316,8 +317,40 @@
             colors do not modify the original HEX values copied from swatches.
           </li>
           <li>
+            Generated one-color and two-color share pages for every default
+            palette item under `share/COLOR_CODE/one.html` and
+            `share/COLOR_CODE/two.html`.
+          </li>
+          <li>
+            Generated matching PNG preview cards under `share/cards/` with
+            item name, color code, primary HEX, and secondary HEX when DUO mode
+            is used.
+          </li>
+          <li>
+            Added a compact share action on built-in swatches: SOLO copies the
+            one-color share URL, while DUO and built-in OWN swatches copy the
+            two-color share URL.
+          </li>
+          <li>
+            Added share entry points directly on supported swatches so Discord
+            preview links can be copied without leaving the palette grid.
+          </li>
+          <li>
+            Share does not support custom OWN swatches yet; those local colors
+            still use normal HEX copy behavior because they do not have static
+            Discord preview pages.
+          </li>
+          <li>
+            Used a compact share icon on swatch share actions so the link
+            target stays visually distinct from normal HEX copy.
+          </li>
+          <li>
             Added unit, component, and Playwright coverage for assist settings,
             overlay rendering, persistence, and original HEX copy behavior.
+          </li>
+          <li>
+            Added generator and test coverage to verify every built-in item has
+            both share HTML modes and mode-specific image metadata.
           </li>
         </ul>
       </section>

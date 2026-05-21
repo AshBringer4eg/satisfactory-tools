@@ -21,6 +21,7 @@ import {
   getOwnRows,
   getOwnSaveButton,
   getOwnViewButton,
+  getShareButtonByName,
   openOwnEdit,
   openOwnTab,
 } from "./helpers/colors-tab";
@@ -418,6 +419,27 @@ test.describe("OWN tab", () => {
     await expect
       .poll(() => page.evaluate((key) => localStorage.getItem(key), DEFAULT_COPY_COUNTS_KEY))
       .not.toContain("\"COLOR_TURBOFUEL\":1");
+  });
+
+  test("use mode copies Discord share links for built-in colors", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await openOwnTab(page);
+    await desktopSearchInput(page).fill("turbofuel");
+
+    await getShareButtonByName(page, TURBOFUEL_NAME).click();
+
+    await expect
+      .poll(
+        () =>
+          page.evaluate(
+            () =>
+              (window as Window & { __lastClipboardText?: string })
+                .__lastClipboardText ?? "",
+          ),
+      )
+      .toBe("http://127.0.0.1:4173/share/COLOR_TURBOFUEL/two.html");
   });
 
   test("edit mode validates import and applies secondary fallback on save", async ({

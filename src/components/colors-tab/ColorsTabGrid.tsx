@@ -2,11 +2,13 @@ import { motion } from "framer-motion";
 import type { MutableRefObject } from "react";
 import type { ColorCode } from "@/data/colors";
 import ColorSwatch from "@/components/ColorSwatch";
+import type { ShareCardMode } from "@/lib/share-links";
 import type { CopyCounts, FloatingMove, GridToken } from "./types";
 
 interface ColorsTabGridProps {
   gridTokens: GridToken[];
   swatchMode: "solo" | "duo";
+  shareMode: ShareCardMode | null;
   copyCounts: CopyCounts;
   pendingCopyCounts: CopyCounts;
   movingColorCode: ColorCode | null;
@@ -21,6 +23,7 @@ interface ColorsTabGridProps {
 const ColorsTabGrid = ({
   gridTokens,
   swatchMode,
+  shareMode,
   copyCounts,
   pendingCopyCounts,
   movingColorCode,
@@ -90,6 +93,7 @@ const ColorsTabGrid = ({
             <ColorSwatch
               color={color}
               mode={swatchMode}
+              shareMode={shareMode}
               copyCount={
                 (copyCounts[color.code] ?? 0) + (pendingCopyCounts[color.code] ?? 0)
               }

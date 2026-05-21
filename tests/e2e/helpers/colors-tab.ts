@@ -29,6 +29,11 @@ export const getDuoSecondarySwatchByName = (page: Page, name: string) =>
     name: new RegExp(`Copy secondary hex code .* for ${name}$`, "i"),
   });
 
+export const getShareButtonByName = (page: Page, name: string) =>
+  page.getByRole("button", {
+    name: new RegExp(`Copy Discord share link for ${name}$`, "i"),
+  });
+
 export const getFirstSoloSwatch = (page: Page) =>
   page.locator("button[aria-label^='Copy hex code']").first();
 

@@ -6,6 +6,7 @@ import {
   type ReactNode,
 } from "react";
 import type { SatisfactoryPalette } from "@/data/colors";
+import type { ShareCardMode } from "@/lib/share-links";
 import { DEFAULT_COPY_COUNTS_STORAGE_KEY } from "@/config/storage";
 import { t, useLocale } from "@/i18n";
 import ColorsTabFilterControls from "./colors-tab/ColorsTabFilterControls";
@@ -25,6 +26,7 @@ interface ColorsTabProps {
   swatchMode?: "solo" | "duo";
   copyCountsStorageKey?: string;
   topContent?: ReactNode;
+  shareLinksEnabled?: boolean;
 }
 
 const ColorsTab = ({
@@ -32,6 +34,7 @@ const ColorsTab = ({
   swatchMode = "solo",
   copyCountsStorageKey = DEFAULT_COPY_COUNTS_STORAGE_KEY,
   topContent,
+  shareLinksEnabled = true,
 }: ColorsTabProps) => {
   useLocale();
 
@@ -87,6 +90,11 @@ const ColorsTab = ({
       ),
     [indexedColors, deferredSearchQuery, activeCategories, copyCounts],
   );
+  const shareMode: ShareCardMode | null = shareLinksEnabled
+    ? swatchMode === "duo"
+      ? "two"
+      : "one"
+    : null;
 
   const {
     movingColorCode,
@@ -127,6 +135,7 @@ const ColorsTab = ({
         <ColorsTabGrid
           gridTokens={gridTokens}
           swatchMode={swatchMode}
+          shareMode={shareMode}
           copyCounts={copyCounts}
           pendingCopyCounts={pendingCopyCounts}
           movingColorCode={movingColorCode}

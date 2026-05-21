@@ -10,7 +10,7 @@ import AppTabBar from "@/components/layout/AppTabBar";
 import AppTabContent from "@/components/layout/AppTabContent";
 import { ACCESSIBILITY_SETTINGS_STORAGE_KEY } from "@/config/storage";
 import { type AppTabId } from "@/config/tabs";
-import { colorPalettes } from "@/data/colors";
+import { colorPalettes, importColorsFile } from "@/data/colors";
 import { setLocale } from "@/i18n";
 
 const TabBarHarness = () => {
@@ -158,5 +158,83 @@ describe("accessibility controls", () => {
     await waitFor(() => expect(writeText).toHaveBeenCalledWith("#d4292e"));
     expect(screen.getAllByTestId("swatch-symbol-overlay").length).toBeGreaterThan(0);
     expect(screen.getAllByTestId("swatch-pattern-overlay").length).toBeGreaterThan(0);
+  });
+
+  it("copies mode-specific Discord share links from built-in swatches", async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "clipboard", {
+      value: { writeText },
+      configurable: true,
+    });
+
+    const { rerender } = render(
+      <ColorsTab palette={colorPalettes.default} swatchMode="solo" />,
+    );
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: /Copy Discord share link for Turbofuel/i,
+      }),
+    );
+
+    await waitFor(() =>
+      expect(writeText).toHaveBeenCalledWith(
+        expect.stringMatching(/\/share\/COLOR_TURBOFUEL\/one\.html$/),
+      ),
+    );
+
+    rerender(<ColorsTab palette={colorPalettes.default} swatchMode="duo" />);
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: /Copy Discord share link for Turbofuel/i,
+      }),
+    );
+
+    await waitFor(() =>
+      expect(writeText).toHaveBeenCalledWith(
+        expect.stringMatching(/\/share\/COLOR_TURBOFUEL\/two\.html$/),
+      ),
+    );
+  });
+
+  it("does not show Discord share links when static previews are disabled", () => {
+    render(
+      <ColorsTab
+        palette={colorPalettes.default}
+        swatchMode="duo"
+        shareLinksEnabled={false}
+      />,
+    );
+
+    expect(
+      screen.queryByRole("button", {
+        name: /Copy Discord share link for Turbofuel/i,
+      }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("does not show Discord share links for colors without generated static pages", () => {
+    const customPalette = importColorsFile({
+      schemaVersion: 1,
+      paletteCode: "custom-share-test",
+      colors: [
+        {
+          code: "COLOR_LOCAL_ONLY",
+          defaultName: "Local Only",
+          hex: "#123456",
+          secondaryColor: "#654321",
+          categories: ["CATEGORY_OTHER"],
+        },
+      ],
+    });
+
+    render(<ColorsTab palette={customPalette} swatchMode="duo" />);
+
+    expect(
+      screen.queryByRole("button", {
+        name: /Copy Discord share link for Local Only/i,
+      }),
+    ).not.toBeInTheDocument();
   });
 });

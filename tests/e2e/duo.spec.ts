@@ -8,6 +8,7 @@ import {
   getDuoPrimarySwatchByName,
   getDuoSecondarySwatchByName,
   getFirstDuoPrimarySwatch,
+  getShareButtonByName,
   openDuoTab,
 } from "./helpers/colors-tab";
 
@@ -74,6 +75,24 @@ test.describe("DUO tab", () => {
     await expect
       .poll(() => page.evaluate(() => window.getSelection()?.toString() ?? ""))
       .toBe(TURBOFUEL_SECONDARY_HEX);
+  });
+
+  test("copies Discord share link for a duo swatch", async ({ page }) => {
+    await page.goto("/");
+    await openDuoTab(page);
+
+    await getShareButtonByName(page, TURBOFUEL_NAME).click();
+
+    await expect
+      .poll(
+        () =>
+          page.evaluate(
+            () =>
+              (window as Window & { __lastClipboardText?: string })
+                .__lastClipboardText ?? "",
+          ),
+      )
+      .toBe("http://127.0.0.1:4173/share/COLOR_TURBOFUEL/two.html");
   });
 
   test("reorder animation runs and item finishes at top", async ({ page }) => {

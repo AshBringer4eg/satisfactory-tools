@@ -120,10 +120,14 @@
     "copied": "СКОПІЙОВАНО",
     "selectHex": "ВИДІЛИТИ HEX",
     "copy": "КОПІЯ",
+    "share": "ПОДІЛИТИСЬ",
+    "shareCopied": "СКОПІЙОВАНО",
+    "shareFailed": "ПОМИЛКА",
     "aria": {
       "copyHex": "Скопіювати HEX-код {{hex}} для {{name}}",
       "copyPrimaryHex": "Скопіювати основний HEX-код {{hex}} для {{name}}",
       "copySecondaryHex": "Скопіювати додатковий HEX-код {{hex}} для {{name}}",
+      "copyShareLink": "Скопіювати Discord-посилання для {{name}}",
       "hexCode": "HEX-код {{name}}: {{hex}}",
       "primaryHexCode": "Основний HEX-код {{name}}: {{hex}}",
       "secondaryHexCode": "Додатковий HEX-код {{name}}: {{hex}}"

@@ -120,10 +120,14 @@
     "copied": "COPIED",
     "selectHex": "SELECT HEX",
     "copy": "COPY",
+    "share": "SHARE",
+    "shareCopied": "COPIED",
+    "shareFailed": "ERROR",
     "aria": {
       "copyHex": "Copy hex code {{hex}} for {{name}}",
       "copyPrimaryHex": "Copy primary hex code {{hex}} for {{name}}",
       "copySecondaryHex": "Copy secondary hex code {{hex}} for {{name}}",
+      "copyShareLink": "Copy Discord share link for {{name}}",
       "hexCode": "{{name}} hex code {{hex}}",
       "primaryHexCode": "{{name}} primary hex code {{hex}}",
       "secondaryHexCode": "{{name}} secondary hex code {{hex}}"

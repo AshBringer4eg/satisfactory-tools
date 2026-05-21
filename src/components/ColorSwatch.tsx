@@ -2,11 +2,17 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import { useColorAccessibility } from "@/components/accessibility/color-accessibility-context";
 import type { SatisfactoryColor } from "@/data/colors";
 import { t } from "@/i18n";
+import { Share2 } from "lucide-react";
 import {
   getSwatchOverlayToken,
   simulateHexColor,
   type SwatchOverlayToken,
 } from "@/lib/color-accessibility";
+import {
+  getShareCardUrl,
+  hasStaticShareCard,
+  type ShareCardMode,
+} from "@/lib/share-links";
 
 interface ColorSwatchProps {
   color: SatisfactoryColor;
@@ -15,9 +21,11 @@ interface ColorSwatchProps {
   onSwatchLeave?: () => void;
   isReordering?: boolean;
   mode?: "solo" | "duo";
+  shareMode?: ShareCardMode | null;
 }
 
 type SwatchPart = "primary" | "secondary";
+type ShareFeedback = "copied" | "failed";
 
 const getPatternStyle = (pattern: SwatchOverlayToken["pattern"]) => {
   const white = "rgba(255, 255, 255, 0.42)";
@@ -92,11 +100,14 @@ const ColorSwatch = ({
   onSwatchLeave,
   isReordering = false,
   mode = "solo",
+  shareMode = null,
 }: ColorSwatchProps) => {
   const [copiedPart, setCopiedPart] = useState<SwatchPart | null>(null);
   const [copyFailedPart, setCopyFailedPart] = useState<SwatchPart | null>(null);
   const [hoveredPart, setHoveredPart] = useState<SwatchPart | null>(null);
+  const [shareFeedback, setShareFeedback] = useState<ShareFeedback | null>(null);
   const feedbackResetTimeoutRef = useRef<number | null>(null);
+  const shareFeedbackResetTimeoutRef = useRef<number | null>(null);
   const isDuo = mode === "duo";
   const { settings } = useColorAccessibility();
   const primaryDisplayHex = simulateHexColor(color.hex, settings.visionMode);
@@ -106,6 +117,16 @@ const ColorSwatch = ({
   );
   const primaryAssistToken = getSwatchOverlayToken(color.code, "primary");
   const secondaryAssistToken = getSwatchOverlayToken(color.code, "secondary");
+
+  const scheduleShareFeedbackReset = useCallback(() => {
+    if (shareFeedbackResetTimeoutRef.current !== null) {
+      window.clearTimeout(shareFeedbackResetTimeoutRef.current);
+    }
+    shareFeedbackResetTimeoutRef.current = window.setTimeout(() => {
+      setShareFeedback(null);
+      shareFeedbackResetTimeoutRef.current = null;
+    }, 1400);
+  }, []);
 
   const scheduleFeedbackReset = useCallback(() => {
     if (feedbackResetTimeoutRef.current !== null) {
@@ -123,8 +144,37 @@ const ColorSwatch = ({
       if (feedbackResetTimeoutRef.current !== null) {
         window.clearTimeout(feedbackResetTimeoutRef.current);
       }
+      if (shareFeedbackResetTimeoutRef.current !== null) {
+        window.clearTimeout(shareFeedbackResetTimeoutRef.current);
+      }
     };
   }, []);
+
+  const handleShareCopy = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setHoveredPart(null);
+
+    if (!shareMode || typeof window === "undefined") return;
+
+    const shareUrl = getShareCardUrl(color.code, shareMode);
+    if (typeof navigator === "undefined" || !navigator.clipboard?.writeText) {
+      setShareFeedback("failed");
+      scheduleShareFeedbackReset();
+      return;
+    }
+
+    void navigator.clipboard.writeText(shareUrl).then(
+      () => {
+        setShareFeedback("copied");
+        scheduleShareFeedbackReset();
+      },
+      () => {
+        setShareFeedback("failed");
+        scheduleShareFeedbackReset();
+      },
+    );
+  }, [color.code, scheduleShareFeedbackReset, shareMode]);
 
   const handleCopy = useCallback((part: SwatchPart) => {
     const hexToCopy = part === "primary" ? color.hex : color.secondaryColor;
@@ -183,22 +233,47 @@ const ColorSwatch = ({
   const bottomTintStyle = {
     background: "linear-gradient(to top, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0) 100%)",
   } as const;
+  const shareLabel = shareFeedback === "copied"
+    ? t("swatch.shareCopied")
+    : shareFeedback === "failed"
+      ? t("swatch.shareFailed")
+      : t("swatch.share");
+  const canShare = shareMode !== null && hasStaticShareCard(color.code);
+  const copyLabelLeftClass = canShare ? "left-11" : "left-2";
+  const shareButton = canShare ? (
+    <button
+      type="button"
+      onClick={handleShareCopy}
+      onMouseEnter={() => setHoveredPart(null)}
+      aria-label={t("swatch.aria.copyShareLink", { name: color.name })}
+      title={t("swatch.aria.copyShareLink", { name: color.name })}
+      data-testid="swatch-share-link"
+      className="absolute left-2 top-2 z-20 inline-flex h-7 min-w-7 items-center justify-center gap-1 rounded-[2px] bg-black/50 px-1.5 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm transition-colors hover:bg-black/70 focus:outline-none focus:ring-2 focus:ring-white/70"
+    >
+      <Share2 className="size-3.5" aria-hidden="true" />
+      {shareFeedback ? <span>{shareLabel}</span> : null}
+    </button>
+  ) : null;
 
   if (!isDuo) {
     return (
-      <button
-        type="button"
-        onClick={() => handleCopy("primary")}
-        onMouseEnter={() => setHoveredPart("primary")}
+      <div
         onMouseLeave={handleMouseLeave}
-        className="relative w-full flex flex-col overflow-hidden text-left transition-all duration-150 cursor-pointer group"
-        aria-label={t("swatch.aria.copyHex", { hex: color.hex, name: color.name })}
+        className="group relative w-full flex flex-col overflow-hidden text-left transition-all duration-150"
         style={{
           borderRadius: "2px",
           boxShadow: "inset 0 1px 0 0 rgba(255,255,255,0.05), 0 2px 4px rgba(0,0,0,0.3)",
           border: "1px solid rgba(255,255,255,0.03)",
         }}
       >
+        <button
+          type="button"
+          onClick={() => handleCopy("primary")}
+          onMouseEnter={() => setHoveredPart("primary")}
+          onMouseLeave={handleMouseLeave}
+          className="relative w-full flex flex-col text-left transition-all duration-150 cursor-pointer"
+          aria-label={t("swatch.aria.copyHex", { hex: color.hex, name: color.name })}
+        >
         {copiedPart === "primary" && (
           <div
             className="absolute top-0 left-0 right-0 h-[2px] animate-copy-flash z-10"
@@ -217,7 +292,7 @@ const ColorSwatch = ({
           />
           {isPartActive("primary") && (
             <div
-              className="absolute left-2 top-2 z-10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white bg-black/45 rounded-[2px] pointer-events-none"
+              className={`absolute ${copyLabelLeftClass} top-2 z-10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white bg-black/45 rounded-[2px] pointer-events-none`}
               aria-hidden="true"
             >
               {getPartLabel("primary")}
@@ -240,6 +315,8 @@ const ColorSwatch = ({
             </code>
           </div>
         </div>
+        </button>
+        {shareButton}
         {(isSwatchHovered || isReordering) && (
           <div
             className={`absolute inset-0 pointer-events-none ${isReordering ? "animate-pulse" : ""}`}
@@ -249,7 +326,7 @@ const ColorSwatch = ({
             }}
           />
         )}
-      </button>
+      </div>
     );
   }
 
@@ -269,6 +346,7 @@ const ColorSwatch = ({
           style={{ backgroundColor: "hsl(190, 90%, 50%)" }}
         />
       )}
+      {shareButton}
 
       <div className="relative w-full aspect-[5/3] flex">
         <button
@@ -289,7 +367,7 @@ const ColorSwatch = ({
             <>
               <div className="absolute inset-0 bg-white/10 pointer-events-none" />
               <div
-                className="absolute left-2 top-2 z-10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white bg-black/45 rounded-[2px] pointer-events-none"
+                className={`absolute ${copyLabelLeftClass} top-2 z-10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white bg-black/45 rounded-[2px] pointer-events-none`}
                 aria-hidden="true"
               >
                 {getPartLabel("primary")}

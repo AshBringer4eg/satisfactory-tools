@@ -6,6 +6,7 @@ import {
   TURBOFUEL_NAME,
   desktopSearchInput,
   getFirstSoloSwatch,
+  getShareButtonByName,
   getSoloSwatchByName,
 } from "./helpers/colors-tab";
 
@@ -48,6 +49,23 @@ test.describe("SOLO tab", () => {
     await expect
       .poll(() => page.evaluate(() => window.getSelection()?.toString() ?? ""))
       .toBe(TURBOFUEL_HEX);
+  });
+
+  test("copies Discord share link for a solo swatch", async ({ page }) => {
+    await page.goto("/");
+
+    await getShareButtonByName(page, TURBOFUEL_NAME).click();
+
+    await expect
+      .poll(
+        () =>
+          page.evaluate(
+            () =>
+              (window as Window & { __lastClipboardText?: string })
+                .__lastClipboardText ?? "",
+          ),
+      )
+      .toBe("http://127.0.0.1:4173/share/COLOR_TURBOFUEL/one.html");
   });
 
   test("reorder animation runs and item finishes at top", async ({ page }) => {
