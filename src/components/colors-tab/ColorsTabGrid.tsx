@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import type { MutableRefObject } from "react";
-import type { ColorCode } from "@/data/colors";
+import type { ColorCode, SatisfactoryColor } from "@/data/colors";
 import ColorSwatch from "@/components/ColorSwatch";
 import type { ShareCardMode } from "@/lib/share-links";
 import type { CopyCounts, FloatingMove, GridToken } from "./types";
@@ -18,6 +18,7 @@ interface ColorsTabGridProps {
   registerSwatchNode: (colorCode: ColorCode, node: HTMLDivElement | null) => void;
   onCopy: (colorCode: ColorCode) => void;
   onSwatchLeave: (colorCode: ColorCode) => void;
+  onHarmonyOpen: (color: SatisfactoryColor) => void;
 }
 
 const ColorsTabGrid = ({
@@ -33,6 +34,7 @@ const ColorsTabGrid = ({
   registerSwatchNode,
   onCopy,
   onSwatchLeave,
+  onHarmonyOpen,
 }: ColorsTabGridProps) => {
   return (
     <div
@@ -99,6 +101,7 @@ const ColorsTabGrid = ({
               }
               onCopy={() => onCopy(color.code)}
               onSwatchLeave={() => onSwatchLeave(color.code)}
+              onHarmonyOpen={() => onHarmonyOpen(color)}
               isReordering={movingColorCode === color.code && !floatingMove}
             />
           </motion.div>

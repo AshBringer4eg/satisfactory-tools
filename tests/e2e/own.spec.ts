@@ -428,7 +428,8 @@ test.describe("OWN tab", () => {
     await openOwnTab(page);
     await desktopSearchInput(page).fill("turbofuel");
 
-    await getShareButtonByName(page, TURBOFUEL_NAME).click();
+    await getDuoPrimarySwatchByName(page, TURBOFUEL_NAME).hover();
+    await getShareButtonByName(page, TURBOFUEL_NAME).click({ force: true });
 
     await expect
       .poll(

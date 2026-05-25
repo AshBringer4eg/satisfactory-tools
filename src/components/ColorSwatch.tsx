@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import { useColorAccessibility } from "@/components/accessibility/color-accessibility-context";
 import type { SatisfactoryColor } from "@/data/colors";
 import { t } from "@/i18n";
-import { Share2 } from "lucide-react";
+import { Palette, Share2 } from "lucide-react";
 import {
   getSwatchOverlayToken,
   simulateHexColor,
@@ -22,6 +22,7 @@ interface ColorSwatchProps {
   isReordering?: boolean;
   mode?: "solo" | "duo";
   shareMode?: ShareCardMode | null;
+  onHarmonyOpen?: () => void;
 }
 
 type SwatchPart = "primary" | "secondary";
@@ -101,13 +102,16 @@ const ColorSwatch = ({
   isReordering = false,
   mode = "solo",
   shareMode = null,
+  onHarmonyOpen,
 }: ColorSwatchProps) => {
   const [copiedPart, setCopiedPart] = useState<SwatchPart | null>(null);
   const [copyFailedPart, setCopyFailedPart] = useState<SwatchPart | null>(null);
   const [hoveredPart, setHoveredPart] = useState<SwatchPart | null>(null);
+  const [isActionHovered, setIsActionHovered] = useState(false);
   const [shareFeedback, setShareFeedback] = useState<ShareFeedback | null>(null);
   const feedbackResetTimeoutRef = useRef<number | null>(null);
   const shareFeedbackResetTimeoutRef = useRef<number | null>(null);
+  const [showActionsPersistently, setShowActionsPersistently] = useState(false);
   const isDuo = mode === "duo";
   const { settings } = useColorAccessibility();
   const primaryDisplayHex = simulateHexColor(color.hex, settings.visionMode);
@@ -150,9 +154,26 @@ const ColorSwatch = ({
     };
   }, []);
 
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return;
+
+    const mediaQuery = window.matchMedia("(hover: none), (pointer: coarse)");
+    const updateActionVisibility = () => {
+      setShowActionsPersistently(mediaQuery.matches);
+    };
+
+    updateActionVisibility();
+    mediaQuery.addEventListener("change", updateActionVisibility);
+
+    return () => {
+      mediaQuery.removeEventListener("change", updateActionVisibility);
+    };
+  }, []);
+
   const handleShareCopy = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     event.stopPropagation();
+    event.currentTarget.blur();
     setHoveredPart(null);
 
     if (!shareMode || typeof window === "undefined") return;
@@ -175,6 +196,14 @@ const ColorSwatch = ({
       },
     );
   }, [color.code, scheduleShareFeedbackReset, shareMode]);
+
+  const handleHarmonyOpen = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    event.currentTarget.blur();
+    setHoveredPart(null);
+    onHarmonyOpen?.();
+  }, [onHarmonyOpen]);
 
   const handleCopy = useCallback((part: SwatchPart) => {
     const hexToCopy = part === "primary" ? color.hex : color.secondaryColor;
@@ -202,6 +231,7 @@ const ColorSwatch = ({
 
   const handleMouseLeave = useCallback(() => {
     setHoveredPart(null);
+    setIsActionHovered(false);
     onSwatchLeave?.();
   }, [onSwatchLeave]);
 
@@ -230,6 +260,7 @@ const ColorSwatch = ({
     hoveredPart === part || copiedPart === part || copyFailedPart === part
   );
   const isSwatchHovered = hoveredPart !== null;
+  const areActionsHovered = isSwatchHovered || isActionHovered;
   const bottomTintStyle = {
     background: "linear-gradient(to top, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0) 100%)",
   } as const;
@@ -239,25 +270,59 @@ const ColorSwatch = ({
       ? t("swatch.shareFailed")
       : t("swatch.share");
   const canShare = shareMode !== null && hasStaticShareCard(color.code);
-  const copyLabelLeftClass = canShare ? "left-11" : "left-2";
+  const canOpenHarmony = Boolean(onHarmonyOpen);
+  const copyLabelLeftClass = canShare || canOpenHarmony ? "left-11" : "left-2";
+  const actionButtonVisibilityClass = showActionsPersistently
+    ? "opacity-100 pointer-events-auto"
+    : areActionsHovered
+      ? "opacity-100 pointer-events-auto transition-opacity"
+    : "opacity-0 pointer-events-none transition-opacity group-hover:opacity-100 group-hover:pointer-events-auto focus-visible:opacity-100 focus-visible:pointer-events-auto";
   const shareButton = canShare ? (
     <button
       type="button"
       onClick={handleShareCopy}
-      onMouseEnter={() => setHoveredPart(null)}
+      onMouseEnter={() => {
+        setIsActionHovered(true);
+        setHoveredPart(null);
+      }}
+      onMouseLeave={() => setIsActionHovered(false)}
       aria-label={t("swatch.aria.copyShareLink", { name: color.name })}
       title={t("swatch.aria.copyShareLink", { name: color.name })}
       data-testid="swatch-share-link"
-      className="absolute left-2 top-2 z-20 inline-flex h-7 min-w-7 items-center justify-center gap-1 rounded-[2px] bg-black/50 px-1.5 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm transition-colors hover:bg-black/70 focus:outline-none focus:ring-2 focus:ring-white/70"
+      className={`absolute left-2 top-2 z-50 inline-flex h-7 min-w-7 items-center justify-center gap-1 rounded-[2px] bg-black/50 px-1.5 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm hover:bg-black/70 focus:outline-none focus:ring-2 focus:ring-white/70 ${actionButtonVisibilityClass}`}
     >
       <Share2 className="size-3.5" aria-hidden="true" />
       {shareFeedback ? <span>{shareLabel}</span> : null}
     </button>
   ) : null;
+  const harmonyButton = canOpenHarmony ? (
+    <button
+      type="button"
+      onClick={handleHarmonyOpen}
+      onMouseEnter={() => {
+        setIsActionHovered(true);
+        setHoveredPart(null);
+      }}
+      onMouseLeave={() => setIsActionHovered(false)}
+      aria-label={t("swatch.aria.openHarmony", { name: color.name })}
+      title={t("swatch.aria.openHarmony", { name: color.name })}
+      data-testid="swatch-harmony-open"
+      className={`absolute left-2 ${canShare ? "top-10" : "top-2"} z-50 inline-flex h-7 w-7 items-center justify-center rounded-[2px] bg-black/50 text-white shadow-sm hover:bg-black/70 focus:outline-none focus:ring-2 focus:ring-white/70 ${actionButtonVisibilityClass}`}
+    >
+      <Palette className="size-3.5" aria-hidden="true" />
+    </button>
+  ) : null;
+  const actionButtons = shareButton || harmonyButton ? (
+    <>
+      {shareButton}
+      {harmonyButton}
+    </>
+  ) : null;
 
   if (!isDuo) {
     return (
       <div
+        onMouseEnter={() => setHoveredPart("primary")}
         onMouseLeave={handleMouseLeave}
         className="group relative w-full flex flex-col overflow-hidden text-left transition-all duration-150"
         style={{
@@ -271,7 +336,7 @@ const ColorSwatch = ({
           onClick={() => handleCopy("primary")}
           onMouseEnter={() => setHoveredPart("primary")}
           onMouseLeave={handleMouseLeave}
-          className="relative w-full flex flex-col text-left transition-all duration-150 cursor-pointer"
+          className="relative z-0 w-full flex flex-col text-left transition-all duration-150 cursor-pointer"
           aria-label={t("swatch.aria.copyHex", { hex: color.hex, name: color.name })}
         >
         {copiedPart === "primary" && (
@@ -316,7 +381,7 @@ const ColorSwatch = ({
           </div>
         </div>
         </button>
-        {shareButton}
+        {actionButtons}
         {(isSwatchHovered || isReordering) && (
           <div
             className={`absolute inset-0 pointer-events-none ${isReordering ? "animate-pulse" : ""}`}
@@ -332,8 +397,9 @@ const ColorSwatch = ({
 
   return (
     <div
+      onMouseEnter={() => setHoveredPart("primary")}
       onMouseLeave={handleMouseLeave}
-      className="relative w-full flex flex-col overflow-hidden text-left transition-all duration-150"
+      className="group relative w-full flex flex-col overflow-hidden text-left transition-all duration-150"
       style={{
         borderRadius: "2px",
         boxShadow: "inset 0 1px 0 0 rgba(255,255,255,0.05), 0 2px 4px rgba(0,0,0,0.3)",
@@ -346,14 +412,14 @@ const ColorSwatch = ({
           style={{ backgroundColor: "hsl(190, 90%, 50%)" }}
         />
       )}
-      {shareButton}
+      {actionButtons}
 
       <div className="relative w-full aspect-[5/3] flex">
         <button
           type="button"
           onMouseEnter={() => setHoveredPart("primary")}
           onClick={() => handleCopy("primary")}
-          className="relative basis-[70%] grow-0 shrink-0 text-left overflow-hidden"
+          className="relative z-0 basis-[70%] grow-0 shrink-0 text-left overflow-hidden"
           style={{ backgroundColor: primaryDisplayHex }}
           aria-label={t("swatch.aria.copyPrimaryHex", { hex: color.hex, name: color.name })}
         >
@@ -390,7 +456,7 @@ const ColorSwatch = ({
           type="button"
           onMouseEnter={() => setHoveredPart("secondary")}
           onClick={() => handleCopy("secondary")}
-          className="relative basis-[30%] grow-0 shrink-0 text-left overflow-hidden"
+          className="relative z-0 basis-[30%] grow-0 shrink-0 text-left overflow-hidden"
           style={{ backgroundColor: secondaryDisplayHex }}
           aria-label={t("swatch.aria.copySecondaryHex", { hex: color.secondaryColor, name: color.name })}
         >

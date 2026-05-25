@@ -1,7 +1,7 @@
 {
   "name": "vite_react_shadcn_ts",
   "private": true,
-  "version": "1.6.1",
+  "version": "1.6.2",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,7 +9,6 @@
     "build": "vite build",
     "prebuild": "pnpm generate:share-cards",
     "build:dev": "vite build --mode development",
-    "prebuild:dev": "pnpm generate:share-cards",
     "lint": "eslint .",
     "tsc": "pnpm exec tsc --noEmit -p tsconfig.app.json",
     "preview": "vite preview",

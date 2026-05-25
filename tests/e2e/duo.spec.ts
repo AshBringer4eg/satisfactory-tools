@@ -81,7 +81,8 @@ test.describe("DUO tab", () => {
     await page.goto("/");
     await openDuoTab(page);
 
-    await getShareButtonByName(page, TURBOFUEL_NAME).click();
+    await getDuoPrimarySwatchByName(page, TURBOFUEL_NAME).hover();
+    await getShareButtonByName(page, TURBOFUEL_NAME).click({ force: true });
 
     await expect
       .poll(
@@ -104,7 +105,7 @@ test.describe("DUO tab", () => {
     await swatch.click();
     await page.mouse.move(0, 0);
 
-    const floating = page.locator(".pointer-events-none.z-50");
+    const floating = page.getByTestId("floating-reorder-swatch");
     await expect(floating).toBeVisible();
     await expect(floating).toBeHidden({ timeout: 3000 });
 

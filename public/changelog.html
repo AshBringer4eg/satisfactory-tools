@@ -284,12 +284,12 @@
         <hr class="divider" />
 
         <h2 class="version">
-          1.5 - Added accessible palette assist and Discord share cards
+          1.5 - Added accessible palette assist and messenger share cards
         </h2>
         <p class="summary">
           Added a header-accessible assist panel for players who need non-color
           cues or color vision simulation while browsing palettes, plus static
-          Discord share pages for built-in colors.
+          preview-card share URLs for built-in colors.
         </p>
         <ul>
           <li>
@@ -317,9 +317,10 @@
             colors do not modify the original HEX values copied from swatches.
           </li>
           <li>
-            Generated one-color and two-color share pages for every default
-            palette item under `share/COLOR_CODE/one.html` and
-            `share/COLOR_CODE/two.html`.
+            Generated separate one-color and two-color share-card URLs for
+            every default palette item under `share/COLOR_CODE/one.html` and
+            `share/COLOR_CODE/two.html`, designed for link previews in
+            messengers such as Discord and Telegram.
           </li>
           <li>
             Generated matching PNG preview cards under `share/cards/` with
@@ -332,13 +333,14 @@
             two-color share URL.
           </li>
           <li>
-            Added share entry points directly on supported swatches so Discord
-            preview links can be copied without leaving the palette grid.
+            Added share entry points directly on supported swatches so
+            messenger preview links can be copied without leaving the palette
+            grid.
           </li>
           <li>
             Share does not support custom OWN swatches yet; those local colors
             still use normal HEX copy behavior because they do not have static
-            Discord preview pages.
+            preview-card pages.
           </li>
           <li>
             Used a compact share icon on swatch share actions so the link
@@ -351,6 +353,47 @@
           <li>
             Added generator and test coverage to verify every built-in item has
             both share HTML modes and mode-specific image metadata.
+          </li>
+        </ul>
+
+        <hr class="divider" />
+
+        <h2 class="version">
+          1.6 - Added OKLCH color harmony suggestions
+        </h2>
+        <p class="summary">
+          Added an in-app harmony helper that generates matching palette
+          suggestions from one or two anchor colors, so players can build
+          factory color sets without leaving the tool.
+        </p>
+        <ul>
+          <li>
+            Added a `HARMONY` modal that generates suggestions in OKLCH color
+            space from a primary anchor and optional secondary anchor.
+          </li>
+          <li>
+            Added harmony modes: `ANALOGOUS`, `COMPLEMENTARY`,
+            `DOUBLE_SPLIT_COMPLEMENTARY`, `RECTANGLE`,
+            `SPLIT_COMPLEMENTARY`, `TETRADIC`, and `TRIADIC`.
+          </li>
+          <li>
+            Added `FACTORY_SAFE` mode, which checks generated colors for low
+            contrast and color vision simulation conflicts, then nudges
+            lightness, chroma, and hue when a safer match is needed.
+          </li>
+          <li>
+            Added a hover/focus harmony action on swatches to open the modal
+            with that swatch's primary and secondary colors pre-filled. On
+            touch devices, the action is visible all the time.
+          </li>
+          <li>
+            Added OWN tab entry points: the `HARMONY` button is available in
+            both VIEW and EDIT modes, using the current OWN palette colors as
+            starting anchors.
+          </li>
+          <li>
+            Harmony suggestion swatches can be clicked to copy their generated
+            HEX values, and adjusted suggestions are marked in the modal.
           </li>
         </ul>
       </section>

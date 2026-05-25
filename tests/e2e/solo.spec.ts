@@ -54,7 +54,8 @@ test.describe("SOLO tab", () => {
   test("copies Discord share link for a solo swatch", async ({ page }) => {
     await page.goto("/");
 
-    await getShareButtonByName(page, TURBOFUEL_NAME).click();
+    await getSoloSwatchByName(page, TURBOFUEL_NAME).hover();
+    await getShareButtonByName(page, TURBOFUEL_NAME).click({ force: true });
 
     await expect
       .poll(
@@ -76,7 +77,7 @@ test.describe("SOLO tab", () => {
     await swatch.click();
     await page.mouse.move(0, 0);
 
-    const floating = page.locator(".pointer-events-none.z-50");
+    const floating = page.getByTestId("floating-reorder-swatch");
     await expect(floating).toBeVisible();
     await expect(floating).toBeHidden({ timeout: 3000 });
     await expect(getFirstSoloSwatch(page)).toContainText(TURBOFUEL_NAME);

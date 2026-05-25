@@ -22,6 +22,7 @@ const ColorsTabFloatingSwatch = ({
   return (
     <motion.div
       className="pointer-events-none z-50"
+      data-testid="floating-reorder-swatch"
       style={{
         position: "fixed",
         top: floatingMove.fromRect.top,

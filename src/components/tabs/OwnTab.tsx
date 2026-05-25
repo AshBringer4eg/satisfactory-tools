@@ -27,6 +27,7 @@ import {
 } from "@/config/storage";
 import { t } from "@/i18n";
 import { useMemo, useState } from "react";
+import ColorHarmonyDialog from "./own/ColorHarmonyDialog";
 import OwnEditDialogs from "./own/OwnEditDialogs";
 import OwnEditRow from "./own/OwnEditRow";
 import { useOwnPaletteEditor } from "./own/use-own-palette-editor";
@@ -34,6 +35,7 @@ import { useOwnPaletteEditor } from "./own/use-own-palette-editor";
 const OwnTab = () => {
   const [isDefaultNameColumnVisible, setIsDefaultNameColumnVisible] =
     useState(true);
+  const [isHarmonyDialogOpen, setIsHarmonyDialogOpen] = useState(false);
   const {
     state: {
       activeMode,
@@ -94,27 +96,64 @@ const OwnTab = () => {
     );
   }, [draftRows, knownCodeOptions]);
 
+  const harmonyInitialPrimaryHex = useMemo(() => {
+    const draftHex = draftRows.find((draftRow) => draftRow.hex.trim().length > 0)
+      ?.hex;
+    return draftHex ?? savedPalette.colors[0]?.hex ?? "#CB603A";
+  }, [draftRows, savedPalette.colors]);
+
+  const harmonyInitialSecondaryHex = useMemo(() => {
+    const draftSecondaryHex = draftRows.find(
+      (draftRow) => draftRow.secondaryColor.trim().length > 0,
+    )?.secondaryColor;
+    return draftSecondaryHex ?? savedPalette.colors[0]?.secondaryColor ?? "";
+  }, [draftRows, savedPalette.colors]);
+
+  const harmonyDialog = (
+    <ColorHarmonyDialog
+      open={isHarmonyDialogOpen}
+      onOpenChange={setIsHarmonyDialogOpen}
+      initialPrimaryHex={harmonyInitialPrimaryHex}
+      initialSecondaryHex={harmonyInitialSecondaryHex}
+    />
+  );
+
   if (activeMode === "use") {
     return (
       <div className="h-full">
+        {harmonyDialog}
         <ColorsTab
           palette={savedPalette}
           swatchMode="duo"
           copyCountsStorageKey={OWN_COPY_COUNTS_STORAGE_KEY}
           topContent={
             <div className="flex items-center justify-between gap-3">
-              <Button
-                type="button"
-                size="sm"
-                variant="outline"
-                onClick={() => setActiveMode("edit")}
-                aria-pressed={false}
-                aria-label={t("ownTab.mode.edit")}
-                className="px-2 lg:px-3"
-              >
-                <Pencil aria-hidden="true" />
-                <span className="hidden lg:inline">{t("ownTab.mode.edit")}</span>
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setActiveMode("edit")}
+                  aria-pressed={false}
+                  aria-label={t("ownTab.mode.edit")}
+                  className="px-2 lg:px-3"
+                >
+                  <Pencil aria-hidden="true" />
+                  <span className="hidden lg:inline">{t("ownTab.mode.edit")}</span>
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setIsHarmonyDialogOpen(true)}
+                  aria-label={t("ownTab.harmony.openAria")}
+                  data-testid="own-use-harmony-button"
+                  className="px-2 lg:px-3"
+                >
+                  <Palette aria-hidden="true" />
+                  <span className="hidden lg:inline">{t("ownTab.harmony.button")}</span>
+                </Button>
+              </div>
 
               <div className="font-mono text-[11px] text-muted-foreground">
                 {t("ownTab.use.description")}
@@ -128,6 +167,7 @@ const OwnTab = () => {
 
   return (
     <div className="flex h-full min-h-0 flex-col gap-4">
+      {harmonyDialog}
       <OwnEditDialogs
         isImportDialogOpen={isImportDialogOpen}
         onImportDialogOpenChange={handleImportDialogOpenChange}
@@ -223,6 +263,18 @@ const OwnTab = () => {
               >
                 <FileDown aria-hidden="true" />
                 <span className="hidden lg:inline">{t("ownTab.edit.export.button")}</span>
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                onClick={() => setIsHarmonyDialogOpen(true)}
+                aria-label={t("ownTab.harmony.openAria")}
+                data-testid="own-edit-harmony-button"
+                className="px-2 xl:px-3"
+              >
+                <Palette className="size-3.5" aria-hidden="true" />
+                <span className="hidden xl:inline">{t("ownTab.harmony.button")}</span>
               </Button>
               <Button size="sm" variant="outline" asChild className="px-2 xl:px-3">
                 <a

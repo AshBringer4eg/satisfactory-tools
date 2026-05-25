@@ -101,6 +101,38 @@
         "savedPaletteFailedBuild": "Stored ownPalette failed validation. Using default palette copy.",
         "importUnknown": "Import failed for unknown reasons."
       }
+    },
+    "harmony": {
+      "button": "HARMONY",
+      "openAria": "Open color harmony suggestions",
+      "title": "Color Harmony",
+      "description": "Generate OKLCH palette suggestions from one or two anchors.",
+      "anchorPrimary": "Anchor A",
+      "anchorSecondary": "Anchor B",
+      "optionalAnchor": "Optional",
+      "mode": "Harmony",
+      "factorySafe": "FACTORY_SAFE",
+      "factorySafeHelpAria": "Explain factory safe harmony mode",
+      "factorySafeHelp": "Checks generated colors for low contrast and colorblind conflicts. If needed, it nudges OKLCH lightness, chroma, and hue to make the palette easier to read in factory use.",
+      "invalidHex": "Enter #RGB or #RRGGBB anchors.",
+      "empty": "NO_VALID_ANCHOR",
+      "anchor": "ANCHOR",
+      "suggestion": "MATCH",
+      "copy": "COPY",
+      "copied": "COPIED",
+      "copyHex": "Copy harmony hex {{hex}}",
+      "adjusted": "ADJUSTED",
+      "lowContrast": "LOW_CONTRAST",
+      "cvdConflict": "CVD_CONFLICT",
+      "modes": {
+        "analogous": "ANALOGOUS",
+        "complementary": "COMPLEMENTARY",
+        "doubleSplitComplementary": "DOUBLE_SPLIT_COMPLEMENTARY",
+        "rectangle": "RECTANGLE",
+        "splitComplementary": "SPLIT_COMPLEMENTARY",
+        "tetradic": "TETRADIC",
+        "triadic": "TRIADIC"
+      }
     }
   },
   "notFound": {
@@ -128,6 +160,7 @@
       "copyPrimaryHex": "Copy primary hex code {{hex}} for {{name}}",
       "copySecondaryHex": "Copy secondary hex code {{hex}} for {{name}}",
       "copyShareLink": "Copy Discord share link for {{name}}",
+      "openHarmony": "Open color harmony suggestions for {{name}}",
       "hexCode": "{{name}} hex code {{hex}}",
       "primaryHexCode": "{{name}} primary hex code {{hex}}",
       "secondaryHexCode": "{{name}} secondary hex code {{hex}}"

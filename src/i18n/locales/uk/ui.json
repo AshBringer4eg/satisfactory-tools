@@ -101,6 +101,38 @@
         "savedPaletteFailedBuild": "Збережений ownPalette не пройшов валідацію. Використано копію стандартної палітри.",
         "importUnknown": "Імпорт не вдався з невідомої причини."
       }
+    },
+    "harmony": {
+      "button": "ГАРМОНІЯ",
+      "openAria": "Відкрити підбір гармонійних кольорів",
+      "title": "Гармонія кольорів",
+      "description": "Створення OKLCH-пропозицій палітри з одного або двох базових кольорів.",
+      "anchorPrimary": "База A",
+      "anchorSecondary": "База B",
+      "optionalAnchor": "Необов'язково",
+      "mode": "Гармонія",
+      "factorySafe": "FACTORY_SAFE",
+      "factorySafeHelpAria": "Пояснити режим factory safe для гармонії",
+      "factorySafeHelp": "Перевіряє згенеровані кольори на низький контраст і конфлікти для дальтонізму. За потреби коригує OKLCH-світлоту, насиченість і тон, щоб палітру було легше читати.",
+      "invalidHex": "Введіть базові кольори у форматі #RGB або #RRGGBB.",
+      "empty": "НЕМАЄ_ВАЛІДНОЇ_БАЗИ",
+      "anchor": "БАЗА",
+      "suggestion": "ПІДБІР",
+      "copy": "КОПІЯ",
+      "copied": "СКОПІЙОВАНО",
+      "copyHex": "Скопіювати HEX гармонії {{hex}}",
+      "adjusted": "СКОРИГОВАНО",
+      "lowContrast": "НИЗЬКИЙ_КОНТРАСТ",
+      "cvdConflict": "CVD_КОНФЛІКТ",
+      "modes": {
+        "analogous": "АНАЛОГОВА",
+        "complementary": "КОМПЛЕМЕНТАРНА",
+        "doubleSplitComplementary": "ПОДВІЙНА_РОЗДІЛЕНА_КОМПЛЕМЕНТАРНА",
+        "rectangle": "ПРЯМОКУТНИК",
+        "splitComplementary": "РОЗДІЛЕНА_КОМПЛЕМЕНТАРНА",
+        "tetradic": "ТЕТРАДНА",
+        "triadic": "ТРІАДНА"
+      }
     }
   },
   "notFound": {
@@ -128,6 +160,7 @@
       "copyPrimaryHex": "Скопіювати основний HEX-код {{hex}} для {{name}}",
       "copySecondaryHex": "Скопіювати додатковий HEX-код {{hex}} для {{name}}",
       "copyShareLink": "Скопіювати Discord-посилання для {{name}}",
+      "openHarmony": "Відкрити підбір гармонійних кольорів для {{name}}",
       "hexCode": "HEX-код {{name}}: {{hex}}",
       "primaryHexCode": "Основний HEX-код {{name}}: {{hex}}",
       "secondaryHexCode": "Додатковий HEX-код {{name}}: {{hex}}"
