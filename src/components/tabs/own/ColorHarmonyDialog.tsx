@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Check, Copy, HelpCircle, Palette } from "lucide-react";
+import SwatchAssistOverlay from "@/components/accessibility/SwatchAssistOverlay";
+import { useColorAccessibility } from "@/components/accessibility/color-accessibility-context";
 import {
   Dialog,
   DialogContent,
@@ -24,10 +26,12 @@ import {
 } from "@/components/ui/tooltip";
 import {
   createHarmonyPalette,
+  getHarmonyTextColor,
   HARMONY_MODES,
   normalizeHarmonyHex,
   type HarmonyMode,
 } from "@/lib/color-harmony";
+import { getSwatchOverlayToken, simulateHexColor } from "@/lib/color-accessibility";
 import { cn } from "@/lib/utils";
 import { t } from "@/i18n";
 
@@ -55,6 +59,7 @@ const ColorHarmonyDialog = ({
   const [mode, setMode] = useState<HarmonyMode>("complementary");
   const [factorySafe, setFactorySafe] = useState(true);
   const [copiedHex, setCopiedHex] = useState<string | null>(null);
+  const { settings } = useColorAccessibility();
 
   useEffect(() => {
     if (!open) return;
@@ -220,61 +225,74 @@ const ColorHarmonyDialog = ({
                   gridTemplateRows: `repeat(${swatches.length}, minmax(84px, 1fr))`,
                 }}
               >
-                {swatches.map((swatch) => (
-                  <button
-                    key={swatch.id}
-                    type="button"
-                    onClick={() => copyHex(swatch.hex)}
-                    data-testid="harmony-swatch"
-                    className="group relative flex min-h-[84px] items-center justify-center border-b border-black/10 text-center transition-opacity last:border-b-0 hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background"
-                    style={{
-                      backgroundColor: swatch.hex,
-                      color: swatch.textColor,
-                    }}
-                    aria-label={t("ownTab.harmony.copyHex", {
-                      hex: swatch.hex,
-                    })}
-                  >
-                    <span className="font-mono text-[24px] font-bold tracking-normal">
-                      {swatch.hex.slice(1)}
-                    </span>
+                {swatches.map((swatch) => {
+                  const displayHex = simulateHexColor(
+                    swatch.hex,
+                    settings.visionMode,
+                  );
+                  const assistToken = getSwatchOverlayToken(swatch.id, "primary");
 
-                    <span className="absolute left-2 top-2 rounded-[2px] bg-black/40 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-white">
-                      {swatch.isAnchor
-                        ? t("ownTab.harmony.anchor")
-                        : t("ownTab.harmony.suggestion")}
-                    </span>
+                  return (
+                    <button
+                      key={swatch.id}
+                      type="button"
+                      onClick={() => copyHex(swatch.hex)}
+                      data-testid="harmony-swatch"
+                      className="group relative flex min-h-[84px] items-center justify-center border-b border-black/10 text-center transition-opacity last:border-b-0 hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background"
+                      style={{
+                        backgroundColor: displayHex,
+                        color: getHarmonyTextColor(displayHex),
+                      }}
+                      aria-label={t("ownTab.harmony.copyHex", {
+                        hex: swatch.hex,
+                      })}
+                    >
+                      <SwatchAssistOverlay
+                        token={assistToken}
+                        showSymbol={settings.showSymbols}
+                        showPattern={settings.showPatterns}
+                      />
+                      <span className="relative z-10 font-mono text-[24px] font-bold tracking-normal">
+                        {swatch.hex.slice(1)}
+                      </span>
 
-                    <span className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-[2px] bg-black/40 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-white">
-                      {copiedHex === swatch.hex ? (
-                        <Check className="size-3" aria-hidden="true" />
-                      ) : (
-                        <Copy className="size-3" aria-hidden="true" />
-                      )}
-                      {copiedHex === swatch.hex
-                        ? t("ownTab.harmony.copied")
-                        : t("ownTab.harmony.copy")}
-                    </span>
+                      <span className="absolute left-2 top-2 z-10 rounded-[2px] bg-black/40 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-white">
+                        {swatch.isAnchor
+                          ? t("ownTab.harmony.anchor")
+                          : t("ownTab.harmony.suggestion")}
+                      </span>
 
-                    <span className="absolute bottom-2 left-2 right-2 flex flex-wrap gap-1">
-                      {swatch.adjusted ? (
-                        <span className="rounded-[2px] bg-black/40 px-2 py-0.5 font-mono text-[9px] uppercase tracking-wider text-white">
-                          {t("ownTab.harmony.adjusted")}
-                        </span>
-                      ) : null}
-                      {swatch.hasContrastConflict ? (
-                        <span className="rounded-[2px] bg-black/40 px-2 py-0.5 font-mono text-[9px] uppercase tracking-wider text-white">
-                          {t("ownTab.harmony.lowContrast")}
-                        </span>
-                      ) : null}
-                      {swatch.hasColorblindConflict ? (
-                        <span className="rounded-[2px] bg-black/40 px-2 py-0.5 font-mono text-[9px] uppercase tracking-wider text-white">
-                          {t("ownTab.harmony.cvdConflict")}
-                        </span>
-                      ) : null}
-                    </span>
-                  </button>
-                ))}
+                      <span className="absolute right-2 top-2 z-10 inline-flex items-center gap-1 rounded-[2px] bg-black/40 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-white">
+                        {copiedHex === swatch.hex ? (
+                          <Check className="size-3" aria-hidden="true" />
+                        ) : (
+                          <Copy className="size-3" aria-hidden="true" />
+                        )}
+                        {copiedHex === swatch.hex
+                          ? t("ownTab.harmony.copied")
+                          : t("ownTab.harmony.copy")}
+                      </span>
+
+                      <span className="absolute bottom-2 left-2 right-2 z-10 flex flex-wrap gap-1">
+                        {swatch.adjusted ? (
+                          <span className="rounded-[2px] bg-black/40 px-2 py-0.5 font-mono text-[9px] uppercase tracking-wider text-white">
+                            {t("ownTab.harmony.adjusted")}
+                          </span>
+                        ) : null}
+                        {swatch.hasContrastConflict ? (
+                          <span className="rounded-[2px] bg-black/40 px-2 py-0.5 font-mono text-[9px] uppercase tracking-wider text-white">
+                            {t("ownTab.harmony.lowContrast")}
+                          </span>
+                        ) : null}
+                        {swatch.hasColorblindConflict ? (
+                          <span className="rounded-[2px] bg-black/40 px-2 py-0.5 font-mono text-[9px] uppercase tracking-wider text-white">
+                            {t("ownTab.harmony.cvdConflict")}
+                          </span>
+                        ) : null}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
             ) : (
               <div className="flex min-h-[360px] items-center justify-center px-6 text-center font-mono text-[12px] uppercase tracking-wider text-muted-foreground">

@@ -5,7 +5,6 @@ import {
   useMode as registerCuloriMode,
   type CuloriColor,
 } from "culori/fn";
-import type { ColorCode } from "@/data/colors";
 
 export type VisionMode = "normal" | "protan" | "deutan" | "tritan";
 export type SwatchZonePart = "primary" | "secondary";
@@ -174,10 +173,10 @@ const hashString = (value: string): number => {
 };
 
 export const getSwatchOverlayToken = (
-  colorCode: ColorCode,
+  identity: string,
   part: SwatchZonePart,
 ): SwatchOverlayToken => {
-  const colorHash = hashString(colorCode);
+  const colorHash = hashString(identity);
   const partOffset = part === "primary" ? 0 : 1;
   return {
     symbol: OVERLAY_SYMBOLS[

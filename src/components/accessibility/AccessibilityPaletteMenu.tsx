@@ -1,4 +1,4 @@
-import { Eye, Layers, Shapes } from "lucide-react";
+import { Check, Eye, Layers, Shapes } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -21,6 +21,20 @@ const modeLabelKeyByMode: Record<VisionMode, string> = {
   deutan: "accessibility.modes.deutan",
   tritan: "accessibility.modes.tritan",
 };
+
+const modeBackgroundImageByMode: Record<VisionMode, string> = {
+  normal: "normal.png",
+  protan: "protanopia.png",
+  deutan: "deuteranopia.png",
+  tritan: "tritanopia.png",
+};
+
+const getModeBackgroundStyle = (mode: VisionMode) => ({
+  backgroundImage: [
+    "linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.4))",
+    `url("${import.meta.env.BASE_URL}img/colorblind/${modeBackgroundImageByMode[mode]}")`,
+  ].join(", "),
+});
 
 const AccessibilityPaletteMenu = () => {
   const {
@@ -47,7 +61,8 @@ const AccessibilityPaletteMenu = () => {
       </SheetTrigger>
       <SheetContent
         side="right"
-        className="w-[min(92vw,480px)] overflow-y-auto sm:max-w-[480px]"
+        className="w-[min(92vw,384px)] overflow-y-auto sm:max-w-[384px]"
+        data-testid="accessibility-menu-content"
       >
         <SheetHeader>
           <SheetTitle>{t("accessibility.title")}</SheetTitle>
@@ -76,8 +91,16 @@ const AccessibilityPaletteMenu = () => {
                   aria-pressed={settings.visionMode === mode}
                   onClick={() => setVisionMode(mode)}
                   data-testid={`accessibility-mode-${mode}`}
-                  className="justify-start"
+                  className="h-16 justify-start overflow-hidden border-black/35 bg-[length:100%_100%] bg-center bg-no-repeat px-3 font-black text-white [text-shadow:0_1px_1px_rgba(0,0,0,1),0_0_2px_rgba(0,0,0,1),1px_0_0_rgba(0,0,0,0.85),-1px_0_0_rgba(0,0,0,0.85)] shadow-sm hover:text-white"
+                  style={getModeBackgroundStyle(mode)}
                 >
+                  {settings.visionMode === mode ? (
+                    <Check
+                      className="size-4"
+                      aria-hidden="true"
+                      data-testid="accessibility-selected-mode-indicator"
+                    />
+                  ) : null}
                   {t(modeLabelKeyByMode[mode])}
                 </Button>
               ))}

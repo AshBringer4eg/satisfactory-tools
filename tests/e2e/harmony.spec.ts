@@ -1,6 +1,7 @@
 import type { Locator, Page } from "@playwright/test";
 import { expect, test } from "./fixtures";
 import {
+  ACCESSIBILITY_SETTINGS_KEY,
   TURBOFUEL_HEX,
   TURBOFUEL_NAME,
   TURBOFUEL_SECONDARY_HEX,
@@ -176,6 +177,49 @@ test.describe("Harmony modal", () => {
       await expect(getModeSelect(page)).toContainText(mode.label);
       await expectHarmonySwatchesHaveColors(page, mode.expectedSwatches);
     }
+  });
+
+  test("header assist settings apply to Harmony swatches without changing copy values", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await page.getByTestId("accessibility-menu-trigger").click();
+    await page.getByTestId("accessibility-mode-deutan").click();
+    await page.getByTestId("accessibility-symbols-toggle").click();
+    await page.getByTestId("accessibility-patterns-toggle").click();
+    await page.keyboard.press("Escape");
+
+    await desktopSearchInput(page).fill("turbofuel");
+    await openHarmonyFromTurbofuelSwatch(
+      page,
+      getSoloSwatchByName(page, TURBOFUEL_NAME),
+    );
+
+    const anchorSwatch = getHarmonySwatches(page).first();
+    await expect(anchorSwatch).toContainText(TURBOFUEL_HEX.slice(1).toUpperCase());
+    await expect(anchorSwatch.getByTestId("swatch-symbol-overlay")).toBeVisible();
+    await expect(anchorSwatch.getByTestId("swatch-pattern-overlay")).toBeVisible();
+    await expect
+      .poll(() =>
+        anchorSwatch.evaluate((element) =>
+          window.getComputedStyle(element).backgroundColor,
+        ),
+      )
+      .not.toBe("rgb(212, 41, 46)");
+
+    await anchorSwatch.click();
+    await expect
+      .poll(() =>
+        page.evaluate(
+          () =>
+            (window as Window & { __lastClipboardText?: string })
+              .__lastClipboardText ?? "",
+        ),
+      )
+      .toBe(TURBOFUEL_HEX.toUpperCase());
+    await expect
+      .poll(() => page.evaluate((key) => localStorage.getItem(key), ACCESSIBILITY_SETTINGS_KEY))
+      .toContain("\"visionMode\":\"deutan\"");
   });
 
   test("swatch share and harmony actions show on hover and hide after click leaves hover", async ({

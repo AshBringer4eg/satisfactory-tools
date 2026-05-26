@@ -18,7 +18,6 @@ export interface HarmonySwatch {
   id: string;
   label: string;
   hex: string;
-  textColor: "#000000" | "#ffffff";
   isAnchor: boolean;
   adjusted: boolean;
   hasContrastConflict: boolean;
@@ -152,7 +151,7 @@ const contrastRatio = (leftHex: string, rightHex: string): number => {
   return (lighter + 0.05) / (darker + 0.05);
 };
 
-const getTextColor = (hex: string): "#000000" | "#ffffff" =>
+export const getHarmonyTextColor = (hex: string): "#000000" | "#ffffff" =>
   contrastRatio(hex, "#000000") >= contrastRatio(hex, "#ffffff")
     ? "#000000"
     : "#ffffff";
@@ -263,7 +262,6 @@ export const createHarmonyPalette = ({
       id: `anchor-${index}`,
       label: `Anchor ${index + 1}`,
       hex: anchorHex,
-      textColor: getTextColor(anchorHex),
       isAnchor: true,
       adjusted: false,
       hasContrastConflict: hasContrastConflict(anchorHex, acceptedHexes),
@@ -292,7 +290,6 @@ export const createHarmonyPalette = ({
       id: `suggestion-${offset}-${index}`,
       label: `Suggestion ${index + 1}`,
       hex: result.hex,
-      textColor: getTextColor(result.hex),
       isAnchor: false,
       adjusted: result.adjusted,
       hasContrastConflict: hasContrastConflict(result.hex, acceptedHexes),

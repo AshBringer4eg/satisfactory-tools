@@ -18,10 +18,16 @@ describe("color accessibility utilities", () => {
   it("assigns stable overlay tokens per swatch part", () => {
     const primaryToken = getSwatchOverlayToken("COLOR_GREEN", "primary");
     const secondaryToken = getSwatchOverlayToken("COLOR_GREEN", "secondary");
+    const draftToken = getSwatchOverlayToken("draft-row-7", "primary");
+    const harmonyToken = getSwatchOverlayToken("suggestion-180-1", "primary");
 
     expect(primaryToken).toEqual(getSwatchOverlayToken("COLOR_GREEN", "primary"));
     expect(primaryToken.symbol).not.toBe(secondaryToken.symbol);
     expect(primaryToken.pattern).not.toBe(secondaryToken.pattern);
+    expect(draftToken).toEqual(getSwatchOverlayToken("draft-row-7", "primary"));
+    expect(harmonyToken).toEqual(
+      getSwatchOverlayToken("suggestion-180-1", "primary"),
+    );
   });
 
   it("parses persisted settings defensively", () => {

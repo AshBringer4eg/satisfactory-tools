@@ -1,12 +1,12 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import { useColorAccessibility } from "@/components/accessibility/color-accessibility-context";
+import SwatchAssistOverlay from "@/components/accessibility/SwatchAssistOverlay";
 import type { SatisfactoryColor } from "@/data/colors";
 import { t } from "@/i18n";
 import { Palette, Share2 } from "lucide-react";
 import {
   getSwatchOverlayToken,
   simulateHexColor,
-  type SwatchOverlayToken,
 } from "@/lib/color-accessibility";
 import {
   getShareCardUrl,
@@ -27,72 +27,6 @@ interface ColorSwatchProps {
 
 type SwatchPart = "primary" | "secondary";
 type ShareFeedback = "copied" | "failed";
-
-const getPatternStyle = (pattern: SwatchOverlayToken["pattern"]) => {
-  const white = "rgba(255, 255, 255, 0.42)";
-  const black = "rgba(0, 0, 0, 0.2)";
-
-  switch (pattern) {
-    case "diagonal":
-      return {
-        backgroundImage: `repeating-linear-gradient(45deg, ${white} 0 1px, transparent 1px 9px)`,
-      };
-    case "backslash":
-      return {
-        backgroundImage: `repeating-linear-gradient(135deg, ${white} 0 1px, transparent 1px 9px)`,
-      };
-    case "horizontal":
-      return {
-        backgroundImage: `repeating-linear-gradient(0deg, ${black} 0 2px, transparent 2px 10px)`,
-      };
-    case "vertical":
-      return {
-        backgroundImage: `repeating-linear-gradient(90deg, ${white} 0 1px, transparent 1px 9px)`,
-      };
-    case "grid":
-      return {
-        backgroundImage: `linear-gradient(${white} 1px, transparent 1px), linear-gradient(90deg, ${white} 1px, transparent 1px)`,
-        backgroundSize: "10px 10px",
-      };
-    case "dots":
-      return {
-        backgroundImage: `radial-gradient(circle at center, ${white} 1px, transparent 1.5px)`,
-        backgroundSize: "10px 10px",
-      };
-    default:
-      return {};
-  }
-};
-
-const SwatchAssistOverlay = ({
-  token,
-  showPattern,
-  showSymbol,
-}: {
-  token: SwatchOverlayToken;
-  showPattern: boolean;
-  showSymbol: boolean;
-}) => (
-  <>
-    {showPattern && (
-      <div
-        className="absolute inset-0 z-[1] pointer-events-none opacity-55 mix-blend-overlay"
-        style={getPatternStyle(token.pattern)}
-        aria-hidden="true"
-        data-testid="swatch-pattern-overlay"
-      />
-    )}
-    {showSymbol && (
-      <div
-        className="absolute inset-0 z-[2] grid place-items-center pointer-events-none text-[38px] font-mono font-bold leading-none text-white/55 mix-blend-overlay"
-        aria-hidden="true"
-        data-testid="swatch-symbol-overlay"
-      >
-        {token.symbol}
-      </div>
-    )}
-  </>
-);
 
 const ColorSwatch = ({
   color,

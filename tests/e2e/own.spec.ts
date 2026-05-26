@@ -1,5 +1,6 @@
 import { expect, test } from "./fixtures";
 import {
+  ACCESSIBILITY_SETTINGS_KEY,
   CATEGORY_ORES,
   CATEGORY_OTHER,
   DEFAULT_COPY_COUNTS_KEY,
@@ -207,6 +208,46 @@ test.describe("OWN tab", () => {
 
     await firstSecondary.fill("   ");
     await expect(firstSecondary).toHaveValue("");
+  });
+
+  test("header assist settings apply to OWN edit preview cells", async ({ page }) => {
+    await page.goto("/");
+    await page.getByTestId("accessibility-menu-trigger").click();
+    await page.getByTestId("accessibility-mode-deutan").click();
+    await page.getByTestId("accessibility-symbols-toggle").click();
+    await page.getByTestId("accessibility-patterns-toggle").click();
+    await page.keyboard.press("Escape");
+
+    await openOwnEdit(page);
+    await getOwnFirstRowPrimaryInput(page).fill("#00ff00");
+    await getOwnFirstRowSecondaryInput(page).fill("");
+
+    const primaryPreview = page.getByTestId("own-row-primary-preview").first();
+    const secondaryPreview = page.getByTestId("own-row-secondary-preview").first();
+    await expect(primaryPreview).toBeVisible();
+    await expect(secondaryPreview).toBeVisible();
+    await expect(primaryPreview.getByTestId("swatch-symbol-overlay")).toBeVisible();
+    await expect(primaryPreview.getByTestId("swatch-pattern-overlay")).toBeVisible();
+    await expect(secondaryPreview.getByTestId("swatch-symbol-overlay")).toBeVisible();
+    await expect
+      .poll(() =>
+        primaryPreview.evaluate((element) =>
+          window.getComputedStyle(element).backgroundColor,
+        ),
+      )
+      .not.toBe("rgb(0, 255, 0)");
+    await expect
+      .poll(() =>
+        secondaryPreview.evaluate((element) =>
+          window.getComputedStyle(element).backgroundColor,
+        ),
+      )
+      .toBe(await primaryPreview.evaluate((element) =>
+        window.getComputedStyle(element).backgroundColor,
+      ));
+    await expect
+      .poll(() => page.evaluate((key) => localStorage.getItem(key), ACCESSIBILITY_SETTINGS_KEY))
+      .toContain("\"visionMode\":\"deutan\"");
   });
 
   test("secondary color falls back to primary when empty on save", async ({

@@ -1,4 +1,5 @@
-import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { useState } from "react";
 import ColorsTab from "@/components/ColorsTab";
@@ -8,10 +9,14 @@ import {
 import AppHeader from "@/components/layout/AppHeader";
 import AppTabBar from "@/components/layout/AppTabBar";
 import AppTabContent from "@/components/layout/AppTabContent";
+import OwnTab from "@/components/tabs/OwnTab";
+import ColorHarmonyDialog from "@/components/tabs/own/ColorHarmonyDialog";
 import { ACCESSIBILITY_SETTINGS_STORAGE_KEY } from "@/config/storage";
 import { type AppTabId } from "@/config/tabs";
 import { colorPalettes, importColorsFile } from "@/data/colors";
 import { setLocale } from "@/i18n";
+import { simulateHexColor } from "@/lib/color-accessibility";
+import { getHarmonyTextColor } from "@/lib/color-harmony";
 
 const TabBarHarness = () => {
   const [activeTab, setActiveTab] = useState<AppTabId>("solo");
@@ -112,11 +117,46 @@ describe("accessibility controls", () => {
     const symbolsButton = screen.getByTestId("accessibility-symbols-toggle");
     const patternsButton = screen.getByTestId("accessibility-patterns-toggle");
 
+    expect(screen.getByTestId("accessibility-menu-content")).toHaveClass(
+      "w-[min(92vw,384px)]",
+      "sm:max-w-[384px]",
+    );
+    expect(screen.getByTestId("accessibility-mode-normal")).toHaveClass(
+      "bg-[length:100%_100%]",
+      "bg-no-repeat",
+      "font-black",
+      "[text-shadow:0_1px_1px_rgba(0,0,0,1),0_0_2px_rgba(0,0,0,1),1px_0_0_rgba(0,0,0,0.85),-1px_0_0_rgba(0,0,0,0.85)]",
+    );
+    expect(screen.getByTestId("accessibility-mode-normal").style.backgroundImage)
+      .toContain("img/colorblind/normal.png");
+    expect(screen.getByTestId("accessibility-mode-protan").style.backgroundImage)
+      .toContain("img/colorblind/protanopia.png");
+    expect(deutanButton.style.backgroundImage)
+      .toContain("img/colorblind/deuteranopia.png");
+    expect(screen.getByTestId("accessibility-mode-tritan").style.backgroundImage)
+      .toContain("img/colorblind/tritanopia.png");
+    expect(
+      within(screen.getByTestId("accessibility-mode-normal")).getByTestId(
+        "accessibility-selected-mode-indicator",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      within(deutanButton).queryByTestId("accessibility-selected-mode-indicator"),
+    ).not.toBeInTheDocument();
+
     fireEvent.click(deutanButton);
     fireEvent.click(symbolsButton);
     fireEvent.click(patternsButton);
 
     expect(deutanButton).toHaveAttribute("aria-pressed", "true");
+    expect(
+      within(deutanButton).getByTestId("accessibility-selected-mode-indicator"),
+    ).toBeInTheDocument();
+    expect(
+      within(screen.getByTestId("accessibility-mode-normal")).queryByTestId(
+        "accessibility-selected-mode-indicator",
+      ),
+    ).not.toBeInTheDocument();
     expect(symbolsButton).toHaveAttribute("aria-pressed", "true");
     expect(patternsButton).toHaveAttribute("aria-pressed", "true");
     expect(screen.queryByText("Report")).not.toBeInTheDocument();
@@ -158,6 +198,95 @@ describe("accessibility controls", () => {
     await waitFor(() => expect(writeText).toHaveBeenCalledWith("#d4292e"));
     expect(screen.getAllByTestId("swatch-symbol-overlay").length).toBeGreaterThan(0);
     expect(screen.getAllByTestId("swatch-pattern-overlay").length).toBeGreaterThan(0);
+  });
+
+  it("applies assist rendering to valid OWN edit previews and skips invalid values", () => {
+    window.localStorage.setItem(
+      ACCESSIBILITY_SETTINGS_STORAGE_KEY,
+      JSON.stringify({
+        visionMode: "deutan",
+        showSymbols: true,
+        showPatterns: true,
+      }),
+    );
+
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <ColorAccessibilityProvider>
+          <OwnTab />
+        </ColorAccessibilityProvider>
+      </QueryClientProvider>,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "EDIT" }));
+
+    const primaryInput = screen.getAllByTestId("own-row-primary-input")[0];
+    const secondaryInput = screen.getAllByTestId("own-row-secondary-input")[0];
+    const primaryPreview = screen.getAllByTestId("own-row-primary-preview")[0];
+    const secondaryPreview = screen.getAllByTestId("own-row-secondary-preview")[0];
+
+    fireEvent.change(primaryInput, { target: { value: "#00ff00" } });
+    fireEvent.change(secondaryInput, { target: { value: "#0000ff" } });
+
+    expect(primaryPreview).toHaveStyle({
+      backgroundColor: simulateHexColor("#00ff00", "deutan"),
+    });
+    expect(secondaryPreview).toHaveStyle({
+      backgroundColor: simulateHexColor("#0000ff", "deutan"),
+    });
+    expect(within(primaryPreview).getByTestId("swatch-symbol-overlay")).toBeInTheDocument();
+    expect(within(secondaryPreview).getByTestId("swatch-pattern-overlay")).toBeInTheDocument();
+
+    fireEvent.change(secondaryInput, { target: { value: "" } });
+    expect(secondaryPreview).toHaveStyle({
+      backgroundColor: simulateHexColor("#00ff00", "deutan"),
+    });
+
+    fireEvent.change(primaryInput, { target: { value: "#12345" } });
+    expect(primaryPreview).toHaveTextContent("??");
+    expect(primaryPreview.style.backgroundColor).toBe("");
+    expect(within(primaryPreview).queryByTestId("swatch-symbol-overlay")).not.toBeInTheDocument();
+    expect(secondaryPreview).toHaveTextContent("??");
+    expect(within(secondaryPreview).queryByTestId("swatch-pattern-overlay")).not.toBeInTheDocument();
+  });
+
+  it("simulates Harmony samples with overlays while copying original generated hex", async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "clipboard", {
+      value: { writeText },
+      configurable: true,
+    });
+    window.localStorage.setItem(
+      ACCESSIBILITY_SETTINGS_STORAGE_KEY,
+      JSON.stringify({
+        visionMode: "deutan",
+        showSymbols: true,
+        showPatterns: true,
+      }),
+    );
+
+    render(
+      <ColorAccessibilityProvider>
+        <ColorHarmonyDialog
+          open
+          onOpenChange={() => undefined}
+          initialPrimaryHex="#00ff00"
+        />
+      </ColorAccessibilityProvider>,
+    );
+
+    const anchorSwatch = screen.getAllByTestId("harmony-swatch")[0];
+    const displayHex = simulateHexColor("#00FF00", "deutan");
+    expect(anchorSwatch).toHaveStyle({
+      backgroundColor: displayHex,
+      color: getHarmonyTextColor(displayHex),
+    });
+    expect(anchorSwatch).toHaveTextContent("00FF00");
+    expect(within(anchorSwatch).getByTestId("swatch-symbol-overlay")).toBeInTheDocument();
+    expect(within(anchorSwatch).getByTestId("swatch-pattern-overlay")).toBeInTheDocument();
+
+    fireEvent.click(anchorSwatch);
+    await waitFor(() => expect(writeText).toHaveBeenCalledWith("#00FF00"));
   });
 
   it("copies mode-specific Discord share links from built-in swatches", async () => {

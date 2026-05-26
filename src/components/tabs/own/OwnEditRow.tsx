@@ -1,4 +1,6 @@
 import { memo } from "react";
+import SwatchAssistOverlay from "@/components/accessibility/SwatchAssistOverlay";
+import { useColorAccessibility } from "@/components/accessibility/color-accessibility-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Trash2 } from "lucide-react";
@@ -11,6 +13,11 @@ import {
 } from "@/components/ui/select";
 import { TableCell, TableRow } from "@/components/ui/table";
 import type { OwnPaletteDraftRow } from "@/data/own-palette";
+import {
+  getSwatchOverlayToken,
+  simulateHexColor,
+  type SwatchOverlayToken,
+} from "@/lib/color-accessibility";
 import type { OwnEditableField, KnownCodeOption } from "./types";
 import { isHexColor, maskHexColorInput, OWN_CUSTOM_CODE_SENTINEL } from "./utils";
 
@@ -20,6 +27,10 @@ type ColorInputWithPreviewProps = {
   previewHex: string;
   previewIsValid: boolean;
   previewLabel: string;
+  previewTestId: string;
+  assistToken: SwatchOverlayToken;
+  showSymbols: boolean;
+  showPatterns: boolean;
   inputAriaLabel: string;
   inputTestId?: string;
   onChange: (value: string) => void;
@@ -52,6 +63,10 @@ const ColorInputWithPreview = ({
   previewHex,
   previewIsValid,
   previewLabel,
+  previewTestId,
+  assistToken,
+  showSymbols,
+  showPatterns,
   inputAriaLabel,
   inputTestId,
   onChange,
@@ -66,12 +81,20 @@ const ColorInputWithPreview = ({
       className="font-mono"
     />
     <div
-      className="hidden h-8 w-8 shrink-0 rounded-sm border border-border sm:grid place-items-center font-mono text-[9px] text-muted-foreground"
+      className="relative hidden h-8 w-8 shrink-0 overflow-hidden rounded-sm border border-border sm:grid place-items-center font-mono text-[9px] text-muted-foreground"
       style={previewIsValid ? { backgroundColor: previewHex } : undefined}
       title={previewLabel}
       aria-label={previewLabel}
+      data-testid={previewTestId}
     >
-      {!previewIsValid ? "??" : null}
+      {previewIsValid ? (
+        <SwatchAssistOverlay
+          token={assistToken}
+          showSymbol={showSymbols}
+          showPattern={showPatterns}
+          presentation="compact"
+        />
+      ) : "??"}
     </div>
   </div>
 );
@@ -93,6 +116,7 @@ const OwnEditRow = memo(
     onDraftFieldChange,
     onRemoveRow,
   }: OwnEditRowProps) => {
+    const { settings } = useColorAccessibility();
     const primaryHex = row.hex.trim();
     const primaryPreviewIsValid = isHexColor(primaryHex);
     const hasKnownSelectedCode = Boolean(row.selectedCode && selectedCodeLabel);
@@ -104,6 +128,16 @@ const OwnEditRow = memo(
     const secondaryRaw = row.secondaryColor.trim();
     const secondaryPreviewHex = secondaryRaw || primaryHex;
     const secondaryPreviewIsValid = isHexColor(secondaryPreviewHex);
+    const assistIdentity =
+      hasKnownSelectedCode && row.selectedCode ? row.selectedCode : row.id;
+    const primaryAssistToken = getSwatchOverlayToken(assistIdentity, "primary");
+    const secondaryAssistToken = getSwatchOverlayToken(assistIdentity, "secondary");
+    const primaryDisplayHex = primaryPreviewIsValid
+      ? simulateHexColor(primaryHex, settings.visionMode)
+      : primaryHex;
+    const secondaryDisplayHex = secondaryPreviewIsValid
+      ? simulateHexColor(secondaryPreviewHex, settings.visionMode)
+      : secondaryPreviewHex;
 
     return (
       <TableRow>
@@ -170,8 +204,12 @@ const OwnEditRow = memo(
             placeholder="#112233"
             inputAriaLabel={`Primary color for row ${rowIndex + 1}`}
             inputTestId="own-row-primary-input"
-            previewHex={primaryHex}
+            previewHex={primaryDisplayHex}
             previewIsValid={primaryPreviewIsValid}
+            previewTestId="own-row-primary-preview"
+            assistToken={primaryAssistToken}
+            showSymbols={settings.showSymbols}
+            showPatterns={settings.showPatterns}
             previewLabel={
               primaryPreviewIsValid ? primaryHex : "Invalid primary color"
             }
@@ -186,8 +224,12 @@ const OwnEditRow = memo(
             placeholder={secondaryPlaceholder}
             inputAriaLabel={`Secondary color for row ${rowIndex + 1}`}
             inputTestId="own-row-secondary-input"
-            previewHex={secondaryPreviewHex}
+            previewHex={secondaryDisplayHex}
             previewIsValid={secondaryPreviewIsValid}
+            previewTestId="own-row-secondary-preview"
+            assistToken={secondaryAssistToken}
+            showSymbols={settings.showSymbols}
+            showPatterns={settings.showPatterns}
             previewLabel={
               secondaryPreviewIsValid
                 ? `${secondaryPreviewHex}${secondaryRaw ? "" : " (fallback from primary)"}`
