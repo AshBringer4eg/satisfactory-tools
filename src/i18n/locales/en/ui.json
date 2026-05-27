@@ -19,9 +19,9 @@
     "patterns": "Patterns",
     "modes": {
       "normal": "Default",
-      "protan": "Protan",
-      "deutan": "Deutan",
-      "tritan": "Tritan"
+      "protan": "Protanope",
+      "deutan": "Deuteranope",
+      "tritan": "Tritanope"
     }
   },
   "footer": {

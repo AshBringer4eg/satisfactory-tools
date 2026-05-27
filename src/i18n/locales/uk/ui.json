@@ -19,9 +19,9 @@
     "patterns": "Візерунки",
     "modes": {
       "normal": "Звичайний",
-      "protan": "Протан",
-      "deutan": "Дейтан",
-      "tritan": "Тритан"
+      "protan": "Protanope",
+      "deutan": "Deuteranope",
+      "tritan": "Tritanope"
     }
   },
   "footer": {
