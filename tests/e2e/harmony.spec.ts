@@ -75,7 +75,8 @@ const expectActionState = async (
 const openHarmonyFromTurbofuelSwatch = async (page: Page, swatch: Locator) => {
   await swatch.hover();
   const harmonyAction = getSwatchHarmonyAction(swatch);
-  await harmonyAction.click({ force: true });
+  await expect(harmonyAction).toHaveCount(1);
+  await harmonyAction.dispatchEvent("click");
   await expect(getDialog(page)).toBeVisible();
 };
 

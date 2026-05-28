@@ -1,5 +1,4 @@
-import { memo } from "react";
-import SwatchAssistOverlay from "@/components/accessibility/SwatchAssistOverlay";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { useColorAccessibility } from "@/components/accessibility/color-accessibility-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,22 +14,22 @@ import { TableCell, TableRow } from "@/components/ui/table";
 import type { OwnPaletteDraftRow } from "@/data/own-palette";
 import {
   getSwatchOverlayToken,
-  simulateHexColor,
   type SwatchOverlayToken,
+  type VisionMode,
 } from "@/lib/color-accessibility";
+import { cn } from "@/lib/utils";
+import OwnColorPicker from "./OwnColorPicker";
 import type { OwnEditableField, KnownCodeOption } from "./types";
-import { isHexColor, maskHexColorInput, OWN_CUSTOM_CODE_SENTINEL } from "./utils";
+import { maskHexColorInput, OWN_CUSTOM_CODE_SENTINEL } from "./utils";
 
-type ColorInputWithPreviewProps = {
+type ColorInputWithPickerProps = {
   value: string;
   placeholder: string;
-  previewHex: string;
-  previewIsValid: boolean;
-  previewLabel: string;
-  previewTestId: string;
   assistToken: SwatchOverlayToken;
   showSymbols: boolean;
   showPatterns: boolean;
+  pickerFallbackValue?: string;
+  visionMode: VisionMode;
   inputAriaLabel: string;
   inputTestId?: string;
   onChange: (value: string) => void;
@@ -42,6 +41,7 @@ type OwnEditRowProps = {
   knownCodeOptions: KnownCodeOption[];
   selectedCodeLabel: string | null;
   isCodeSelectOpen: boolean;
+  hasValidationError: boolean;
   isDefaultNameColumnVisible: boolean;
   writeYourOwnLabel: string;
   defaultNamePlaceholder: string;
@@ -57,47 +57,96 @@ type OwnEditRowProps = {
   onRemoveRow: (rowId: string) => void;
 };
 
-const ColorInputWithPreview = ({
+const COLOR_INPUT_COMMIT_DELAY_MS = 300;
+
+const ColorInputWithPicker = ({
   value,
   placeholder,
-  previewHex,
-  previewIsValid,
-  previewLabel,
-  previewTestId,
   assistToken,
   showSymbols,
   showPatterns,
+  pickerFallbackValue,
+  visionMode,
   inputAriaLabel,
   inputTestId,
   onChange,
-}: ColorInputWithPreviewProps) => (
-  <div className="flex items-center gap-2">
-    <Input
-      value={value}
-      onChange={(event) => onChange(maskHexColorInput(event.target.value))}
-      placeholder={placeholder}
-      aria-label={inputAriaLabel}
-      data-testid={inputTestId}
-      className="font-mono"
-    />
-    <div
-      className="relative hidden h-8 w-8 shrink-0 overflow-hidden rounded-sm border border-border sm:grid place-items-center font-mono text-[9px] text-muted-foreground"
-      style={previewIsValid ? { backgroundColor: previewHex } : undefined}
-      title={previewLabel}
-      aria-label={previewLabel}
-      data-testid={previewTestId}
-    >
-      {previewIsValid ? (
-        <SwatchAssistOverlay
-          token={assistToken}
-          showSymbol={showSymbols}
-          showPattern={showPatterns}
-          presentation="compact"
-        />
-      ) : "??"}
+}: ColorInputWithPickerProps) => {
+  const [draftValue, setDraftValue] = useState(value);
+  const commitTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const clearPendingCommit = useCallback(() => {
+    if (!commitTimeoutRef.current) return;
+    clearTimeout(commitTimeoutRef.current);
+    commitTimeoutRef.current = null;
+  }, []);
+
+  const commitValue = useCallback(
+    (nextValue: string) => {
+      clearPendingCommit();
+      if (nextValue !== value) {
+        onChange(nextValue);
+      }
+    },
+    [clearPendingCommit, onChange, value],
+  );
+
+  useEffect(() => {
+    clearPendingCommit();
+    setDraftValue(value);
+  }, [clearPendingCommit, value]);
+
+  useEffect(() => clearPendingCommit, [clearPendingCommit]);
+
+  const scheduleCommit = useCallback(
+    (nextValue: string) => {
+      clearPendingCommit();
+      commitTimeoutRef.current = setTimeout(() => {
+        commitTimeoutRef.current = null;
+        if (nextValue !== value) {
+          onChange(nextValue);
+        }
+      }, COLOR_INPUT_COMMIT_DELAY_MS);
+    },
+    [clearPendingCommit, onChange, value],
+  );
+
+  const handleTextChange = (nextRawValue: string) => {
+    const nextValue = maskHexColorInput(nextRawValue);
+    setDraftValue(nextValue);
+    scheduleCommit(nextValue);
+  };
+
+  const handlePickerChange = (nextValue: string) => {
+    setDraftValue(nextValue);
+    commitValue(nextValue);
+  };
+
+  return (
+    <div className="flex w-full items-center rounded-md border border-input bg-background ring-offset-background transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
+      <Input
+        value={draftValue}
+        onChange={(event) => handleTextChange(event.target.value)}
+        onBlur={() => commitValue(draftValue)}
+        placeholder={placeholder}
+        aria-label={inputAriaLabel}
+        data-testid={inputTestId}
+        className="min-w-0 flex-1 rounded-none border-0 bg-transparent font-mono focus-visible:ring-0 focus-visible:ring-offset-0"
+      />
+      <OwnColorPicker
+        value={draftValue}
+        fallbackValue={pickerFallbackValue}
+        assistToken={assistToken}
+        showSymbols={showSymbols}
+        showPatterns={showPatterns}
+        visionMode={visionMode}
+        ariaLabel={inputAriaLabel}
+        testId={`${inputTestId ?? "own-row-color"}-picker`}
+        triggerClassName="rounded-none border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+        onChange={handlePickerChange}
+      />
     </div>
-  </div>
-);
+  );
+};
 
 const OwnEditRow = memo(
   ({
@@ -106,6 +155,7 @@ const OwnEditRow = memo(
     knownCodeOptions,
     selectedCodeLabel,
     isCodeSelectOpen,
+    hasValidationError,
     isDefaultNameColumnVisible,
     writeYourOwnLabel,
     defaultNamePlaceholder,
@@ -118,30 +168,41 @@ const OwnEditRow = memo(
   }: OwnEditRowProps) => {
     const { settings } = useColorAccessibility();
     const primaryHex = row.hex.trim();
-    const primaryPreviewIsValid = isHexColor(primaryHex);
     const hasKnownSelectedCode = Boolean(row.selectedCode && selectedCodeLabel);
     const selectedCodeValue = hasKnownSelectedCode && row.selectedCode
       ? row.selectedCode
       : OWN_CUSTOM_CODE_SENTINEL;
     const selectedCodeText = selectedCodeLabel ?? row.defaultName;
 
-    const secondaryRaw = row.secondaryColor.trim();
-    const secondaryPreviewHex = secondaryRaw || primaryHex;
-    const secondaryPreviewIsValid = isHexColor(secondaryPreviewHex);
     const assistIdentity =
       hasKnownSelectedCode && row.selectedCode ? row.selectedCode : row.id;
     const primaryAssistToken = getSwatchOverlayToken(assistIdentity, "primary");
     const secondaryAssistToken = getSwatchOverlayToken(assistIdentity, "secondary");
-    const primaryDisplayHex = primaryPreviewIsValid
-      ? simulateHexColor(primaryHex, settings.visionMode)
-      : primaryHex;
-    const secondaryDisplayHex = secondaryPreviewIsValid
-      ? simulateHexColor(secondaryPreviewHex, settings.visionMode)
-      : secondaryPreviewHex;
 
     return (
-      <TableRow>
-        <TableCell className="p-2 md:p-4 lg:min-w-[220px]">
+      <TableRow
+        className={cn(
+          hasValidationError &&
+            "border-destructive/60 bg-destructive/10 hover:bg-destructive/15",
+        )}
+      >
+        <TableCell
+          className={cn(
+            "w-[56px] p-2 text-right font-mono text-xs tabular-nums text-muted-foreground md:p-4",
+            hasValidationError && "text-destructive",
+          )}
+          aria-label={`Row ${rowIndex + 1}`}
+          data-testid="own-row-number"
+        >
+          <a
+            id={`own-row-${rowIndex + 1}`}
+            href={`#own-row-${rowIndex + 1}`}
+            className="inline-flex min-w-6 scroll-mt-24 justify-end rounded-sm px-1 py-0.5 outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          >
+            {rowIndex + 1}
+          </a>
+        </TableCell>
+        <TableCell className="w-[220px] p-2 md:p-4">
           <Select
             value={selectedCodeValue}
             open={isCodeSelectOpen}
@@ -175,7 +236,7 @@ const OwnEditRow = memo(
           </Select>
         </TableCell>
         {isDefaultNameColumnVisible ? (
-          <TableCell className="p-2 md:p-4 lg:min-w-[200px]">
+          <TableCell className="min-w-[280px] p-2 md:p-4">
             {hasKnownSelectedCode ? (
               <div
                 data-testid="own-row-default-name-label"
@@ -196,27 +257,24 @@ const OwnEditRow = memo(
               />
             )}
           </TableCell>
-        ) : null}
-        <TableCell className="p-2 md:p-4 lg:min-w-[190px]">
-          <ColorInputWithPreview
+        ) : (
+          <TableCell className="w-[64px] p-2 md:p-4" />
+        )}
+        <TableCell className="w-[170px] p-2 md:p-4">
+          <ColorInputWithPicker
             value={row.hex}
             onChange={(value) => onDraftFieldChange(row.id, "hex", value)}
             placeholder="#112233"
             inputAriaLabel={`Primary color for row ${rowIndex + 1}`}
             inputTestId="own-row-primary-input"
-            previewHex={primaryDisplayHex}
-            previewIsValid={primaryPreviewIsValid}
-            previewTestId="own-row-primary-preview"
             assistToken={primaryAssistToken}
             showSymbols={settings.showSymbols}
             showPatterns={settings.showPatterns}
-            previewLabel={
-              primaryPreviewIsValid ? primaryHex : "Invalid primary color"
-            }
+            visionMode={settings.visionMode}
           />
         </TableCell>
-        <TableCell className="p-2 md:p-4 lg:min-w-[190px]">
-          <ColorInputWithPreview
+        <TableCell className="w-[170px] p-2 md:p-4">
+          <ColorInputWithPicker
             value={row.secondaryColor}
             onChange={(value) =>
               onDraftFieldChange(row.id, "secondaryColor", value)
@@ -224,20 +282,14 @@ const OwnEditRow = memo(
             placeholder={secondaryPlaceholder}
             inputAriaLabel={`Secondary color for row ${rowIndex + 1}`}
             inputTestId="own-row-secondary-input"
-            previewHex={secondaryDisplayHex}
-            previewIsValid={secondaryPreviewIsValid}
-            previewTestId="own-row-secondary-preview"
             assistToken={secondaryAssistToken}
             showSymbols={settings.showSymbols}
             showPatterns={settings.showPatterns}
-            previewLabel={
-              secondaryPreviewIsValid
-                ? `${secondaryPreviewHex}${secondaryRaw ? "" : " (fallback from primary)"}`
-                : "Invalid secondary color"
-            }
+            pickerFallbackValue={primaryHex}
+            visionMode={settings.visionMode}
           />
         </TableCell>
-        <TableCell className="p-2 md:p-4">
+        <TableCell className="w-[88px] p-2 md:p-4">
           <Button
             type="button"
             size="sm"

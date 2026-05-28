@@ -210,7 +210,7 @@ test.describe("OWN tab", () => {
     await expect(firstSecondary).toHaveValue("");
   });
 
-  test("header assist settings apply to OWN edit preview cells", async ({ page }) => {
+  test("header assist settings apply to OWN edit picker swatches", async ({ page }) => {
     await page.goto("/");
     await page.getByTestId("accessibility-menu-trigger").click();
     await page.getByTestId("accessibility-mode-deutan").click();
@@ -222,29 +222,48 @@ test.describe("OWN tab", () => {
     await getOwnFirstRowPrimaryInput(page).fill("#00ff00");
     await getOwnFirstRowSecondaryInput(page).fill("");
 
-    const primaryPreview = page.getByTestId("own-row-primary-preview").first();
-    const secondaryPreview = page.getByTestId("own-row-secondary-preview").first();
-    await expect(primaryPreview).toBeVisible();
-    await expect(secondaryPreview).toBeVisible();
-    await expect(primaryPreview.getByTestId("swatch-symbol-overlay")).toBeVisible();
-    await expect(primaryPreview.getByTestId("swatch-pattern-overlay")).toBeVisible();
-    await expect(secondaryPreview.getByTestId("swatch-symbol-overlay")).toBeVisible();
+    const primaryPickerTrigger = page
+      .getByTestId("own-row-primary-input-picker-trigger")
+      .first();
+    const secondaryPickerTrigger = page
+      .getByTestId("own-row-secondary-input-picker-trigger")
+      .first();
+    const primaryPickerSwatch = primaryPickerTrigger.getByTestId(
+      "own-row-primary-input-picker-selected-swatch",
+    );
+    const secondaryPickerSwatch = secondaryPickerTrigger.getByTestId(
+      "own-row-secondary-input-picker-selected-swatch",
+    );
+
+    await expect(primaryPickerSwatch).toBeVisible();
+    await expect(secondaryPickerSwatch).toBeVisible();
+    await expect(
+      primaryPickerTrigger.getByTestId("swatch-symbol-overlay"),
+    ).toBeVisible();
+    await expect(
+      primaryPickerTrigger.getByTestId("swatch-pattern-overlay"),
+    ).toBeVisible();
+    await expect(
+      secondaryPickerTrigger.getByTestId("swatch-symbol-overlay"),
+    ).toBeVisible();
     await expect
       .poll(() =>
-        primaryPreview.evaluate((element) =>
+        primaryPickerSwatch.evaluate((element) =>
           window.getComputedStyle(element).backgroundColor,
         ),
       )
       .not.toBe("rgb(0, 255, 0)");
     await expect
-      .poll(() =>
-        secondaryPreview.evaluate((element) =>
+      .poll(async () => {
+        const primaryColor = await primaryPickerSwatch.evaluate((element) =>
           window.getComputedStyle(element).backgroundColor,
-        ),
-      )
-      .toBe(await primaryPreview.evaluate((element) =>
-        window.getComputedStyle(element).backgroundColor,
-      ));
+        );
+        const secondaryColor = await secondaryPickerSwatch.evaluate((element) =>
+          window.getComputedStyle(element).backgroundColor,
+        );
+        return secondaryColor === primaryColor;
+      })
+      .toBe(true);
     await expect
       .poll(() => page.evaluate((key) => localStorage.getItem(key), ACCESSIBILITY_SETTINGS_KEY))
       .toContain("\"visionMode\":\"deutan\"");

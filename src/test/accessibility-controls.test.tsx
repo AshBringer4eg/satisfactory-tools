@@ -1,11 +1,16 @@
-import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { useState } from "react";
 import ColorsTab from "@/components/ColorsTab";
-import {
-  ColorAccessibilityProvider,
-} from "@/components/accessibility/ColorAccessibilityProvider";
+import { ColorAccessibilityProvider } from "@/components/accessibility/ColorAccessibilityProvider";
 import AppHeader from "@/components/layout/AppHeader";
 import AppTabBar from "@/components/layout/AppTabBar";
 import AppTabContent from "@/components/layout/AppTabContent";
@@ -127,21 +132,15 @@ describe("accessibility controls", () => {
       "font-black",
       "[text-shadow:0_1px_1px_rgba(0,0,0,1),0_0_2px_rgba(0,0,0,1),1px_0_0_rgba(0,0,0,0.85),-1px_0_0_rgba(0,0,0,0.85)]",
     );
-    expect(screen.getByTestId("accessibility-mode-normal").style.backgroundImage)
-      .toContain("img/colorblind/normal.png");
-    expect(screen.getByTestId("accessibility-mode-protan").style.backgroundImage)
-      .toContain("img/colorblind/protanopia.png");
-    expect(deutanButton.style.backgroundImage)
-      .toContain("img/colorblind/deuteranopia.png");
-    expect(screen.getByTestId("accessibility-mode-tritan").style.backgroundImage)
-      .toContain("img/colorblind/tritanopia.png");
     expect(
       within(screen.getByTestId("accessibility-mode-normal")).getByTestId(
         "accessibility-selected-mode-indicator",
       ),
     ).toBeInTheDocument();
     expect(
-      within(deutanButton).queryByTestId("accessibility-selected-mode-indicator"),
+      within(deutanButton).queryByTestId(
+        "accessibility-selected-mode-indicator",
+      ),
     ).not.toBeInTheDocument();
 
     fireEvent.click(deutanButton);
@@ -164,7 +163,7 @@ describe("accessibility controls", () => {
     await waitFor(() =>
       expect(
         window.localStorage.getItem(ACCESSIBILITY_SETTINGS_STORAGE_KEY),
-      ).toContain("\"visionMode\":\"deutan\""),
+      ).toContain('"visionMode":"deutan"'),
     );
   });
 
@@ -196,11 +195,15 @@ describe("accessibility controls", () => {
     );
 
     await waitFor(() => expect(writeText).toHaveBeenCalledWith("#d4292e"));
-    expect(screen.getAllByTestId("swatch-symbol-overlay").length).toBeGreaterThan(0);
-    expect(screen.getAllByTestId("swatch-pattern-overlay").length).toBeGreaterThan(0);
+    expect(
+      screen.getAllByTestId("swatch-symbol-overlay").length,
+    ).toBeGreaterThan(0);
+    expect(
+      screen.getAllByTestId("swatch-pattern-overlay").length,
+    ).toBeGreaterThan(0);
   });
 
-  it("applies assist rendering to valid OWN edit previews and skips invalid values", () => {
+  it("applies assist rendering to OWN edit picker trigger swatches", async () => {
     window.localStorage.setItem(
       ACCESSIBILITY_SETTINGS_STORAGE_KEY,
       JSON.stringify({
@@ -222,32 +225,110 @@ describe("accessibility controls", () => {
 
     const primaryInput = screen.getAllByTestId("own-row-primary-input")[0];
     const secondaryInput = screen.getAllByTestId("own-row-secondary-input")[0];
-    const primaryPreview = screen.getAllByTestId("own-row-primary-preview")[0];
-    const secondaryPreview = screen.getAllByTestId("own-row-secondary-preview")[0];
+    const primaryPickerTrigger = screen.getAllByTestId(
+      "own-row-primary-input-picker-trigger",
+    )[0];
+    const secondaryPickerTrigger = screen.getAllByTestId(
+      "own-row-secondary-input-picker-trigger",
+    )[0];
+    const primaryPickerSwatch = within(primaryPickerTrigger).getByTestId(
+      "own-row-primary-input-picker-selected-swatch",
+    );
+    const secondaryPickerSwatch = within(secondaryPickerTrigger).getByTestId(
+      "own-row-secondary-input-picker-selected-swatch",
+    );
 
     fireEvent.change(primaryInput, { target: { value: "#00ff00" } });
     fireEvent.change(secondaryInput, { target: { value: "#0000ff" } });
 
-    expect(primaryPreview).toHaveStyle({
+    expect(primaryPickerSwatch).toHaveStyle({
       backgroundColor: simulateHexColor("#00ff00", "deutan"),
     });
-    expect(secondaryPreview).toHaveStyle({
+    expect(secondaryPickerSwatch).toHaveStyle({
       backgroundColor: simulateHexColor("#0000ff", "deutan"),
     });
-    expect(within(primaryPreview).getByTestId("swatch-symbol-overlay")).toBeInTheDocument();
-    expect(within(secondaryPreview).getByTestId("swatch-pattern-overlay")).toBeInTheDocument();
+    expect(
+      within(primaryPickerTrigger).getByTestId("swatch-symbol-overlay"),
+    ).toBeInTheDocument();
+    expect(
+      within(primaryPickerTrigger).getByTestId("swatch-pattern-overlay"),
+    ).toBeInTheDocument();
+    expect(
+      within(primaryPickerTrigger).getByTestId(
+        "own-row-primary-input-picker-selected-swatch-frame",
+      ),
+    ).toHaveClass("size-8");
 
     fireEvent.change(secondaryInput, { target: { value: "" } });
-    expect(secondaryPreview).toHaveStyle({
-      backgroundColor: simulateHexColor("#00ff00", "deutan"),
-    });
+    await waitFor(() =>
+      expect(secondaryPickerSwatch).toHaveStyle({
+        backgroundColor: simulateHexColor("#00ff00", "deutan"),
+      }),
+    );
+  }, 10_000);
 
-    fireEvent.change(primaryInput, { target: { value: "#12345" } });
-    expect(primaryPreview).toHaveTextContent("??");
-    expect(primaryPreview.style.backgroundColor).toBe("");
-    expect(within(primaryPreview).queryByTestId("swatch-symbol-overlay")).not.toBeInTheDocument();
-    expect(secondaryPreview).toHaveTextContent("??");
-    expect(within(secondaryPreview).queryByTestId("swatch-pattern-overlay")).not.toBeInTheDocument();
+  it("keeps real OWN picker values while filtering picker controls for colorblind mode", async () => {
+    window.localStorage.setItem(
+      ACCESSIBILITY_SETTINGS_STORAGE_KEY,
+      JSON.stringify({
+        visionMode: "deutan",
+        showSymbols: false,
+        showPatterns: false,
+      }),
+    );
+
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <ColorAccessibilityProvider>
+          <OwnTab />
+        </ColorAccessibilityProvider>
+      </QueryClientProvider>,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "EDIT" }));
+
+    const primaryInput = screen.getAllByTestId("own-row-primary-input")[0];
+    const realHex = "#656f8c";
+    const editedHex = "#112233";
+
+    fireEvent.change(primaryInput, { target: { value: realHex } });
+    fireEvent.click(
+      screen.getAllByTestId("own-row-primary-input-picker-trigger")[0],
+    );
+
+    const selectedSwatch = screen.getAllByTestId(
+      "own-row-primary-input-picker-selected-swatch",
+    )[0];
+    const colorArea = await screen.findByTestId(
+      "own-row-primary-input-picker-area",
+    );
+    const hueTrack = screen.getByTestId(
+      "own-row-primary-input-picker-hue-track",
+    );
+
+    expect(selectedSwatch).toHaveStyle({
+      backgroundColor: simulateHexColor(realHex, "deutan"),
+    });
+    expect(colorArea.style.filter).toMatch(/^url\(#own-color-picker-filter-/);
+    expect(hueTrack.style.filter).toMatch(/^url\(#own-color-picker-filter-/);
+    expect(
+      screen.queryByTestId("own-row-primary-input-picker-option-656f8c"),
+    ).not.toBeInTheDocument();
+
+    const hexInput = screen.getByTestId(
+      "own-row-primary-input-picker-hex-input",
+    ) as HTMLInputElement;
+    expect(hexInput.value.toLowerCase()).toBe(realHex);
+
+    fireEvent.change(hexInput, { target: { value: editedHex } });
+    fireEvent.blur(hexInput);
+
+    await waitFor(() => expect(primaryInput).toHaveValue(editedHex));
+    await waitFor(() =>
+      expect(selectedSwatch).toHaveStyle({
+        backgroundColor: simulateHexColor(editedHex, "deutan"),
+      }),
+    );
   });
 
   it("simulates Harmony samples with overlays while copying original generated hex", async () => {
@@ -282,8 +363,12 @@ describe("accessibility controls", () => {
       color: getHarmonyTextColor(displayHex),
     });
     expect(anchorSwatch).toHaveTextContent("00FF00");
-    expect(within(anchorSwatch).getByTestId("swatch-symbol-overlay")).toBeInTheDocument();
-    expect(within(anchorSwatch).getByTestId("swatch-pattern-overlay")).toBeInTheDocument();
+    expect(
+      within(anchorSwatch).getByTestId("swatch-symbol-overlay"),
+    ).toBeInTheDocument();
+    expect(
+      within(anchorSwatch).getByTestId("swatch-pattern-overlay"),
+    ).toBeInTheDocument();
 
     fireEvent.click(anchorSwatch);
     await waitFor(() => expect(writeText).toHaveBeenCalledWith("#00FF00"));

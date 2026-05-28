@@ -164,6 +164,20 @@ export const simulateHexColor = (hex: string, mode: VisionMode): string => {
   return (formatHex(simulated) ?? hex).toLowerCase();
 };
 
+export const getVisionModeCssColorMatrix = (
+  mode: VisionMode,
+): string | null => {
+  if (mode === "normal") return null;
+
+  const matrix = CVD_MATRICES[mode];
+  return [
+    `${matrix[0][0]} ${matrix[0][1]} ${matrix[0][2]} 0 0`,
+    `${matrix[1][0]} ${matrix[1][1]} ${matrix[1][2]} 0 0`,
+    `${matrix[2][0]} ${matrix[2][1]} ${matrix[2][2]} 0 0`,
+    "0 0 0 1 0",
+  ].join(" ");
+};
+
 const hashString = (value: string): number => {
   let hash = 0;
   for (let index = 0; index < value.length; index += 1) {

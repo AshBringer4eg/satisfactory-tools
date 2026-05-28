@@ -1,7 +1,7 @@
 {
   "name": "vite_react_shadcn_ts",
   "private": true,
-  "version": "1.6.4",
+  "version": "1.7.5",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -62,6 +62,7 @@
     "input-otp": "^1.4.2",
     "lucide-react": "^0.462.0",
     "react": "^18.3.1",
+    "react-aria-components": "^1.17.0",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.61.1",

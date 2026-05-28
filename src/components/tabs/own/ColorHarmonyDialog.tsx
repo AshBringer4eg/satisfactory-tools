@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Check, Copy, HelpCircle, Palette } from "lucide-react";
+import { Check, Copy, HelpCircle, SwatchBook } from "lucide-react";
 import SwatchAssistOverlay from "@/components/accessibility/SwatchAssistOverlay";
 import { useColorAccessibility } from "@/components/accessibility/color-accessibility-context";
 import {
@@ -31,7 +31,10 @@ import {
   normalizeHarmonyHex,
   type HarmonyMode,
 } from "@/lib/color-harmony";
-import { getSwatchOverlayToken, simulateHexColor } from "@/lib/color-accessibility";
+import {
+  getSwatchOverlayToken,
+  simulateHexColor,
+} from "@/lib/color-accessibility";
 import { cn } from "@/lib/utils";
 import { t } from "@/i18n";
 
@@ -73,7 +76,8 @@ const ColorHarmonyDialog = ({
     ? normalizeHarmonyHex(secondaryHex)
     : null;
   const hasPrimaryError = primaryHex.trim().length > 0 && !primaryNormalized;
-  const hasSecondaryError = secondaryHex.trim().length > 0 && !secondaryNormalized;
+  const hasSecondaryError =
+    secondaryHex.trim().length > 0 && !secondaryNormalized;
 
   const swatches = useMemo(
     () =>
@@ -105,7 +109,7 @@ const ColorHarmonyDialog = ({
       >
         <DialogHeader className="border-b border-border px-4 pb-3 pt-4">
           <DialogTitle className="flex items-center gap-2 font-mono text-[14px] uppercase tracking-wider">
-            <Palette className="size-4" aria-hidden="true" />
+            <SwatchBook className="size-4" aria-hidden="true" />
             {t("ownTab.harmony.title")}
           </DialogTitle>
           <DialogDescription className="font-mono text-[11px] uppercase tracking-wider">
@@ -230,7 +234,10 @@ const ColorHarmonyDialog = ({
                     swatch.hex,
                     settings.visionMode,
                   );
-                  const assistToken = getSwatchOverlayToken(swatch.id, "primary");
+                  const assistToken = getSwatchOverlayToken(
+                    swatch.id,
+                    "primary",
+                  );
 
                   return (
                     <button
