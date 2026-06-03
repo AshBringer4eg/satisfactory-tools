@@ -364,15 +364,6 @@ const parseOwnPaletteObjectToDraftRows = (
       errors.push(`${label}: invalid secondary color format. Expected #RGB or #RRGGBB.`);
     }
 
-    if (!Array.isArray(entry.categories)) {
-      errors.push(`${label}: invalid categories format. Expected array.`);
-    } else {
-      const areCategoriesStrings = entry.categories.every((value) => typeof value === "string");
-      if (!areCategoriesStrings) {
-        errors.push(`${label}: categories must contain strings only.`);
-      }
-    }
-
     const knownRecord = normalizedCode
       ? knownOwnColorByCode.get(normalizedCode) ?? null
       : null;
