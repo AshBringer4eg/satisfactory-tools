@@ -185,7 +185,10 @@ export const generateShareCards = async () => {
 
   await ensureShareRoot();
 
-  for (const [index, color] of raw.colors.entries()) {
+  let completedColorsCount = 0;
+  const totalColors = raw.colors.length;
+
+  const tasks = raw.colors.map(async (color, index) => {
     const code = assertColorCode(color.code, index);
     const name = typeof color.defaultName === "string" && color.defaultName.trim()
       ? color.defaultName.trim()
@@ -195,7 +198,7 @@ export const generateShareCards = async () => {
 
     await mkdir(path.join(shareRoot, code), { recursive: true });
 
-    for (const mode of shareModes) {
+    const modeTasks = shareModes.map(async (mode) => {
       const svg = createCardSvg({ code, name, primaryHex, secondaryHex, mode });
       await sharp(Buffer.from(svg)).png().toFile(getShareCardPath(code, mode));
       await writeFile(
@@ -203,10 +206,16 @@ export const generateShareCards = async () => {
         createShareHtml({ code, name, primaryHex, secondaryHex, mode }),
         "utf-8",
       );
-    }
-  }
+    });
 
-  return raw.colors.length;
+    await Promise.all(modeTasks);
+    completedColorsCount += 1;
+    console.log(`Generating HTML share page for ${name}. [${completedColorsCount}/${totalColors}]`);
+  });
+
+  await Promise.all(tasks);
+
+  return totalColors;
 };
 
 if (process.argv[1] === __filename) {

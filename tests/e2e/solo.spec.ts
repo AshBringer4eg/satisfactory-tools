@@ -1,7 +1,8 @@
-import { expect, test } from "./fixtures";
+import { expect, getExpectedShareCardUrl, test } from "./fixtures";
 import {
   ACCESSIBILITY_SETTINGS_KEY,
   DEFAULT_COPY_COUNTS_KEY,
+  TURBOFUEL_CODE,
   TURBOFUEL_HEX,
   TURBOFUEL_NAME,
   desktopSearchInput,
@@ -66,7 +67,7 @@ test.describe("SOLO tab", () => {
                 .__lastClipboardText ?? "",
           ),
       )
-      .toBe("http://127.0.0.1:4173/share/COLOR_TURBOFUEL/one.html");
+      .toBe(getExpectedShareCardUrl(TURBOFUEL_CODE, "one"));
   });
 
   test("reorder animation runs and item finishes at top", async ({ page }) => {

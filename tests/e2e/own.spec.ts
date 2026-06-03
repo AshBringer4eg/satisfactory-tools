@@ -1,4 +1,4 @@
-import { expect, test } from "./fixtures";
+import { expect, getExpectedShareCardUrl, test } from "./fixtures";
 import {
   ACCESSIBILITY_SETTINGS_KEY,
   CATEGORY_ORES,
@@ -6,6 +6,7 @@ import {
   DEFAULT_COPY_COUNTS_KEY,
   OWN_COPY_COUNTS_KEY,
   OWN_PALETTE_STORAGE_KEY,
+  TURBOFUEL_CODE,
   TURBOFUEL_NAME,
   desktopSearchInput,
   encodeBase64Json,
@@ -500,7 +501,7 @@ test.describe("OWN tab", () => {
                 .__lastClipboardText ?? "",
           ),
       )
-      .toBe("http://127.0.0.1:4173/share/COLOR_TURBOFUEL/two.html");
+      .toBe(getExpectedShareCardUrl(TURBOFUEL_CODE, "two"));
   });
 
   test("edit mode validates import and applies secondary fallback on save", async ({

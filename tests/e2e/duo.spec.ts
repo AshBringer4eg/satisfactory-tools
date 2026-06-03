@@ -1,6 +1,7 @@
-import { expect, test } from "./fixtures";
+import { expect, getExpectedShareCardUrl, test } from "./fixtures";
 import {
   DEFAULT_COPY_COUNTS_KEY,
+  TURBOFUEL_CODE,
   TURBOFUEL_HEX,
   TURBOFUEL_NAME,
   TURBOFUEL_SECONDARY_HEX,
@@ -93,7 +94,7 @@ test.describe("DUO tab", () => {
                 .__lastClipboardText ?? "",
           ),
       )
-      .toBe("http://127.0.0.1:4173/share/COLOR_TURBOFUEL/two.html");
+      .toBe(getExpectedShareCardUrl(TURBOFUEL_CODE, "two"));
   });
 
   test("reorder animation runs and item finishes at top", async ({ page }) => {
