@@ -32,7 +32,10 @@ const AppTabContent = ({ activeTab }: AppTabContentProps) => {
           transition={{ duration: 0.15, ease: [0.2, 0, 0, 1] }}
         >
           <section className="mb-4 max-w-4xl">
-            <h1 className="text-xl font-black tracking-tight text-foreground sm:text-2xl">
+            <h1
+              aria-label={introTitle}
+              className="text-xl font-black tracking-tight text-foreground sm:text-2xl"
+            >
               <span className="sr-only">{introTitle}</span>
               <span aria-hidden="true">{formatTerminalHeading(introTitle)}</span>
             </h1>

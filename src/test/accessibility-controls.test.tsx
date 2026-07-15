@@ -77,7 +77,7 @@ describe("accessibility controls", () => {
     for (const link of supportLinks) {
       expect(link).toHaveAttribute(
         "href",
-        "https://buymeacoffee.com/WMtWyZRqFf",
+        "https://buymeacoffee.com/ashbringer4eg",
       );
       expect(link).toHaveAttribute("target", "_blank");
       expect(link).toHaveAttribute("rel", "noopener noreferrer");
@@ -104,17 +104,18 @@ describe("accessibility controls", () => {
     expect(secondTab).toHaveAttribute("aria-selected", "true");
     expect(firstTab).toHaveAttribute("aria-selected", "false");
     expect(secondTab).toHaveAttribute("aria-controls", "app-tabpanel-duo");
-    await waitFor(() =>
-      expect(screen.getByRole("tabpanel")).toHaveAttribute(
+    const activePanel = await waitFor(() => {
+      const panel = screen.getByRole("tabpanel");
+      expect(panel).toHaveAttribute(
         "aria-labelledby",
         "app-tab-duo",
-      ),
+      );
+      return panel;
+    });
+    expect(activePanel.querySelector("h1")).toHaveAttribute(
+      "aria-label",
+      "Satisfactory Primary and Secondary Color Codes",
     );
-    expect(
-      screen.getByRole("heading", {
-        name: "Satisfactory Primary & Secondary Color Codes",
-      }),
-    ).toBeVisible();
   });
 
   it("copies preview links for the active app mode", async () => {
