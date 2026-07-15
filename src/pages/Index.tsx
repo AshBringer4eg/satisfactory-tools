@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
 import type { AppTabId } from "@/config/tabs";
 import AppHeader from "@/components/layout/AppHeader";
 import AppTabBar from "@/components/layout/AppTabBar";
@@ -10,27 +9,30 @@ import {
   ALL_COPY_COUNT_STORAGE_KEYS,
   RESET_COPY_COUNTS_EVENT,
 } from "@/config/storage";
-import { useLocale } from "@/i18n";
+import { setLocale, useLocale } from "@/i18n";
 
 const ACTIVE_TAB_STORAGE_KEY = "ficsit-active-tab";
 
 interface IndexProps {
   initialTab: AppTabId;
+  initialLocale?: "en" | "uk";
 }
 
-const Index = ({ initialTab }: IndexProps) => {
+const Index = ({ initialTab, initialLocale = "en" }: IndexProps) => {
   const activeLocale = useLocale();
-  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<AppTabId>(initialTab);
 
   const handleTabChange = useCallback((tabId: AppTabId) => {
     setActiveTab(tabId);
-    void navigate(`/${tabId}/`);
-  }, [navigate]);
+  }, []);
 
   useEffect(() => {
     setActiveTab(initialTab);
   }, [initialTab]);
+
+  useEffect(() => {
+    setLocale(initialLocale);
+  }, [initialLocale]);
 
   const clearAllCopyCounters = useCallback(() => {
     for (const storageKey of ALL_COPY_COUNT_STORAGE_KEYS) {

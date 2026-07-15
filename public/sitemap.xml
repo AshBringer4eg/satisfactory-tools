@@ -1,18 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://ashbringer4eg.github.io/satisfactory-tools/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ashbringer4eg.github.io/satisfactory-tools/" />
+    <xhtml:link rel="alternate" hreflang="uk" href="https://ashbringer4eg.github.io/satisfactory-tools/uk/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ashbringer4eg.github.io/satisfactory-tools/" />
+  </url>
+  <url>
+    <loc>https://ashbringer4eg.github.io/satisfactory-tools/uk/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ashbringer4eg.github.io/satisfactory-tools/" />
+    <xhtml:link rel="alternate" hreflang="uk" href="https://ashbringer4eg.github.io/satisfactory-tools/uk/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ashbringer4eg.github.io/satisfactory-tools/" />
   </url>
   <url>
     <loc>https://ashbringer4eg.github.io/satisfactory-tools/changelog.html</loc>
   </url>
   <url>
     <loc>https://ashbringer4eg.github.io/satisfactory-tools/solo/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ashbringer4eg.github.io/satisfactory-tools/solo/" />
+    <xhtml:link rel="alternate" hreflang="uk" href="https://ashbringer4eg.github.io/satisfactory-tools/uk/solo/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ashbringer4eg.github.io/satisfactory-tools/solo/" />
+  </url>
+  <url>
+    <loc>https://ashbringer4eg.github.io/satisfactory-tools/uk/solo/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ashbringer4eg.github.io/satisfactory-tools/solo/" />
+    <xhtml:link rel="alternate" hreflang="uk" href="https://ashbringer4eg.github.io/satisfactory-tools/uk/solo/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ashbringer4eg.github.io/satisfactory-tools/solo/" />
   </url>
   <url>
     <loc>https://ashbringer4eg.github.io/satisfactory-tools/duo/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ashbringer4eg.github.io/satisfactory-tools/duo/" />
+    <xhtml:link rel="alternate" hreflang="uk" href="https://ashbringer4eg.github.io/satisfactory-tools/uk/duo/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ashbringer4eg.github.io/satisfactory-tools/duo/" />
+  </url>
+  <url>
+    <loc>https://ashbringer4eg.github.io/satisfactory-tools/uk/duo/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ashbringer4eg.github.io/satisfactory-tools/duo/" />
+    <xhtml:link rel="alternate" hreflang="uk" href="https://ashbringer4eg.github.io/satisfactory-tools/uk/duo/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ashbringer4eg.github.io/satisfactory-tools/duo/" />
   </url>
   <url>
     <loc>https://ashbringer4eg.github.io/satisfactory-tools/own/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ashbringer4eg.github.io/satisfactory-tools/own/" />
+    <xhtml:link rel="alternate" hreflang="uk" href="https://ashbringer4eg.github.io/satisfactory-tools/uk/own/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ashbringer4eg.github.io/satisfactory-tools/own/" />
+  </url>
+  <url>
+    <loc>https://ashbringer4eg.github.io/satisfactory-tools/uk/own/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ashbringer4eg.github.io/satisfactory-tools/own/" />
+    <xhtml:link rel="alternate" hreflang="uk" href="https://ashbringer4eg.github.io/satisfactory-tools/uk/own/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ashbringer4eg.github.io/satisfactory-tools/own/" />
   </url>
 </urlset>

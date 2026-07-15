@@ -1,13 +1,17 @@
 import { Terminal } from "lucide-react";
+import { NavLink, useLocation } from "react-router-dom";
 import AccessibilityPaletteMenu from "@/components/accessibility/AccessibilityPaletteMenu";
 import { setLocale, t, useLocale } from "@/i18n";
 
 const AppHeader = () => {
   const activeLocale = useLocale();
+  const { pathname } = useLocation();
   const languageOptions = [
     { label: "EN", value: "en" },
     { label: "UA", value: "uk" },
   ] as const;
+  const englishPath = pathname.replace(/^\/uk(?=\/|$)/, "") || "/";
+  const ukrainianPath = pathname.startsWith("/uk") ? pathname : `/uk${pathname}`;
 
   return (
     <header className="border-b border-border px-6 py-3 flex items-center justify-between gap-3 shrink-0">
@@ -27,10 +31,10 @@ const AppHeader = () => {
           {languageOptions.map((language, index) => (
             <span key={language.value}>
               {index > 0 && <span className="mx-1 text-muted-foreground">|</span>}
-              <button
-                type="button"
+              <NavLink
+                to={language.value === "uk" ? ukrainianPath : englishPath}
                 onClick={() => setLocale(language.value)}
-                aria-pressed={activeLocale === language.value}
+                aria-current={activeLocale === language.value ? "page" : undefined}
                 aria-label={`Switch language to ${language.label}`}
                 data-testid={`language-${language.value}`}
                 className={`underline underline-offset-2 transition-colors ${
@@ -40,7 +44,7 @@ const AppHeader = () => {
                 }`}
               >
                 {language.label}
-              </button>
+              </NavLink>
             </span>
           ))}
         </nav>

@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { appTabs, type AppTabId } from "@/config/tabs";
+import { t } from "@/i18n";
 
 interface AppTabContentProps {
   activeTab: AppTabId;
@@ -27,6 +28,14 @@ const AppTabContent = ({ activeTab }: AppTabContentProps) => {
           exit={{ opacity: 0, x: -4 }}
           transition={{ duration: 0.15, ease: [0.2, 0, 0, 1] }}
         >
+          <section className="mb-4 max-w-4xl">
+            <h1 className="text-xl font-black tracking-tight text-foreground sm:text-2xl">
+              {t(`modeIntro.${activeTab}.title`)}
+            </h1>
+            <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+              {t(`modeIntro.${activeTab}.description`)}
+            </p>
+          </section>
           <CurrentTabComponent />
         </motion.div>
       </AnimatePresence>

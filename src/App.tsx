@@ -33,6 +33,10 @@ const App = () => (
           <Route path="/solo/" element={<Index initialTab="solo" />} />
           <Route path="/duo/" element={<Index initialTab="duo" />} />
           <Route path="/own/" element={<Index initialTab="own" />} />
+          <Route path="/uk/" element={<Index initialTab="duo" initialLocale="uk" />} />
+          <Route path="/uk/solo/" element={<Index initialTab="solo" initialLocale="uk" />} />
+          <Route path="/uk/duo/" element={<Index initialTab="duo" initialLocale="uk" />} />
+          <Route path="/uk/own/" element={<Index initialTab="own" initialLocale="uk" />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

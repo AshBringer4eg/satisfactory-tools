@@ -9,6 +9,7 @@ import {
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { useState } from "react";
+import { MemoryRouter } from "react-router-dom";
 import ColorsTab from "@/components/ColorsTab";
 import { ColorAccessibilityProvider } from "@/components/accessibility/ColorAccessibilityProvider";
 import AppHeader from "@/components/layout/AppHeader";
@@ -27,10 +28,10 @@ import { getHarmonyTextColor } from "@/lib/color-harmony";
 const TabBarHarness = () => {
   const [activeTab, setActiveTab] = useState<AppTabId>("solo");
   return (
-    <>
+    <MemoryRouter>
       <AppTabBar activeTab={activeTab} onTabChange={setActiveTab} />
       <AppTabContent activeTab={activeTab} />
-    </>
+    </MemoryRouter>
   );
 };
 
@@ -50,19 +51,20 @@ describe("accessibility controls", () => {
     window.localStorage.clear();
   });
 
-  it("marks selected language button with aria-pressed", () => {
-    render(<AppHeader />);
+  it("marks selected language link and exposes localized URLs", () => {
+    render(<AppHeader />, { wrapper: MemoryRouter });
 
     const enButton = screen.getByTestId("language-en");
     const ukButton = screen.getByTestId("language-uk");
 
-    expect(enButton).toHaveAttribute("aria-pressed", "true");
-    expect(ukButton).toHaveAttribute("aria-pressed", "false");
+    expect(enButton).toHaveAttribute("aria-current", "page");
+    expect(enButton).toHaveAttribute("href", "/");
+    expect(ukButton).toHaveAttribute("href", "/uk/");
 
     fireEvent.click(ukButton);
 
-    expect(ukButton).toHaveAttribute("aria-pressed", "true");
-    expect(enButton).toHaveAttribute("aria-pressed", "false");
+    expect(ukButton).toHaveAttribute("aria-current", "page");
+    expect(enButton).not.toHaveAttribute("aria-current");
   });
 
   it("links footer support buttons to Buy Me a Coffee", () => {
@@ -93,6 +95,8 @@ describe("accessibility controls", () => {
 
     expect(firstTab).toHaveAttribute("aria-selected", "true");
     expect(secondTab).toHaveAttribute("aria-selected", "false");
+    expect(firstTab).toHaveAttribute("href", "/solo/");
+    expect(secondTab).toHaveAttribute("href", "/duo/");
 
     firstTab.focus();
     fireEvent.keyDown(firstTab, { key: "ArrowRight" });
@@ -106,6 +110,11 @@ describe("accessibility controls", () => {
         "app-tab-duo",
       ),
     );
+    expect(
+      screen.getByRole("heading", {
+        name: "Satisfactory Primary & Secondary Color Codes",
+      }),
+    ).toBeVisible();
   });
 
   it("copies preview links for the active app mode", async () => {
@@ -157,9 +166,11 @@ describe("accessibility controls", () => {
 
   it("opens palette accessibility controls and persists settings", async () => {
     render(
-      <ColorAccessibilityProvider>
-        <AppHeader />
-      </ColorAccessibilityProvider>,
+      <MemoryRouter>
+        <ColorAccessibilityProvider>
+          <AppHeader />
+        </ColorAccessibilityProvider>
+      </MemoryRouter>,
     );
 
     fireEvent.click(screen.getByTestId("accessibility-menu-trigger"));

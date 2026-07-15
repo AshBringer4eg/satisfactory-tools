@@ -10,6 +10,20 @@
       "copyAria": "Copy {{mode}} mode preview link"
     }
   },
+  "modeIntro": {
+    "solo": {
+      "title": "Satisfactory Item HEX Color Codes",
+      "description": "Browse and copy individual Satisfactory item HEX color codes with searchable swatches, category filters, and accessibility previews."
+    },
+    "duo": {
+      "title": "Satisfactory Primary & Secondary Color Codes",
+      "description": "Browse Satisfactory primary and secondary color pairs, preview two-tone swatches, and copy both HEX color codes."
+    },
+    "own": {
+      "title": "Satisfactory Custom Color Palette Generator",
+      "description": "Build custom Satisfactory color palettes, generate OKLCH harmonies, and test combinations for color-vision accessibility."
+    }
+  },
   "header": {
     "title": "ENGINEER_REFERENCE_TERMINAL",
     "manualInstruction": "[FACTORY MANUAL ENTRY #1337]: CLICK OR PRESS ANY SWATCH COLOR ZONE TO TRANSFER THAT HEX VALUE TO CLIPBOARD MEMORY. IF CLIPBOARD ACCESS IS RESTRICTED BY THE BROWSER, CLICK OR PRESS THE HEX TEXT FIELD TO AUTO-SELECT IT, THEN EXECUTE CTRL+C FOR MANUAL TRANSFER."

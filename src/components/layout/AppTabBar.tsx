@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
 import { Share2 } from "lucide-react";
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { NavLink } from "react-router-dom";
 import { appTabs, type AppTabId } from "@/config/tabs";
-import { t } from "@/i18n";
+import { t, useLocale } from "@/i18n";
 import { getModeShareUrl } from "@/lib/share-links";
 
 interface AppTabBarProps {
@@ -14,6 +15,7 @@ const getTabId = (tabId: AppTabId): string => `app-tab-${tabId}`;
 const getTabPanelId = (tabId: AppTabId): string => `app-tabpanel-${tabId}`;
 
 const AppTabBar = ({ activeTab, onTabChange }: AppTabBarProps) => {
+  const activeLocale = useLocale();
   const [shareStatus, setShareStatus] = useState<"copied" | "failed" | null>(null);
   const shareStatusTimeout = useRef<number | null>(null);
 
@@ -46,7 +48,7 @@ const AppTabBar = ({ activeTab, onTabChange }: AppTabBarProps) => {
   };
 
   const handleTabKeyDown = (
-    event: KeyboardEvent<HTMLButtonElement>,
+    event: KeyboardEvent<HTMLAnchorElement>,
     tabId: AppTabId,
   ) => {
     if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") {
@@ -75,11 +77,11 @@ const AppTabBar = ({ activeTab, onTabChange }: AppTabBarProps) => {
         const Icon = tab.icon;
         const isActive = activeTab === tab.id;
         return (
-          <button
+          <NavLink
             key={tab.id}
+            to={`${activeLocale === "uk" ? "/uk" : ""}/${tab.id}/`}
             id={getTabId(tab.id)}
             role="tab"
-            type="button"
             aria-selected={isActive}
             aria-controls={getTabPanelId(tab.id)}
             aria-label={t(tab.labelKey)}
@@ -101,7 +103,7 @@ const AppTabBar = ({ activeTab, onTabChange }: AppTabBarProps) => {
                 transition={{ duration: 0.15, ease: [0.2, 0, 0, 1] }}
               />
             )}
-          </button>
+          </NavLink>
         );
       })}
     </nav>
