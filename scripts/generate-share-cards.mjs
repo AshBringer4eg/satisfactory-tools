@@ -230,17 +230,29 @@ const createShareHtml = ({ code, name, primaryHex, secondaryHex, mode }) => {
 };
 
 const createSitemapXml = () => {
-  const urls = [
-    `${siteUrl}/`,
-    `${siteUrl}/changelog.html`,
-    ...appModes.map(({ id }) => getModeSharePageUrl(id)),
-  ];
-  const entries = urls
-    .map((url) => `  <url>\n    <loc>${escapeHtml(url)}</loc>\n  </url>`)
-    .join("\n");
+  const localizedRoutes = ["", ...appModes.map(({ id }) => id)];
+  const localizedEntries = localizedRoutes.flatMap((route) => {
+    const suffix = route ? `${route}/` : "";
+    const englishUrl = `${siteUrl}/${suffix}`;
+    const ukrainianUrl = `${siteUrl}/uk/${suffix}`;
+    const alternates = `    <xhtml:link rel="alternate" hreflang="en" href="${escapeHtml(englishUrl)}" />
+    <xhtml:link rel="alternate" hreflang="uk" href="${escapeHtml(ukrainianUrl)}" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="${escapeHtml(englishUrl)}" />`;
+
+    return [englishUrl, ukrainianUrl].map(
+      (url) => `  <url>\n    <loc>${escapeHtml(url)}</loc>\n${alternates}\n  </url>`,
+    );
+  });
+  const changelogEntry = `  <url>\n    <loc>${escapeHtml(siteUrl)}/changelog.html</loc>\n  </url>`;
+  const entries = [
+    ...localizedEntries.slice(0, 2),
+    changelogEntry,
+    ...localizedEntries.slice(2),
+  ].join("\n");
 
   return `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
 ${entries}
 </urlset>
 `;
