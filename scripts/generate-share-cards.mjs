@@ -11,7 +11,6 @@ const colorsPath = path.join(projectRoot, "src", "data", "colors.json");
 const shareRoot = path.join(projectRoot, "public", "share");
 const cardsRoot = path.join(shareRoot, "cards");
 const modePagesRoot = path.join(shareRoot, "modes");
-const sitemapPath = path.join(projectRoot, "public", "sitemap.xml");
 
 const shareModes = ["one", "two"];
 
@@ -229,35 +228,6 @@ const createShareHtml = ({ code, name, primaryHex, secondaryHex, mode }) => {
 `;
 };
 
-const createSitemapXml = () => {
-  const localizedRoutes = ["", ...appModes.map(({ id }) => id)];
-  const localizedEntries = localizedRoutes.flatMap((route) => {
-    const suffix = route ? `${route}/` : "";
-    const englishUrl = `${siteUrl}/${suffix}`;
-    const ukrainianUrl = `${siteUrl}/uk/${suffix}`;
-    const alternates = `    <xhtml:link rel="alternate" hreflang="en" href="${escapeHtml(englishUrl)}" />
-    <xhtml:link rel="alternate" hreflang="uk" href="${escapeHtml(ukrainianUrl)}" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="${escapeHtml(englishUrl)}" />`;
-
-    return [englishUrl, ukrainianUrl].map(
-      (url) => `  <url>\n    <loc>${escapeHtml(url)}</loc>\n${alternates}\n  </url>`,
-    );
-  });
-  const changelogEntry = `  <url>\n    <loc>${escapeHtml(siteUrl)}/changelog.html</loc>\n  </url>`;
-  const entries = [
-    ...localizedEntries.slice(0, 2),
-    changelogEntry,
-    ...localizedEntries.slice(2),
-  ].join("\n");
-
-  return `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-  xmlns:xhtml="http://www.w3.org/1999/xhtml">
-${entries}
-</urlset>
-`;
-};
-
 export const generateShareCards = async () => {
   const raw = JSON.parse(await readFile(colorsPath, "utf-8"));
   if (!raw || !Array.isArray(raw.colors)) {
@@ -300,8 +270,6 @@ export const generateShareCards = async () => {
     const svg = createModeCardSvg(mode);
     await sharp(Buffer.from(svg)).png().toFile(getModeShareCardPath(mode.id));
   }));
-  await writeFile(sitemapPath, createSitemapXml(), "utf-8");
-
   return totalColors;
 };
 
