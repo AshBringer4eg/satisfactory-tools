@@ -12,6 +12,7 @@ import { useState } from "react";
 import ColorsTab from "@/components/ColorsTab";
 import { ColorAccessibilityProvider } from "@/components/accessibility/ColorAccessibilityProvider";
 import AppHeader from "@/components/layout/AppHeader";
+import AppFooter from "@/components/layout/AppFooter";
 import AppTabBar from "@/components/layout/AppTabBar";
 import AppTabContent from "@/components/layout/AppTabContent";
 import OwnTab from "@/components/tabs/OwnTab";
@@ -62,6 +63,23 @@ describe("accessibility controls", () => {
 
     expect(ukButton).toHaveAttribute("aria-pressed", "true");
     expect(enButton).toHaveAttribute("aria-pressed", "false");
+  });
+
+  it("links footer support buttons to Buy Me a Coffee", () => {
+    render(<AppFooter onResetCounters={() => undefined} />);
+
+    const supportLinks = screen.getAllByRole("link", {
+      name: /Support Satisfactory Color Tools on Buy Me a Coffee/i,
+    });
+    expect(supportLinks).toHaveLength(2);
+    for (const link of supportLinks) {
+      expect(link).toHaveAttribute(
+        "href",
+        "https://buymeacoffee.com/WMtWyZRqFf",
+      );
+      expect(link).toHaveAttribute("target", "_blank");
+      expect(link).toHaveAttribute("rel", "noopener noreferrer");
+    }
   });
 
   it("uses tab roles and supports arrow-key navigation", async () => {

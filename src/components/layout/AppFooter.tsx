@@ -1,4 +1,4 @@
-import { Github, MessageCircle } from "lucide-react";
+import { Coffee, Github, MessageCircle } from "lucide-react";
 import type { MouseEvent } from "react";
 import { t } from "@/i18n";
 
@@ -131,6 +131,17 @@ const AppFooter = ({ onResetCounters }: AppFooterProps) => (
         <div className="min-w-0 font-mono text-[10px] text-muted-foreground">
           <div className="hidden md:flex items-center justify-end gap-2 text-right whitespace-nowrap leading-tight">
             <a
+              href="https://buymeacoffee.com/ashbringer4eg"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 rounded-sm border border-primary/40 px-1.5 py-0.5 font-bold text-primary no-underline transition-colors hover:border-primary hover:bg-primary/10"
+              aria-label={t("footer.supportAria")}
+            >
+              <Coffee className="w-3 h-3 shrink-0" aria-hidden="true" />
+              {t("footer.support")}
+            </a>
+            <span>|</span>
+            <a
               href="https://github.com/AshBringer4eg/satisfactory-tools/issues"
               target="_blank"
               rel="noopener noreferrer"
@@ -161,6 +172,19 @@ const AppFooter = ({ onResetCounters }: AppFooterProps) => (
             </a>
           </div>
           <div className="md:hidden flex flex-col items-end text-right leading-tight">
+            <span>
+              <a
+                href="https://buymeacoffee.com/ashbringer4eg"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 rounded-sm border border-primary/40 px-1.5 py-0.5 font-bold text-primary no-underline transition-colors hover:border-primary hover:bg-primary/10"
+                aria-label={t("footer.supportAria")}
+              >
+                <Coffee className="w-3 h-3" aria-hidden="true" />
+                {t("footer.support")}
+              </a>
+              {" |"}
+            </span>
             <span>
               <a
                 href="https://github.com/AshBringer4eg/satisfactory-tools/issues"
