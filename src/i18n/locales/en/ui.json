@@ -16,12 +16,88 @@
       "description": "Browse and copy individual Satisfactory item HEX color codes with searchable swatches, category filters, and accessibility previews."
     },
     "duo": {
-      "title": "Satisfactory Primary & Secondary Color Codes",
+      "title": "Satisfactory Primary and Secondary Color Codes",
       "description": "Browse Satisfactory primary and secondary color pairs, preview two-tone swatches, and copy both HEX color codes."
     },
     "own": {
       "title": "Satisfactory Custom Color Palette Generator",
       "description": "Build custom Satisfactory color palettes, generate OKLCH harmonies, and test combinations for color-vision accessibility."
+    }
+  },
+  "landing": {
+    "hero": {
+      "status": "FICSIT COLOR DATABASE // ONLINE",
+      "title": "Satisfactory Color Codes & Palette Generator",
+      "description": "Browse and copy Satisfactory item color codes in HEX format. Explore individual colors, compare primary and secondary swatches, generate harmonious combinations, and create your own factory color palette.",
+      "samplesAria": "Example Satisfactory item color swatches",
+      "actions": {
+        "duo": "Browse duo colors",
+        "solo": "Find a single color",
+        "own": "Build a palette"
+      }
+    },
+    "tools": {
+      "eyebrow": "Select operation",
+      "solo": {
+        "title": "Find individual Satisfactory HEX colors",
+        "description": "Search the item catalog, filter by category, and copy an individual item color with one click.",
+        "action": "Open solo mode"
+      },
+      "duo": {
+        "title": "Preview primary and secondary color pairs",
+        "description": "Compare both paint zones for Satisfactory items and copy either HEX value directly from the swatch.",
+        "action": "Open duo mode"
+      },
+      "own": {
+        "title": "Build your own Satisfactory palette",
+        "description": "Select custom colors, generate OKLCH harmonies, and inspect combinations using accessibility tools.",
+        "action": "Open own mode"
+      }
+    },
+    "featured": {
+      "eyebrow": "Factory reference data",
+      "title": "Popular color references",
+      "action": "View the complete color database"
+    },
+    "how": {
+      "title": "How the color terminal works",
+      "step1": {
+        "title": "Select a palette mode",
+        "description": "Use SOLO for one color, DUO for paired colors, or OWN for a custom combination."
+      },
+      "step2": {
+        "title": "Find an item or color",
+        "description": "Search by item name or narrow the list by category."
+      },
+      "step3": {
+        "title": "Copy and apply the HEX code",
+        "description": "Click the required swatch and paste the color into your Satisfactory color configuration."
+      }
+    },
+    "accessibility": {
+      "eyebrow": "Accessibility assist // available",
+      "title": "Build palettes that are easier to distinguish",
+      "description": "Preview how palettes appear with different types of color-vision deficiency, add visual symbols and patterns, and generate color harmonies for combinations that are easier to distinguish.",
+      "action": "Build an accessible palette"
+    },
+    "faq": {
+      "title": "Frequently asked questions",
+      "item1": {
+        "question": "What are Satisfactory color codes?",
+        "answer": "Satisfactory color codes are HEX values that represent colors used for items, materials, machines, and custom factory palettes."
+      },
+      "item2": {
+        "question": "What is the difference between SOLO and DUO mode?",
+        "answer": "SOLO displays one primary HEX value per item. DUO displays both primary and secondary color zones."
+      },
+      "item3": {
+        "question": "Can I create my own Satisfactory color palette?",
+        "answer": "Yes. OWN mode lets you construct a custom palette, generate related color harmonies, and preview accessibility options."
+      },
+      "item4": {
+        "question": "Does this tool require an account?",
+        "answer": "No. You can browse, create, and copy colors without an account."
+      }
     }
   },
   "header": {

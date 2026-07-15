@@ -18,7 +18,7 @@ const AppTabContent = ({ activeTab }: AppTabContentProps) => {
   const introTitle = t(`modeIntro.${activeTab}.title`);
 
   return (
-    <main className="flex-1 p-6 overflow-auto">
+    <main className="flex-1 p-6 overflow-auto" data-route-scroll-container>
       <AnimatePresence mode="wait">
         <motion.div
           key={activeTab}

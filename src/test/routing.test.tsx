@@ -25,13 +25,20 @@ describe("mode routing", () => {
     );
   }, 15_000);
 
-  it("uses DUO when URL has no mode path", async () => {
+  it("uses the landing page when URL has no mode path", async () => {
     const { default: App } = await import("@/App");
     render(<App />);
 
-    expect(screen.getByRole("tab", { name: "DUO" })).toHaveAttribute(
-      "aria-selected",
-      "true",
+    expect(
+      screen.getByRole("heading", {
+        level: 1,
+        name: "Satisfactory Color Codes & Palette Generator",
+      }),
+    ).toBeVisible();
+    expect(screen.queryByRole("tab", { name: "DUO" })).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Browse duo colors/i })).toHaveAttribute(
+      "href",
+      "/duo/",
     );
   });
 });

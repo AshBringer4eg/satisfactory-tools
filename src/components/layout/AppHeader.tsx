@@ -17,10 +17,10 @@ const AppHeader = () => {
     <header className="border-b border-border px-6 py-3 flex items-center justify-between gap-3 shrink-0">
       <div className="flex min-w-0 items-center gap-3">
         <Terminal className="w-5 h-5 text-primary" />
-        <h1 className="truncate font-mono text-[12px] font-bold uppercase tracking-wider text-foreground">
+        <div className="truncate font-mono text-[12px] font-bold uppercase tracking-wider text-foreground">
           <span className="sr-only">Satisfactory Color Codes and Palette Tool</span>
           <span aria-hidden="true">{t("header.title")}</span>
-        </h1>
+        </div>
         <span className="hidden shrink-0 font-mono text-[11px] text-muted-foreground sm:inline">
           {`// VER ${__APP_VERSION__}`}
         </span>

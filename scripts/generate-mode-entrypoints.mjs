@@ -17,7 +17,7 @@ const replaceMetaContent = (html, selector, content) => {
 const rootSeo = {
   en: {
     title: "Satisfactory Color Codes & Palette Generator",
-    description: "Find and copy Satisfactory item HEX color codes. Preview solo and duo swatches, build custom palettes, generate color harmonies, and check accessibility.",
+    description: "Browse and copy Satisfactory item HEX color codes, preview primary and secondary swatches, and create accessible custom factory palettes.",
   },
   uk: {
     title: "Коди кольорів Satisfactory і генератор палітр",
