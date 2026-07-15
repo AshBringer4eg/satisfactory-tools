@@ -1,7 +1,8 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import sharp from "sharp";
+import { appModes, siteUrl } from "./mode-share-config.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -9,9 +10,8 @@ const projectRoot = path.resolve(__dirname, "..");
 const colorsPath = path.join(projectRoot, "src", "data", "colors.json");
 const shareRoot = path.join(projectRoot, "public", "share");
 const cardsRoot = path.join(shareRoot, "cards");
-
-const siteUrl = (process.env.SHARE_SITE_URL ?? "https://ashbringer4eg.github.io/satisfactory-tools")
-  .replace(/\/+$/, "");
+const modePagesRoot = path.join(shareRoot, "modes");
+const sitemapPath = path.join(projectRoot, "public", "sitemap.xml");
 
 const shareModes = ["one", "two"];
 
@@ -43,6 +43,7 @@ const truncate = (value, maxLength) =>
   value.length > maxLength ? `${value.slice(0, maxLength - 1)}...` : value;
 
 const ensureShareRoot = async () => {
+  await rm(modePagesRoot, { recursive: true, force: true });
   await mkdir(cardsRoot, { recursive: true });
 };
 
@@ -57,6 +58,12 @@ export const getSharePageUrl = (code, mode) =>
 
 export const getShareCardUrl = (code, mode) =>
   `${siteUrl}/share/cards/${encodeURIComponent(code)}-${mode}.png`;
+
+export const getModeShareCardPath = (mode) =>
+  path.join(cardsRoot, `mode-${mode}.png`);
+
+export const getModeSharePageUrl = (mode) =>
+  `${siteUrl}/${mode}/`;
 
 const createCardSvg = ({ code, name, primaryHex, secondaryHex, mode }) => {
   const isTwo = mode === "two";
@@ -102,6 +109,51 @@ const createCardSvg = ({ code, name, primaryHex, secondaryHex, mode }) => {
     <text x="126" y="398" fill="#ffffff" font-family="Consolas, monospace" font-size="23">${primary.toUpperCase()}${isTwo ? `  +  ${secondary.toUpperCase()}` : ""}</text>
   </g>
   <text x="100" y="504" fill="#9aa7bd" font-family="Consolas, monospace" font-size="18">${safeCode}</text>
+  <text x="100" y="535" fill="#9aa7bd" font-family="Consolas, monospace" font-size="18">ashbringer4eg.github.io/satisfactory-tools</text>
+</svg>`;
+};
+
+const createModeCardSvg = ({ id, title, description }) => {
+  const samples = [
+    ["#ef9f55", "#513a2d"],
+    ["#84b8d8", "#253d52"],
+    ["#a5cf67", "#3e542d"],
+    ["#c58bd8", "#51365d"],
+  ];
+  const swatches = samples.map(([primary, secondary], index) => {
+    const x = 100 + index * 249;
+    const primaryWidth = id === "duo" ? 169 : 209;
+    const secondaryBlock = id === "duo"
+      ? `<rect x="${x + 169}" y="265" width="70" height="154" fill="${secondary}" />`
+      : "";
+    return `<g>
+      <rect x="${x}" y="265" width="239" height="154" fill="#151922" stroke="#ffffff" stroke-opacity="0.15" />
+      <rect x="${x}" y="265" width="${primaryWidth}" height="154" fill="${primary}" />
+      ${secondaryBlock}
+      <rect x="${x}" y="371" width="239" height="48" fill="#000000" fill-opacity="0.55" />
+      <text x="${x + 14}" y="401" fill="#ffffff" font-family="Consolas, monospace" font-size="17">COLOR_${index + 1}</text>
+    </g>`;
+  }).join("\n");
+  const ownAccent = id === "own"
+    ? `<rect x="100" y="449" width="986" height="46" fill="#1d2430" stroke="#344054" />
+       <text x="122" y="479" fill="#f4a34f" font-family="Consolas, monospace" font-size="18">CUSTOM PALETTE  /  OKLCH HARMONY  /  ACCESSIBILITY CHECK</text>`
+    : `<text x="100" y="477" fill="#9aa7bd" font-family="Consolas, monospace" font-size="18">CLICK A SWATCH TO COPY HEX  /  SEARCH 167 SATISFACTORY COLORS</text>`;
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#121720" />
+      <stop offset="1" stop-color="#07090d" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)" />
+  <rect x="64" y="64" width="1072" height="502" fill="#151922" stroke="#344054" stroke-width="2" />
+  <rect x="64" y="64" width="1072" height="7" fill="#f4a34f" />
+  <text x="100" y="132" fill="#f4a34f" font-family="Consolas, monospace" font-size="19" font-weight="700" letter-spacing="2">SATISFACTORY COLOR TOOLS</text>
+  <text x="100" y="192" fill="#e5ebf5" font-family="Consolas, monospace" font-size="48" font-weight="700">${escapeSvg(title)}</text>
+  <text x="100" y="230" fill="#9aa7bd" font-family="Consolas, monospace" font-size="20">${escapeSvg(description)}</text>
+  ${swatches}
+  ${ownAccent}
   <text x="100" y="535" fill="#9aa7bd" font-family="Consolas, monospace" font-size="18">ashbringer4eg.github.io/satisfactory-tools</text>
 </svg>`;
 };
@@ -177,6 +229,23 @@ const createShareHtml = ({ code, name, primaryHex, secondaryHex, mode }) => {
 `;
 };
 
+const createSitemapXml = () => {
+  const urls = [
+    `${siteUrl}/`,
+    `${siteUrl}/changelog.html`,
+    ...appModes.map(({ id }) => getModeSharePageUrl(id)),
+  ];
+  const entries = urls
+    .map((url) => `  <url>\n    <loc>${escapeHtml(url)}</loc>\n  </url>`)
+    .join("\n");
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${entries}
+</urlset>
+`;
+};
+
 export const generateShareCards = async () => {
   const raw = JSON.parse(await readFile(colorsPath, "utf-8"));
   if (!raw || !Array.isArray(raw.colors)) {
@@ -214,6 +283,12 @@ export const generateShareCards = async () => {
   });
 
   await Promise.all(tasks);
+
+  await Promise.all(appModes.map(async (mode) => {
+    const svg = createModeCardSvg(mode);
+    await sharp(Buffer.from(svg)).png().toFile(getModeShareCardPath(mode.id));
+  }));
+  await writeFile(sitemapPath, createSitemapXml(), "utf-8");
 
   return totalColors;
 };

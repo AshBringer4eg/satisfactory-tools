@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
-import { appTabs, type AppTabId } from "@/config/tabs";
+import { useNavigate } from "react-router-dom";
+import type { AppTabId } from "@/config/tabs";
 import AppHeader from "@/components/layout/AppHeader";
 import AppTabBar from "@/components/layout/AppTabBar";
 import AppTabContent from "@/components/layout/AppTabContent";
@@ -13,25 +14,23 @@ import { useLocale } from "@/i18n";
 
 const ACTIVE_TAB_STORAGE_KEY = "ficsit-active-tab";
 
-const DEFAULT_TAB_ID: AppTabId = "solo";
-const readStoredTab = (): AppTabId => {
-  if (typeof window === "undefined") return DEFAULT_TAB_ID;
+interface IndexProps {
+  initialTab: AppTabId;
+}
 
-  try {
-    const stored = window.localStorage.getItem(ACTIVE_TAB_STORAGE_KEY);
-    if (stored && appTabs.some((tab) => tab.id === stored)) {
-      return stored as AppTabId;
-    }
-  } catch {
-    // Ignore storage access failures.
-  }
-
-  return DEFAULT_TAB_ID;
-};
-
-const Index = () => {
+const Index = ({ initialTab }: IndexProps) => {
   const activeLocale = useLocale();
-  const [activeTab, setActiveTab] = useState<AppTabId>(() => readStoredTab());
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState<AppTabId>(initialTab);
+
+  const handleTabChange = useCallback((tabId: AppTabId) => {
+    setActiveTab(tabId);
+    void navigate(`/${tabId}/`);
+  }, [navigate]);
+
+  useEffect(() => {
+    setActiveTab(initialTab);
+  }, [initialTab]);
 
   const clearAllCopyCounters = useCallback(() => {
     for (const storageKey of ALL_COPY_COUNT_STORAGE_KEYS) {
@@ -72,7 +71,7 @@ const Index = () => {
     <ColorAccessibilityProvider>
       <div className="min-h-screen min-w-[220px] bg-background flex flex-col" data-locale={activeLocale}>
         <AppHeader />
-        <AppTabBar activeTab={activeTab} onTabChange={setActiveTab} />
+        <AppTabBar activeTab={activeTab} onTabChange={handleTabChange} />
         <AppTabContent activeTab={activeTab} />
         <AppFooter onResetCounters={handleResetCounters} />
       </div>

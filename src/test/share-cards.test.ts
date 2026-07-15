@@ -20,6 +20,8 @@ const getPagePath = (code: string, mode: "one" | "two") =>
 const getCardPath = (code: string, mode: "one" | "two") =>
   path.join(shareRoot, "cards", `${code}-${mode}.png`);
 
+const appModes = ["solo", "duo", "own"] as const;
+
 describe("generated Discord share cards", () => {
   it("has one-color and two-color pages and images for every default item", () => {
     for (const color of defaultColors) {
@@ -53,5 +55,20 @@ describe("generated Discord share cards", () => {
       `Primary ${color.hex.toUpperCase()} · Secondary ${color.secondaryColor.toUpperCase()}`,
     );
     expect(twoHtml).not.toContain("?mode=");
+  });
+
+  it("generates app-mode previews and lists them in the sitemap", () => {
+    const sitemap = readFileSync(
+      path.resolve(process.cwd(), "public", "sitemap.xml"),
+      "utf-8",
+    );
+
+    for (const mode of appModes) {
+      const pageUrl = `${siteUrl}/${mode}/`;
+      const cardPath = path.join(shareRoot, "cards", `mode-${mode}.png`);
+
+      expect(existsSync(cardPath), mode).toBe(true);
+      expect(sitemap).toContain(`<loc>${pageUrl}</loc>`);
+    }
   });
 });

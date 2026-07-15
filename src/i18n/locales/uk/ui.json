@@ -2,7 +2,13 @@
   "tabs": {
     "solo": "SOLO",
     "duo": "DUO",
-    "own": "OWN"
+    "own": "OWN",
+    "modeShare": {
+      "share": "ПОДІЛИТИСЬ",
+      "copied": "СКОПІЙОВАНО",
+      "failed": "ПОМИЛКА",
+      "copyAria": "Скопіювати посилання на режим {{mode}}"
+    }
   },
   "header": {
     "title": "ТЕРМІНАЛ_ДОВІДКИ_ІНЖЕНЕРА",

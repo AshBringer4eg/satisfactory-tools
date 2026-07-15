@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import {
   QueryClient,
   QueryClientProvider,
@@ -20,24 +20,22 @@ const queryClient = new QueryClient({
   },
 });
 
-const router = createBrowserRouter(
-  [
-    { path: "/", element: <Index /> },
-    { path: "*", element: <NotFound /> },
-  ],
-  {
-    basename: import.meta.env.BASE_URL,
-    future: {
-      v7_relativeSplatPath: true,
-    },
-  },
-);
-
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Sonner />
-      <RouterProvider router={router} future={{ v7_startTransition: true }} />
+      <BrowserRouter
+        basename={import.meta.env.BASE_URL}
+        future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+      >
+        <Routes>
+          <Route path="/" element={<Index initialTab="duo" />} />
+          <Route path="/solo/" element={<Index initialTab="solo" />} />
+          <Route path="/duo/" element={<Index initialTab="duo" />} />
+          <Route path="/own/" element={<Index initialTab="own" />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
 );

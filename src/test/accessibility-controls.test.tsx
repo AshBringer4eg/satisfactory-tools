@@ -90,6 +90,34 @@ describe("accessibility controls", () => {
     );
   });
 
+  it("copies preview links for the active app mode", async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "clipboard", {
+      value: { writeText },
+      configurable: true,
+    });
+    render(<TabBarHarness />);
+
+    fireEvent.click(
+      screen.getByRole("button", { name: /Copy SOLO mode preview link/i }),
+    );
+    await waitFor(() =>
+      expect(writeText).toHaveBeenLastCalledWith(
+        expect.stringMatching(/\/solo\/$/),
+      ),
+    );
+
+    fireEvent.click(screen.getByRole("tab", { name: "DUO" }));
+    fireEvent.click(
+      screen.getByRole("button", { name: /Copy DUO mode preview link/i }),
+    );
+    await waitFor(() =>
+      expect(writeText).toHaveBeenLastCalledWith(
+        expect.stringMatching(/\/duo\/$/),
+      ),
+    );
+  });
+
   it("provides accessible search label and category toggle state", () => {
     const palette = colorPalettes.default;
     const firstCategoryCode = palette.categoryCodes[0];

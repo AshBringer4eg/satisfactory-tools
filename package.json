@@ -1,12 +1,13 @@
 {
   "name": "vite_react_shadcn_ts",
   "private": true,
-  "version": "1.7.8",
+  "version": "1.7.9",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "predev": "pnpm generate:share-cards",
     "build": "vite build",
+    "postbuild": "node scripts/generate-mode-entrypoints.mjs",
     "prebuild": "pnpm generate:share-cards",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",

@@ -2,7 +2,13 @@
   "tabs": {
     "solo": "SOLO",
     "duo": "DUO",
-    "own": "OWN"
+    "own": "OWN",
+    "modeShare": {
+      "share": "SHARE",
+      "copied": "COPIED",
+      "failed": "ERROR",
+      "copyAria": "Copy {{mode}} mode preview link"
+    }
   },
   "header": {
     "title": "ENGINEER_REFERENCE_TERMINAL",
