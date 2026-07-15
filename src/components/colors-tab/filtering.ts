@@ -6,6 +6,11 @@ export interface IndexedSearchColor {
   searchableText: string;
 }
 
+const colorNameCollator = new Intl.Collator(undefined, {
+  sensitivity: "base",
+  numeric: true,
+});
+
 export const createIndexedSearchColors = (
   allColors: SatisfactoryColor[],
 ): IndexedSearchColor[] =>
@@ -41,7 +46,7 @@ export const getFilteredColors = (
   return filtered.sort((a, b) => {
     const byCount = (counts[b.code] ?? 0) - (counts[a.code] ?? 0);
     if (byCount !== 0) return byCount;
-    return a.name.localeCompare(b.name);
+    return colorNameCollator.compare(a.name, b.name);
   });
 };
 
