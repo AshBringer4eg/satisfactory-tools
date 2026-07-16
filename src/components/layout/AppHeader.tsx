@@ -11,30 +11,43 @@ const AppHeader = () => {
     { label: "UA", value: "uk" },
   ] as const;
   const englishPath = pathname.replace(/^\/uk(?=\/|$)/, "") || "/";
-  const ukrainianPath = pathname.startsWith("/uk") ? pathname : `/uk${pathname}`;
+  const ukrainianPath = pathname.startsWith("/uk")
+    ? pathname
+    : `/uk${pathname}`;
 
   return (
     <header className="border-b border-border px-6 py-3 flex items-center justify-between gap-3 shrink-0">
       <div className="flex min-w-0 items-center gap-3">
         <Terminal className="w-5 h-5 text-primary" />
-        <div className="truncate font-mono text-[12px] font-bold uppercase tracking-wider text-foreground">
-          <span className="sr-only">Satisfactory Color Codes and Palette Tool</span>
-          <span aria-hidden="true">{t("header.title")}</span>
-        </div>
+        <NavLink to={activeLocale === "uk" ? `/${activeLocale}` : "/"}>
+          <div className="truncate font-mono text-[12px] font-bold uppercase tracking-wider text-foreground">
+            <span className="sr-only">
+              Satisfactory Color Codes and Palette Tool
+            </span>
+            <span aria-hidden="true">{t("header.title")}</span>
+          </div>
+        </NavLink>
         <span className="hidden shrink-0 font-mono text-[11px] text-muted-foreground sm:inline">
           {`// VER ${__APP_VERSION__}`}
         </span>
       </div>
       <div className="flex shrink-0 items-center gap-3">
         <AccessibilityPaletteMenu />
-        <nav aria-label="Language switcher" className="font-mono text-[11px] uppercase tracking-wider">
+        <nav
+          aria-label="Language switcher"
+          className="font-mono text-[11px] uppercase tracking-wider"
+        >
           {languageOptions.map((language, index) => (
             <span key={language.value}>
-              {index > 0 && <span className="mx-1 text-muted-foreground">|</span>}
+              {index > 0 && (
+                <span className="mx-1 text-muted-foreground">|</span>
+              )}
               <NavLink
                 to={language.value === "uk" ? ukrainianPath : englishPath}
                 onClick={() => setLocale(language.value)}
-                aria-current={activeLocale === language.value ? "page" : undefined}
+                aria-current={
+                  activeLocale === language.value ? "page" : undefined
+                }
                 aria-label={`Switch language to ${language.label}`}
                 data-testid={`language-${language.value}`}
                 className={`underline underline-offset-2 transition-colors ${
