@@ -38,6 +38,13 @@
     },
     "tools": {
       "eyebrow": "Select operation",
+      "preview": {
+        "solo": "Sample color",
+        "duo": "Color pair",
+        "own": "Your colors",
+        "primary": "Primary",
+        "secondary": "Secondary"
+      },
       "solo": {
         "title": "Find individual Satisfactory HEX colors",
         "description": "Search the item catalog, filter by category, and copy an individual item color with one click.",
@@ -77,8 +84,40 @@
     "accessibility": {
       "eyebrow": "Accessibility assist // available",
       "title": "Build palettes that are easier to distinguish",
-      "description": "Preview how palettes appear with different types of color-vision deficiency, add visual symbols and patterns, and generate color harmonies for combinations that are easier to distinguish.",
-      "action": "Build an accessible palette"
+      "description": "Preview how every swatch appears with different types of color-vision deficiency, then add visual symbols and patterns so color is never the only cue.",
+      "examples": {
+        "vision": {
+          "title": "Vision simulation",
+          "normal": "Default",
+          "deutan": "Deutan",
+          "heading": "Change color-vision modes",
+          "description": "Preview every swatch in default, protan, deutan, or tritan modes without changing its real HEX value."
+        },
+        "cues": {
+          "title": "Visual cues",
+          "heading": "Add symbols and patterns",
+          "description": "Overlay distinct shapes and textures so colors are not the only way to identify a swatch."
+        },
+        "harmony": {
+          "title": "Color harmony",
+          "heading": "Generate distinguishable combinations",
+          "description": "Create related OKLCH colors and use Factory Safe checks to flag low contrast or color-vision conflicts."
+        }
+      }
+    },
+    "noParadigm": {
+      "registration": {
+        "title": "No registration",
+        "description": "Open the terminal and use every color tool without creating an account."
+      },
+      "paid": {
+        "title": "No paid features",
+        "description": "SOLO, DUO, OWN palettes, harmonies, and accessibility tools are available for free."
+      },
+      "tracking": {
+        "title": "No tracking",
+        "description": "No analytics or advertising trackers. Preferences and custom palettes stay in your browser's local storage."
+      }
     },
     "faq": {
       "title": "Frequently asked questions",
@@ -96,7 +135,7 @@
       },
       "item4": {
         "question": "Does this tool require an account?",
-        "answer": "No. You can browse, create, and copy colors without an account."
+        "answer": "No. There is no registration, no paid functionality, and no tracking. Preferences, counters, and custom palettes are stored locally in your browser and are not sent to an account or analytics service."
       }
     }
   },
