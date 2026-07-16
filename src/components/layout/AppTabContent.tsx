@@ -9,7 +9,7 @@ interface AppTabContentProps {
 const getTabId = (tabId: AppTabId): string => `app-tab-${tabId}`;
 const getTabPanelId = (tabId: AppTabId): string => `app-tabpanel-${tabId}`;
 const formatTerminalHeading = (heading: string): string =>
-  heading.toLocaleUpperCase().replace(/\s+/g, "_");
+  heading.toLocaleUpperCase();
 
 const AppTabContent = ({ activeTab }: AppTabContentProps) => {
   const currentTab = appTabs.find((tab) => tab.id === activeTab);
@@ -37,7 +37,9 @@ const AppTabContent = ({ activeTab }: AppTabContentProps) => {
               className="text-xl font-black tracking-tight text-foreground sm:text-2xl"
             >
               <span className="sr-only">{introTitle}</span>
-              <span aria-hidden="true">{formatTerminalHeading(introTitle)}</span>
+              <span aria-hidden="true">
+                {formatTerminalHeading(introTitle)}
+              </span>
             </h1>
             <p className="mt-1 text-sm uppercase leading-relaxed text-muted-foreground">
               {t(`modeIntro.${activeTab}.description`)}
