@@ -56,8 +56,8 @@ describe("own comparable row utils", () => {
   });
 
   it("masks hex input to always start with # and limits to six hex digits", () => {
-    expect(maskHexColorInput("a1b2c3")).toBe("#a1b2c3");
-    expect(maskHexColorInput("#a1b2c3ff")).toBe("#a1b2c3");
+    expect(maskHexColorInput("a1b2c3")).toBe("#A1B2C3");
+    expect(maskHexColorInput("#a1b2c3ff")).toBe("#A1B2C3");
   });
 
   it("removes non-hex characters and supports fully clearing the input", () => {

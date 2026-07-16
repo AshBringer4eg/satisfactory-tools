@@ -252,7 +252,7 @@ describe("accessibility controls", () => {
       }),
     );
 
-    await waitFor(() => expect(writeText).toHaveBeenCalledWith("#d4292e"));
+    await waitFor(() => expect(writeText).toHaveBeenCalledWith("#D4292E"));
     expect(
       screen.getAllByTestId("swatch-symbol-overlay").length,
     ).toBeGreaterThan(0);

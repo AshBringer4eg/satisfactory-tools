@@ -202,10 +202,10 @@ test.describe("OWN tab", () => {
     const firstSecondary = getOwnFirstRowSecondaryInput(page);
 
     await firstPrimary.fill("12abgg9988");
-    await expect(firstPrimary).toHaveValue("#12ab99");
+    await expect(firstPrimary).toHaveValue("#12AB99");
 
     await firstSecondary.fill("abcd");
-    await expect(firstSecondary).toHaveValue("#abcd");
+    await expect(firstSecondary).toHaveValue("#ABCD");
 
     await firstSecondary.fill("   ");
     await expect(firstSecondary).toHaveValue("");

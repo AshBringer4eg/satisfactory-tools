@@ -71,7 +71,7 @@ const ColorInputWithPicker = ({
   inputTestId,
   onChange,
 }: ColorInputWithPickerProps) => {
-  const [draftValue, setDraftValue] = useState(value);
+  const [draftValue, setDraftValue] = useState(value.toUpperCase());
   const commitTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const clearPendingCommit = useCallback(() => {
@@ -92,7 +92,7 @@ const ColorInputWithPicker = ({
 
   useEffect(() => {
     clearPendingCommit();
-    setDraftValue(value);
+    setDraftValue(value.toUpperCase());
   }, [clearPendingCommit, value]);
 
   useEffect(() => clearPendingCommit, [clearPendingCommit]);

@@ -57,8 +57,8 @@ const ColorHarmonyDialog = ({
   initialPrimaryHex = "#CB603A",
   initialSecondaryHex = "",
 }: ColorHarmonyDialogProps) => {
-  const [primaryHex, setPrimaryHex] = useState(initialPrimaryHex);
-  const [secondaryHex, setSecondaryHex] = useState(initialSecondaryHex);
+  const [primaryHex, setPrimaryHex] = useState(initialPrimaryHex.toUpperCase());
+  const [secondaryHex, setSecondaryHex] = useState(initialSecondaryHex.toUpperCase());
   const [mode, setMode] = useState<HarmonyMode>("complementary");
   const [factorySafe, setFactorySafe] = useState(true);
   const [copiedHex, setCopiedHex] = useState<string | null>(null);
@@ -66,8 +66,8 @@ const ColorHarmonyDialog = ({
 
   useEffect(() => {
     if (!open) return;
-    setPrimaryHex(initialPrimaryHex);
-    setSecondaryHex(initialSecondaryHex);
+    setPrimaryHex(initialPrimaryHex.toUpperCase());
+    setSecondaryHex(initialSecondaryHex.toUpperCase());
     setCopiedHex(null);
   }, [initialPrimaryHex, initialSecondaryHex, open]);
 
@@ -125,7 +125,7 @@ const ColorHarmonyDialog = ({
               </span>
               <Input
                 value={primaryHex}
-                onChange={(event) => setPrimaryHex(event.target.value)}
+                onChange={(event) => setPrimaryHex(event.target.value.toUpperCase())}
                 placeholder="#CB603A"
                 aria-invalid={hasPrimaryError}
                 data-testid="harmony-primary-input"
@@ -142,7 +142,7 @@ const ColorHarmonyDialog = ({
               </span>
               <Input
                 value={secondaryHex}
-                onChange={(event) => setSecondaryHex(event.target.value)}
+                onChange={(event) => setSecondaryHex(event.target.value.toUpperCase())}
                 placeholder={t("ownTab.harmony.optionalAnchor")}
                 aria-invalid={hasSecondaryError}
                 data-testid="harmony-secondary-input"
@@ -260,7 +260,7 @@ const ColorHarmonyDialog = ({
                         showPattern={settings.showPatterns}
                       />
                       <span className="relative z-10 font-mono text-[24px] font-bold tracking-normal">
-                        {swatch.hex.slice(1)}
+                        {swatch.hex.slice(1).toUpperCase()}
                       </span>
 
                       <span className="absolute left-2 top-2 z-10 rounded-[2px] bg-black/40 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-white">

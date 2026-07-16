@@ -50,11 +50,11 @@ const EMPTY_PICKER_COLOR = "#000000";
 
 const getPickerColor = (value: string, fallbackValue?: string): string => {
   if (isHexColor(value)) {
-    return normalizeHexColor(value.trim());
+    return normalizeHexColor(value.trim()).toUpperCase();
   }
 
   if (fallbackValue && isHexColor(fallbackValue)) {
-    return normalizeHexColor(fallbackValue.trim());
+    return normalizeHexColor(fallbackValue.trim()).toUpperCase();
   }
 
   return EMPTY_PICKER_COLOR;
@@ -63,7 +63,7 @@ const getPickerColor = (value: string, fallbackValue?: string): string => {
 const getVisionModeName = (visionMode: VisionMode): string =>
   visionMode === "normal" ? "default" : visionMode;
 
-const toPickerHex = (color: Color): string => color.toString("hex").toLowerCase();
+const toPickerHex = (color: Color): string => color.toString("hex").toUpperCase();
 
 const getHueLabel = (color: Color): string => {
   const hue = color.toFormat("hsb").getChannelValue("hue");
@@ -130,7 +130,7 @@ const OwnColorPicker = ({
 
   const commitHex = useCallback(
     (hex: string) => {
-      onChange(hex);
+      onChange(hex.toUpperCase());
       hasUncommittedChangeRef.current = false;
     },
     [onChange],
@@ -148,7 +148,7 @@ const OwnColorPicker = ({
   const handleHexInputBlur = (event: FocusEvent<HTMLInputElement>) => {
     const hex = event.currentTarget.value;
     if (isHexColor(hex)) {
-      commitHex(normalizeHexColor(hex));
+      commitHex(normalizeHexColor(hex).toUpperCase());
     }
   };
 

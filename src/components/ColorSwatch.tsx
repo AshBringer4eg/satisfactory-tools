@@ -50,9 +50,11 @@ const ColorSwatch = ({
   const [showActionsPersistently, setShowActionsPersistently] = useState(false);
   const isDuo = mode === "duo";
   const { settings } = useColorAccessibility();
-  const primaryDisplayHex = simulateHexColor(color.hex, settings.visionMode);
+  const primaryHex = color.hex.toUpperCase();
+  const secondaryHex = color.secondaryColor.toUpperCase();
+  const primaryDisplayHex = simulateHexColor(primaryHex, settings.visionMode);
   const secondaryDisplayHex = simulateHexColor(
-    color.secondaryColor,
+    secondaryHex,
     settings.visionMode,
   );
   const primaryAssistToken = getSwatchOverlayToken(color.code, "primary");
@@ -149,7 +151,7 @@ const ColorSwatch = ({
 
   const handleCopy = useCallback(
     (part: SwatchPart) => {
-      const hexToCopy = part === "primary" ? color.hex : color.secondaryColor;
+      const hexToCopy = part === "primary" ? primaryHex : secondaryHex;
       if (typeof navigator === "undefined" || !navigator.clipboard?.writeText) {
         setCopiedPart(null);
         setCopyFailedPart(part);
@@ -171,7 +173,7 @@ const ColorSwatch = ({
         },
       );
     },
-    [color.hex, color.secondaryColor, onCopy, scheduleFeedbackReset],
+    [onCopy, primaryHex, scheduleFeedbackReset, secondaryHex],
   );
 
   const handleMouseLeave = useCallback(() => {
@@ -286,7 +288,7 @@ const ColorSwatch = ({
           onMouseLeave={handleMouseLeave}
           className="relative z-0 w-full flex flex-col text-left transition-all duration-150 cursor-pointer"
           aria-label={t("swatch.aria.copyHex", {
-            hex: color.hex,
+            hex: primaryHex,
             name: color.name,
           })}
         >
@@ -330,13 +332,13 @@ const ColorSwatch = ({
               <code
                 className="text-[13px] font-mono tracking-normal text-white select-text cursor-text"
                 aria-label={t("swatch.aria.hexCode", {
-                  hex: color.hex,
+                  hex: primaryHex,
                   name: color.name,
                 })}
                 onClick={handleHexClick}
                 onMouseDown={(event) => event.stopPropagation()}
               >
-                {color.hex}
+                {primaryHex}
               </code>
             </div>
           </div>
@@ -385,7 +387,7 @@ const ColorSwatch = ({
           className="relative z-0 basis-[70%] grow-0 shrink-0 text-left overflow-hidden"
           style={{ backgroundColor: primaryDisplayHex }}
           aria-label={t("swatch.aria.copyPrimaryHex", {
-            hex: color.hex,
+            hex: primaryHex,
             name: color.name,
           })}
         >
@@ -413,13 +415,13 @@ const ColorSwatch = ({
             <code
               className="text-[13px] font-mono tracking-normal text-white select-text cursor-text"
               aria-label={t("swatch.aria.primaryHexCode", {
-                hex: color.hex,
+                hex: primaryHex,
                 name: color.name,
               })}
               onClick={handleHexClick}
               onMouseDown={(event) => event.stopPropagation()}
             >
-              {color.hex}
+              {primaryHex}
             </code>
           </div>
         </button>
@@ -431,7 +433,7 @@ const ColorSwatch = ({
           className="relative z-0 basis-[30%] grow-0 shrink-0 text-left overflow-hidden"
           style={{ backgroundColor: secondaryDisplayHex }}
           aria-label={t("swatch.aria.copySecondaryHex", {
-            hex: color.secondaryColor,
+            hex: secondaryHex,
             name: color.name,
           })}
         >
@@ -456,13 +458,13 @@ const ColorSwatch = ({
             <code
               className="block w-full truncate text-center text-[11px] font-mono tracking-tight text-white select-text cursor-text"
               aria-label={t("swatch.aria.secondaryHexCode", {
-                hex: color.secondaryColor,
+                hex: secondaryHex,
                 name: color.name,
               })}
               onClick={handleHexClick}
               onMouseDown={(event) => event.stopPropagation()}
             >
-              {color.secondaryColor}
+              {secondaryHex}
             </code>
           </div>
         </button>
