@@ -1,6 +1,6 @@
 export const siteUrl = (
   process.env.SHARE_SITE_URL ??
-  "https://ashbringer4eg.github.io/satisfactory-tools"
+  "https://satisfactory-tools.vercel.app"
 ).replace(/\/+$/, "");
 
 export const appModes = [

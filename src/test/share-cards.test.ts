@@ -12,7 +12,7 @@ interface ShareCardColor {
 
 const shareRoot = path.resolve(process.cwd(), "public", "share");
 const defaultColors = (colorsData as { colors: ShareCardColor[] }).colors;
-const siteUrl = "https://ashbringer4eg.github.io/satisfactory-tools";
+const siteUrl = "https://satisfactory-tools.vercel.app";
 
 const getPagePath = (code: string, mode: "one" | "two") =>
   path.join(shareRoot, code, `${mode}.html`);

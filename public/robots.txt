@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://ashbringer4eg.github.io/satisfactory-tools/sitemap.xml
+Sitemap: https://satisfactory-tools.vercel.app/sitemap.xml

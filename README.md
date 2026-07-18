@@ -5,7 +5,9 @@ It provides fast search/filtering and one-click HEX copy for use in signs, docs,
 
 ## Live Site
 
-https://ashbringer4eg.github.io/satisfactory-tools/
+https://satisfactory-tools.vercel.app/
+
+GitHub Pages mirror: https://ashbringer4eg.github.io/satisfactory-tools/
 
 ## Features
 

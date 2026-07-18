@@ -108,7 +108,7 @@ const createCardSvg = ({ code, name, primaryHex, secondaryHex, mode }) => {
     <text x="126" y="398" fill="#ffffff" font-family="Consolas, monospace" font-size="23">${primary.toUpperCase()}${isTwo ? `  +  ${secondary.toUpperCase()}` : ""}</text>
   </g>
   <text x="100" y="504" fill="#9aa7bd" font-family="Consolas, monospace" font-size="18">${safeCode}</text>
-  <text x="100" y="535" fill="#9aa7bd" font-family="Consolas, monospace" font-size="18">ashbringer4eg.github.io/satisfactory-tools</text>
+  <text x="100" y="535" fill="#9aa7bd" font-family="Consolas, monospace" font-size="18">satisfactory-tools.vercel.app</text>
 </svg>`;
 };
 
@@ -153,7 +153,7 @@ const createModeCardSvg = ({ id, title, description }) => {
   <text x="100" y="230" fill="#9aa7bd" font-family="Consolas, monospace" font-size="20">${escapeSvg(description)}</text>
   ${swatches}
   ${ownAccent}
-  <text x="100" y="535" fill="#9aa7bd" font-family="Consolas, monospace" font-size="18">ashbringer4eg.github.io/satisfactory-tools</text>
+  <text x="100" y="535" fill="#9aa7bd" font-family="Consolas, monospace" font-size="18">satisfactory-tools.vercel.app</text>
 </svg>`;
 };
 
