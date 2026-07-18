@@ -27,3 +27,5 @@ dist-ssr
 # Tests
 test-results
 tmp
+_tmp_*
+public/share

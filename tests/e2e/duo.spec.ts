@@ -1,6 +1,7 @@
-import { expect, test } from "./fixtures";
+import { expect, getExpectedShareCardUrl, test } from "./fixtures";
 import {
   DEFAULT_COPY_COUNTS_KEY,
+  TURBOFUEL_CODE,
   TURBOFUEL_HEX,
   TURBOFUEL_NAME,
   TURBOFUEL_SECONDARY_HEX,
@@ -8,6 +9,7 @@ import {
   getDuoPrimarySwatchByName,
   getDuoSecondarySwatchByName,
   getFirstDuoPrimarySwatch,
+  getShareButtonByName,
   openDuoTab,
 } from "./helpers/colors-tab";
 
@@ -76,6 +78,25 @@ test.describe("DUO tab", () => {
       .toBe(TURBOFUEL_SECONDARY_HEX);
   });
 
+  test("copies Discord share link for a duo swatch", async ({ page }) => {
+    await page.goto("/");
+    await openDuoTab(page);
+
+    await getDuoPrimarySwatchByName(page, TURBOFUEL_NAME).hover();
+    await getShareButtonByName(page, TURBOFUEL_NAME).click({ force: true });
+
+    await expect
+      .poll(
+        () =>
+          page.evaluate(
+            () =>
+              (window as Window & { __lastClipboardText?: string })
+                .__lastClipboardText ?? "",
+          ),
+      )
+      .toBe(getExpectedShareCardUrl(TURBOFUEL_CODE, "two"));
+  });
+
   test("reorder animation runs and item finishes at top", async ({ page }) => {
     await page.goto("/");
     await openDuoTab(page);
@@ -85,7 +106,7 @@ test.describe("DUO tab", () => {
     await swatch.click();
     await page.mouse.move(0, 0);
 
-    const floating = page.locator(".pointer-events-none.z-50");
+    const floating = page.getByTestId("floating-reorder-swatch");
     await expect(floating).toBeVisible();
     await expect(floating).toBeHidden({ timeout: 3000 });
 

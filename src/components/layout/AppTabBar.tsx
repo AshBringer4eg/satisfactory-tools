@@ -1,7 +1,10 @@
 import { motion } from "framer-motion";
-import type { KeyboardEvent } from "react";
+import { Share2 } from "lucide-react";
+import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { NavLink } from "react-router-dom";
 import { appTabs, type AppTabId } from "@/config/tabs";
-import { t } from "@/i18n";
+import { t, useLocale } from "@/i18n";
+import { getModeShareUrl } from "@/lib/share-links";
 
 interface AppTabBarProps {
   activeTab: AppTabId;
@@ -12,8 +15,40 @@ const getTabId = (tabId: AppTabId): string => `app-tab-${tabId}`;
 const getTabPanelId = (tabId: AppTabId): string => `app-tabpanel-${tabId}`;
 
 const AppTabBar = ({ activeTab, onTabChange }: AppTabBarProps) => {
+  const activeLocale = useLocale();
+  const [shareStatus, setShareStatus] = useState<"copied" | "failed" | null>(null);
+  const shareStatusTimeout = useRef<number | null>(null);
+
+  useEffect(() => () => {
+    if (shareStatusTimeout.current !== null) {
+      window.clearTimeout(shareStatusTimeout.current);
+    }
+  }, []);
+
+  const handleModeShare = () => {
+    const resetStatus = () => {
+      if (shareStatusTimeout.current !== null) {
+        window.clearTimeout(shareStatusTimeout.current);
+      }
+      shareStatusTimeout.current = window.setTimeout(() => {
+        setShareStatus(null);
+        shareStatusTimeout.current = null;
+      }, 1400);
+    };
+    const clipboard = navigator.clipboard;
+    if (!clipboard?.writeText) {
+      setShareStatus("failed");
+      resetStatus();
+      return;
+    }
+    void clipboard.writeText(getModeShareUrl(activeTab)).then(
+      () => setShareStatus("copied"),
+      () => setShareStatus("failed"),
+    ).finally(resetStatus);
+  };
+
   const handleTabKeyDown = (
-    event: KeyboardEvent<HTMLButtonElement>,
+    event: KeyboardEvent<HTMLAnchorElement>,
     tabId: AppTabId,
   ) => {
     if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") {
@@ -32,8 +67,9 @@ const AppTabBar = ({ activeTab, onTabChange }: AppTabBarProps) => {
   };
 
   return (
+    <div className="flex shrink-0 border-b border-border min-w-0">
     <nav
-      className="border-b border-border px-6 flex gap-0 shrink-0 min-w-0"
+      className="px-6 flex flex-1 gap-0 min-w-0"
       aria-label="Palette tabs"
       role="tablist"
     >
@@ -41,11 +77,11 @@ const AppTabBar = ({ activeTab, onTabChange }: AppTabBarProps) => {
         const Icon = tab.icon;
         const isActive = activeTab === tab.id;
         return (
-          <button
+          <NavLink
             key={tab.id}
+            to={`${activeLocale === "uk" ? "/uk" : ""}/${tab.id}/`}
             id={getTabId(tab.id)}
             role="tab"
-            type="button"
             aria-selected={isActive}
             aria-controls={getTabPanelId(tab.id)}
             aria-label={t(tab.labelKey)}
@@ -67,10 +103,27 @@ const AppTabBar = ({ activeTab, onTabChange }: AppTabBarProps) => {
                 transition={{ duration: 0.15, ease: [0.2, 0, 0, 1] }}
               />
             )}
-          </button>
+          </NavLink>
         );
       })}
     </nav>
+    <button
+      type="button"
+      onClick={handleModeShare}
+      aria-label={t("tabs.modeShare.copyAria", { mode: t(`tabs.${activeTab}`) })}
+      title={t("tabs.modeShare.copyAria", { mode: t(`tabs.${activeTab}`) })}
+      className="flex shrink-0 items-center gap-1 border-l border-border px-3 font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:text-primary focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary"
+    >
+      <Share2 className="size-3.5" aria-hidden="true" />
+      <span className="hidden sm:inline">
+        {shareStatus === "copied"
+          ? t("tabs.modeShare.copied")
+          : shareStatus === "failed"
+            ? t("tabs.modeShare.failed")
+            : t("tabs.modeShare.share")}
+      </span>
+    </button>
+    </div>
   );
 };
 

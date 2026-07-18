@@ -1,36 +1,38 @@
 import { useState, useEffect, useCallback } from "react";
-import { appTabs, type AppTabId } from "@/config/tabs";
+import type { AppTabId } from "@/config/tabs";
 import AppHeader from "@/components/layout/AppHeader";
 import AppTabBar from "@/components/layout/AppTabBar";
 import AppTabContent from "@/components/layout/AppTabContent";
 import AppFooter from "@/components/layout/AppFooter";
+import { ColorAccessibilityProvider } from "@/components/accessibility/ColorAccessibilityProvider";
 import {
   ALL_COPY_COUNT_STORAGE_KEYS,
   RESET_COPY_COUNTS_EVENT,
 } from "@/config/storage";
-import { useLocale } from "@/i18n";
+import { setLocale, useLocale } from "@/i18n";
 
 const ACTIVE_TAB_STORAGE_KEY = "ficsit-active-tab";
 
-const DEFAULT_TAB_ID: AppTabId = "solo";
-const readStoredTab = (): AppTabId => {
-  if (typeof window === "undefined") return DEFAULT_TAB_ID;
+interface IndexProps {
+  initialTab: AppTabId;
+  initialLocale?: "en" | "uk";
+}
 
-  try {
-    const stored = window.localStorage.getItem(ACTIVE_TAB_STORAGE_KEY);
-    if (stored && appTabs.some((tab) => tab.id === stored)) {
-      return stored as AppTabId;
-    }
-  } catch {
-    // Ignore storage access failures.
-  }
-
-  return DEFAULT_TAB_ID;
-};
-
-const Index = () => {
+const Index = ({ initialTab, initialLocale = "en" }: IndexProps) => {
   const activeLocale = useLocale();
-  const [activeTab, setActiveTab] = useState<AppTabId>(() => readStoredTab());
+  const [activeTab, setActiveTab] = useState<AppTabId>(initialTab);
+
+  const handleTabChange = useCallback((tabId: AppTabId) => {
+    setActiveTab(tabId);
+  }, []);
+
+  useEffect(() => {
+    setActiveTab(initialTab);
+  }, [initialTab]);
+
+  useEffect(() => {
+    setLocale(initialLocale);
+  }, [initialLocale]);
 
   const clearAllCopyCounters = useCallback(() => {
     for (const storageKey of ALL_COPY_COUNT_STORAGE_KEYS) {
@@ -68,12 +70,14 @@ const Index = () => {
   }, [clearAllCopyCounters]);
 
   return (
-    <div className="min-h-screen min-w-[220px] bg-background flex flex-col" data-locale={activeLocale}>
-      <AppHeader />
-      <AppTabBar activeTab={activeTab} onTabChange={setActiveTab} />
-      <AppTabContent activeTab={activeTab} />
-      <AppFooter onResetCounters={handleResetCounters} />
-    </div>
+    <ColorAccessibilityProvider>
+      <div className="min-h-screen min-w-[220px] bg-background flex flex-col" data-locale={activeLocale}>
+        <AppHeader />
+        <AppTabBar activeTab={activeTab} onTabChange={handleTabChange} />
+        <AppTabContent activeTab={activeTab} />
+        <AppFooter onResetCounters={handleResetCounters} />
+      </div>
+    </ColorAccessibilityProvider>
   );
 };
 

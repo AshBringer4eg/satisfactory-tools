@@ -1,10 +1,12 @@
-import { expect, test } from "./fixtures";
+import { expect, getExpectedShareCardUrl, test } from "./fixtures";
 import {
+  ACCESSIBILITY_SETTINGS_KEY,
   CATEGORY_ORES,
   CATEGORY_OTHER,
   DEFAULT_COPY_COUNTS_KEY,
   OWN_COPY_COUNTS_KEY,
   OWN_PALETTE_STORAGE_KEY,
+  TURBOFUEL_CODE,
   TURBOFUEL_NAME,
   desktopSearchInput,
   encodeBase64Json,
@@ -21,6 +23,7 @@ import {
   getOwnRows,
   getOwnSaveButton,
   getOwnViewButton,
+  getShareButtonByName,
   openOwnEdit,
   openOwnTab,
 } from "./helpers/colors-tab";
@@ -199,13 +202,72 @@ test.describe("OWN tab", () => {
     const firstSecondary = getOwnFirstRowSecondaryInput(page);
 
     await firstPrimary.fill("12abgg9988");
-    await expect(firstPrimary).toHaveValue("#12ab99");
+    await expect(firstPrimary).toHaveValue("#12AB99");
 
     await firstSecondary.fill("abcd");
-    await expect(firstSecondary).toHaveValue("#abcd");
+    await expect(firstSecondary).toHaveValue("#ABCD");
 
     await firstSecondary.fill("   ");
     await expect(firstSecondary).toHaveValue("");
+  });
+
+  test("header assist settings apply to OWN edit picker swatches", async ({ page }) => {
+    await page.goto("/");
+    await page.getByTestId("accessibility-menu-trigger").click();
+    await page.getByTestId("accessibility-mode-deutan").click();
+    await page.getByTestId("accessibility-symbols-toggle").click();
+    await page.getByTestId("accessibility-patterns-toggle").click();
+    await page.keyboard.press("Escape");
+
+    await openOwnEdit(page);
+    await getOwnFirstRowPrimaryInput(page).fill("#00ff00");
+    await getOwnFirstRowSecondaryInput(page).fill("");
+
+    const primaryPickerTrigger = page
+      .getByTestId("own-row-primary-input-picker-trigger")
+      .first();
+    const secondaryPickerTrigger = page
+      .getByTestId("own-row-secondary-input-picker-trigger")
+      .first();
+    const primaryPickerSwatch = primaryPickerTrigger.getByTestId(
+      "own-row-primary-input-picker-selected-swatch",
+    );
+    const secondaryPickerSwatch = secondaryPickerTrigger.getByTestId(
+      "own-row-secondary-input-picker-selected-swatch",
+    );
+
+    await expect(primaryPickerSwatch).toBeVisible();
+    await expect(secondaryPickerSwatch).toBeVisible();
+    await expect(
+      primaryPickerTrigger.getByTestId("swatch-symbol-overlay"),
+    ).toBeVisible();
+    await expect(
+      primaryPickerTrigger.getByTestId("swatch-pattern-overlay"),
+    ).toBeVisible();
+    await expect(
+      secondaryPickerTrigger.getByTestId("swatch-symbol-overlay"),
+    ).toBeVisible();
+    await expect
+      .poll(() =>
+        primaryPickerSwatch.evaluate((element) =>
+          window.getComputedStyle(element).backgroundColor,
+        ),
+      )
+      .not.toBe("rgb(0, 255, 0)");
+    await expect
+      .poll(async () => {
+        const primaryColor = await primaryPickerSwatch.evaluate((element) =>
+          window.getComputedStyle(element).backgroundColor,
+        );
+        const secondaryColor = await secondaryPickerSwatch.evaluate((element) =>
+          window.getComputedStyle(element).backgroundColor,
+        );
+        return secondaryColor === primaryColor;
+      })
+      .toBe(true);
+    await expect
+      .poll(() => page.evaluate((key) => localStorage.getItem(key), ACCESSIBILITY_SETTINGS_KEY))
+      .toContain("\"visionMode\":\"deutan\"");
   });
 
   test("secondary color falls back to primary when empty on save", async ({
@@ -418,6 +480,28 @@ test.describe("OWN tab", () => {
     await expect
       .poll(() => page.evaluate((key) => localStorage.getItem(key), DEFAULT_COPY_COUNTS_KEY))
       .not.toContain("\"COLOR_TURBOFUEL\":1");
+  });
+
+  test("use mode copies Discord share links for built-in colors", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await openOwnTab(page);
+    await desktopSearchInput(page).fill("turbofuel");
+
+    await getDuoPrimarySwatchByName(page, TURBOFUEL_NAME).hover();
+    await getShareButtonByName(page, TURBOFUEL_NAME).click({ force: true });
+
+    await expect
+      .poll(
+        () =>
+          page.evaluate(
+            () =>
+              (window as Window & { __lastClipboardText?: string })
+                .__lastClipboardText ?? "",
+          ),
+      )
+      .toBe(getExpectedShareCardUrl(TURBOFUEL_CODE, "two"));
   });
 
   test("edit mode validates import and applies secondary fallback on save", async ({

@@ -168,25 +168,43 @@ describe("own palette draft helpers", () => {
     expect(imported.errors).toContain("Decoded base64 is not valid JSON.");
   });
 
-  it("rejects import objects with non-string categories entries", () => {
+  it("accepts imports with missing or malformed categories and falls back on rebuild", () => {
     const imported = importOwnPaletteObjectToDraftRows({
       schemaVersion: 1,
       paletteCode: "external",
       colors: [
         {
-          defaultName: "Custom",
+          defaultName: "Custom Missing Categories",
+          hex: "#112233",
+          secondaryColor: "#445566",
+        },
+        {
+          defaultName: "Custom Malformed Categories",
           hex: "#112233",
           secondaryColor: "#445566",
           categories: ["CATEGORY_OTHER", 1],
         },
+        {
+          defaultName: "Custom Non-Array Categories",
+          hex: "#112233",
+          secondaryColor: "#445566",
+          categories: "CATEGORY_OTHER",
+        },
       ],
     });
 
-    expect(imported.rows).toBeNull();
+    expect(imported.errors).toEqual([]);
+    expect(imported.rows).not.toBeNull();
+
+    const rebuilt = buildOwnPaletteFromDraftRows(imported.rows!);
+
+    expect(rebuilt.errors).toEqual([]);
     expect(
-      imported.errors.some((error) =>
-        /categories must contain strings only/i.test(error),
-      ),
-    ).toBe(true);
+      rebuilt.normalizedFile?.colors.map((entry) => entry.categories),
+    ).toEqual([
+      ["CATEGORY_OTHER"],
+      ["CATEGORY_OTHER"],
+      ["CATEGORY_OTHER"],
+    ]);
   });
 });

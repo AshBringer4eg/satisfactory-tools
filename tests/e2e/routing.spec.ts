@@ -1,6 +1,17 @@
 import { expect, test } from "./fixtures";
 
 test.describe("routing", () => {
+  test("mode path selects a tab and tab changes update the URL", async ({ page }) => {
+    await page.goto("/duo/");
+
+    await expect(page.getByRole("tab", { name: "DUO" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    );
+    await page.getByRole("tab", { name: "OWN" }).click();
+    await expect(page).toHaveURL(/\/own\/$/);
+  });
+
   test("unknown route shows not found and can recover to home", async ({ page }) => {
     await page.goto("/definitely-not-a-route");
 

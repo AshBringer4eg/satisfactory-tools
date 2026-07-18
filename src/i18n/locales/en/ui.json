@@ -2,11 +2,162 @@
   "tabs": {
     "solo": "SOLO",
     "duo": "DUO",
-    "own": "OWN"
+    "own": "OWN",
+    "modeShare": {
+      "share": "SHARE",
+      "copied": "COPIED",
+      "failed": "ERROR",
+      "copyAria": "Copy {{mode}} mode preview link"
+    }
+  },
+  "modeIntro": {
+    "solo": {
+      "title": "Satisfactory Item HEX Color Codes",
+      "description": "Browse and copy individual Satisfactory item HEX color codes with searchable swatches, category filters, and accessibility previews."
+    },
+    "duo": {
+      "title": "Satisfactory Primary and Secondary Color Codes",
+      "description": "Browse Satisfactory primary and secondary color pairs, preview two-tone swatches, and copy both HEX color codes."
+    },
+    "own": {
+      "title": "Satisfactory Custom Color Palette Generator",
+      "description": "Build custom Satisfactory color palettes, generate OKLCH harmonies, and test combinations for color-vision accessibility."
+    }
+  },
+  "landing": {
+    "hero": {
+      "status": "FICSIT COLOR DATABASE // ONLINE",
+      "title": "Satisfactory Color Codes & Palette Generator",
+      "description": "Browse and copy Satisfactory item color codes in HEX format. Explore individual colors, compare primary and secondary swatches, generate harmonious combinations, and create your own factory color palette.",
+      "samplesAria": "Example Satisfactory item color swatches",
+      "actions": {
+        "duo": "Browse duo colors",
+        "solo": "Find a single color",
+        "own": "Build a palette"
+      }
+    },
+    "tools": {
+      "eyebrow": "Select operation",
+      "preview": {
+        "solo": "Sample color",
+        "duo": "Color pair",
+        "own": "Your colors",
+        "primary": "Primary",
+        "secondary": "Secondary"
+      },
+      "solo": {
+        "title": "Find individual Satisfactory HEX colors",
+        "description": "Search the item catalog, filter by category, and copy an individual item color with one click.",
+        "action": "Open solo mode"
+      },
+      "duo": {
+        "title": "Preview primary and secondary color pairs",
+        "description": "Compare both paint zones for Satisfactory items and copy either HEX value directly from the swatch.",
+        "action": "Open duo mode"
+      },
+      "own": {
+        "title": "Build your own Satisfactory palette",
+        "description": "Select custom colors, generate OKLCH harmonies, and inspect combinations using accessibility tools.",
+        "action": "Open own mode"
+      }
+    },
+    "featured": {
+      "eyebrow": "Factory reference data",
+      "title": "Popular color references",
+      "action": "View the complete color database"
+    },
+    "how": {
+      "title": "How the color terminal works",
+      "step1": {
+        "title": "Select a palette mode",
+        "description": "Use SOLO for one color, DUO for paired colors, or OWN for a custom combination."
+      },
+      "step2": {
+        "title": "Find an item or color",
+        "description": "Search by item name or narrow the list by category."
+      },
+      "step3": {
+        "title": "Copy and apply the HEX code",
+        "description": "Click the required swatch and paste the color into your Satisfactory color configuration."
+      }
+    },
+    "accessibility": {
+      "eyebrow": "Accessibility assist // available",
+      "title": "Build palettes that are easier to distinguish",
+      "description": "Preview how every swatch appears with different types of color-vision deficiency, then add visual symbols and patterns so color is never the only cue.",
+      "examples": {
+        "vision": {
+          "title": "Vision simulation",
+          "normal": "Default",
+          "deutan": "Deutan",
+          "heading": "Change color-vision modes",
+          "description": "Preview every swatch in default, protan, deutan, or tritan modes without changing its real HEX value."
+        },
+        "cues": {
+          "title": "Visual cues",
+          "heading": "Add symbols and patterns",
+          "description": "Overlay distinct shapes and textures so colors are not the only way to identify a swatch."
+        },
+        "harmony": {
+          "title": "Color harmony",
+          "heading": "Generate distinguishable combinations",
+          "description": "Create related OKLCH colors and use Factory Safe checks to flag low contrast or color-vision conflicts."
+        }
+      }
+    },
+    "noParadigm": {
+      "registration": {
+        "title": "No registration",
+        "description": "Open the terminal and use every color tool without creating an account."
+      },
+      "paid": {
+        "title": "No paid features",
+        "description": "SOLO, DUO, OWN palettes, harmonies, and accessibility tools are available for free."
+      },
+      "tracking": {
+        "title": "No tracking",
+        "description": "No analytics or advertising trackers. Preferences and custom palettes stay in your browser's local storage."
+      }
+    },
+    "faq": {
+      "title": "Frequently asked questions",
+      "item1": {
+        "question": "What are Satisfactory color codes?",
+        "answer": "Satisfactory color codes are HEX values that represent colors used for items, materials, machines, and custom factory palettes."
+      },
+      "item2": {
+        "question": "What is the difference between SOLO and DUO mode?",
+        "answer": "SOLO displays one primary HEX value per item. DUO displays both primary and secondary color zones."
+      },
+      "item3": {
+        "question": "Can I create my own Satisfactory color palette?",
+        "answer": "Yes. OWN mode lets you construct a custom palette, generate related color harmonies, and preview accessibility options."
+      },
+      "item4": {
+        "question": "Does this tool require an account?",
+        "answer": "No. There is no registration, no paid functionality, and no tracking. Preferences, counters, and custom palettes are stored locally in your browser and are not sent to an account or analytics service."
+      }
+    }
   },
   "header": {
     "title": "ENGINEER_REFERENCE_TERMINAL",
     "manualInstruction": "[FACTORY MANUAL ENTRY #1337]: CLICK OR PRESS ANY SWATCH COLOR ZONE TO TRANSFER THAT HEX VALUE TO CLIPBOARD MEMORY. IF CLIPBOARD ACCESS IS RESTRICTED BY THE BROWSER, CLICK OR PRESS THE HEX TEXT FIELD TO AUTO-SELECT IT, THEN EXECUTE CTRL+C FOR MANUAL TRANSFER."
+  },
+  "accessibility": {
+    "trigger": "A11Y",
+    "openAria": "Open palette accessibility checker",
+    "title": "Palette Accessibility",
+    "description": "Simulate color vision and add non-color swatch cues.",
+    "simulation": "Simulation",
+    "overlays": "Assist Overlays",
+    "symbols": "Symbols",
+    "patterns": "Patterns",
+    "modes": {
+      "normal": "Default",
+      "protan": "Protanope",
+      "deutan": "Deuteranope",
+      "tritan": "Tritanope"
+    }
   },
   "footer": {
     "toolkit": "FICSIT_EMPLOYEE_TOOLKIT",
@@ -15,7 +166,9 @@
     "thanksForColorData": "THANKS_FOR_COLOR_DATA:",
     "feedbackGithub": "FEEDBACK_GH",
     "feedbackReddit": "FEEDBACK_REDDIT",
+    "support": "SUPPORT",
     "changelog": "CHANGELOG",
+    "supportAria": "Support Satisfactory Color Tools on Buy Me a Coffee",
     "feedbackGithubAria": "Open GitHub Issues feedback page",
     "feedbackRedditAria": "Open Reddit post feedback thread",
     "changelogAria": "Open changelog page"
@@ -85,6 +238,38 @@
         "savedPaletteFailedBuild": "Stored ownPalette failed validation. Using default palette copy.",
         "importUnknown": "Import failed for unknown reasons."
       }
+    },
+    "harmony": {
+      "button": "HARMONY",
+      "openAria": "Open color harmony suggestions",
+      "title": "Color Harmony",
+      "description": "Generate OKLCH palette suggestions from one or two anchors.",
+      "anchorPrimary": "Anchor A",
+      "anchorSecondary": "Anchor B",
+      "optionalAnchor": "Optional",
+      "mode": "Harmony",
+      "factorySafe": "FACTORY_SAFE",
+      "factorySafeHelpAria": "Explain factory safe harmony mode",
+      "factorySafeHelp": "Checks generated colors for low contrast and colorblind conflicts. If needed, it nudges OKLCH lightness, chroma, and hue to make the palette easier to read in factory use.",
+      "invalidHex": "Enter #RGB or #RRGGBB anchors.",
+      "empty": "NO_VALID_ANCHOR",
+      "anchor": "ANCHOR",
+      "suggestion": "MATCH",
+      "copy": "COPY",
+      "copied": "COPIED",
+      "copyHex": "Copy harmony hex {{hex}}",
+      "adjusted": "ADJUSTED",
+      "lowContrast": "LOW_CONTRAST",
+      "cvdConflict": "CVD_CONFLICT",
+      "modes": {
+        "analogous": "ANALOGOUS",
+        "complementary": "COMPLEMENTARY",
+        "doubleSplitComplementary": "DOUBLE_SPLIT_COMPLEMENTARY",
+        "rectangle": "RECTANGLE",
+        "splitComplementary": "SPLIT_COMPLEMENTARY",
+        "tetradic": "TETRADIC",
+        "triadic": "TRIADIC"
+      }
     }
   },
   "notFound": {
@@ -104,10 +289,15 @@
     "copied": "COPIED",
     "selectHex": "SELECT HEX",
     "copy": "COPY",
+    "share": "SHARE",
+    "shareCopied": "COPIED",
+    "shareFailed": "ERROR",
     "aria": {
       "copyHex": "Copy hex code {{hex}} for {{name}}",
       "copyPrimaryHex": "Copy primary hex code {{hex}} for {{name}}",
       "copySecondaryHex": "Copy secondary hex code {{hex}} for {{name}}",
+      "copyShareLink": "Copy Discord share link for {{name}}",
+      "openHarmony": "Open color harmony suggestions for {{name}}",
       "hexCode": "{{name}} hex code {{hex}}",
       "primaryHexCode": "{{name}} primary hex code {{hex}}",
       "secondaryHexCode": "{{name}} secondary hex code {{hex}}"

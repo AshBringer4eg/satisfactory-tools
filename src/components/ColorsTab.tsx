@@ -3,11 +3,14 @@ import {
   useDeferredValue,
   useMemo,
   useRef,
+  useState,
   type ReactNode,
 } from "react";
-import type { SatisfactoryPalette } from "@/data/colors";
+import type { SatisfactoryColor, SatisfactoryPalette } from "@/data/colors";
+import type { ShareCardMode } from "@/lib/share-links";
 import { DEFAULT_COPY_COUNTS_STORAGE_KEY } from "@/config/storage";
 import { t, useLocale } from "@/i18n";
+import ColorHarmonyDialog from "./tabs/own/ColorHarmonyDialog";
 import ColorsTabFilterControls from "./colors-tab/ColorsTabFilterControls";
 import ColorsTabFloatingSwatch from "./colors-tab/ColorsTabFloatingSwatch";
 import ColorsTabGrid from "./colors-tab/ColorsTabGrid";
@@ -25,6 +28,7 @@ interface ColorsTabProps {
   swatchMode?: "solo" | "duo";
   copyCountsStorageKey?: string;
   topContent?: ReactNode;
+  shareLinksEnabled?: boolean;
 }
 
 const ColorsTab = ({
@@ -32,8 +36,13 @@ const ColorsTab = ({
   swatchMode = "solo",
   copyCountsStorageKey = DEFAULT_COPY_COUNTS_STORAGE_KEY,
   topContent,
+  shareLinksEnabled = true,
 }: ColorsTabProps) => {
   useLocale();
+  const [harmonySeed, setHarmonySeed] = useState<{
+    primaryHex: string;
+    secondaryHex: string;
+  } | null>(null);
 
   const {
     colors,
@@ -87,6 +96,24 @@ const ColorsTab = ({
       ),
     [indexedColors, deferredSearchQuery, activeCategories, copyCounts],
   );
+  const shareMode: ShareCardMode | null = shareLinksEnabled
+    ? swatchMode === "duo"
+      ? "two"
+      : "one"
+    : null;
+
+  const handleHarmonyOpen = useCallback((color: SatisfactoryColor) => {
+    setHarmonySeed({
+      primaryHex: color.hex,
+      secondaryHex: swatchMode === "duo" ? color.secondaryColor : "",
+    });
+  }, [swatchMode]);
+
+  const handleHarmonyDialogOpenChange = useCallback((open: boolean) => {
+    if (!open) {
+      setHarmonySeed(null);
+    }
+  }, []);
 
   const {
     movingColorCode,
@@ -106,6 +133,13 @@ const ColorsTab = ({
 
   return (
     <div className="flex flex-col md:flex-row gap-6 h-full">
+      <ColorHarmonyDialog
+        open={Boolean(harmonySeed)}
+        onOpenChange={handleHarmonyDialogOpenChange}
+        initialPrimaryHex={harmonySeed?.primaryHex ?? "#CB603A"}
+        initialSecondaryHex={harmonySeed?.secondaryHex ?? ""}
+      />
+
       <ColorsTabFilterControls
         totalColors={colors.length}
         filteredCount={filteredColors.length}
@@ -127,6 +161,7 @@ const ColorsTab = ({
         <ColorsTabGrid
           gridTokens={gridTokens}
           swatchMode={swatchMode}
+          shareMode={shareMode}
           copyCounts={copyCounts}
           pendingCopyCounts={pendingCopyCounts}
           movingColorCode={movingColorCode}
@@ -136,6 +171,7 @@ const ColorsTab = ({
           registerSwatchNode={registerSwatchNode}
           onCopy={queueCopyCount}
           onSwatchLeave={flushQueuedCopyCount}
+          onHarmonyOpen={handleHarmonyOpen}
         />
 
         {filteredColors.length === 0 && (

@@ -2,11 +2,13 @@ import type { BrowserContext, Page } from "@playwright/test";
 import { expect } from "@playwright/test";
 
 export const TURBOFUEL_NAME = "Turbofuel";
-export const TURBOFUEL_HEX = "#d4292e";
-export const TURBOFUEL_SECONDARY_HEX = "#0d0d0d";
+export const TURBOFUEL_CODE = "COLOR_TURBOFUEL";
+export const TURBOFUEL_HEX = "#D4292E";
+export const TURBOFUEL_SECONDARY_HEX = "#0D0D0D";
 export const DEFAULT_COPY_COUNTS_KEY = "ficsit-color-copy-counts";
 export const OWN_COPY_COUNTS_KEY = "ficsit-color-copy-counts-own";
 export const OWN_PALETTE_STORAGE_KEY = "ownPalette";
+export const ACCESSIBILITY_SETTINGS_KEY = "ficsit-accessibility-settings";
 export const CATEGORY_ORES = "CATEGORY_ORES";
 export const CATEGORY_OTHER = "CATEGORY_OTHER";
 
@@ -14,19 +16,44 @@ export const desktopSearchInput = (page: Page) =>
   page.locator("[data-testid='colors-search-input']:visible").first();
 
 export const getSoloSwatchByName = (page: Page, name: string) =>
-  page.getByRole("button", {
-    name: new RegExp(`Copy hex code .* for ${name}$`, "i"),
-  });
+  page
+    .getByRole("button", {
+      name: new RegExp(`Copy hex code .* for ${name}$`, "i"),
+    })
+    .filter({ visible: true })
+    .first();
 
 export const getDuoPrimarySwatchByName = (page: Page, name: string) =>
-  page.getByRole("button", {
-    name: new RegExp(`Copy primary hex code .* for ${name}$`, "i"),
-  });
+  page
+    .getByRole("button", {
+      name: new RegExp(`Copy primary hex code .* for ${name}$`, "i"),
+    })
+    .filter({ visible: true })
+    .first();
 
 export const getDuoSecondarySwatchByName = (page: Page, name: string) =>
-  page.getByRole("button", {
-    name: new RegExp(`Copy secondary hex code .* for ${name}$`, "i"),
-  });
+  page
+    .getByRole("button", {
+      name: new RegExp(`Copy secondary hex code .* for ${name}$`, "i"),
+    })
+    .filter({ visible: true })
+    .first();
+
+export const getShareButtonByName = (page: Page, name: string) =>
+  page
+    .getByRole("button", {
+      name: new RegExp(`Copy Discord share link for ${name}$`, "i"),
+    })
+    .filter({ visible: true })
+    .first();
+
+export const getHarmonyButtonByName = (page: Page, name: string) =>
+  page
+    .getByRole("button", {
+      name: new RegExp(`Open color harmony suggestions for ${name}$`, "i"),
+    })
+    .filter({ visible: true })
+    .first();
 
 export const getFirstSoloSwatch = (page: Page) =>
   page.locator("button[aria-label^='Copy hex code']").first();

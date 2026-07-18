@@ -21,7 +21,7 @@ export const maskHexColorInput = (rawValue: string): string => {
     .replace(NON_HEX_CHARACTERS_REGEX, "")
     .slice(0, HEX_INPUT_MAX_DIGITS);
 
-  return `#${digits}`;
+  return `#${digits.toUpperCase()}`;
 };
 
 const toCanonicalComparableRow = (
