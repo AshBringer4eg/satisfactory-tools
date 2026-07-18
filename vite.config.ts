@@ -8,8 +8,8 @@ const packageJson = JSON.parse(
 ) as { version: string };
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => ({
-  base: mode === "production" ? "/satisfactory-tools/" : "/",
+export default defineConfig({
+  base: "/",
   server: {
     host: "::",
     port: 8080,
@@ -26,4 +26,4 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-}));
+});

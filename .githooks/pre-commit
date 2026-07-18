@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 set -e
 
-pnpm run bump:patch:package
+node scripts/bump-patch-version.mjs
 git add package.json
