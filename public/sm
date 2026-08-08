@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://satisfactory-tools.vercel.app/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://satisfactory-tools.vercel.app/" />
+    <xhtml:link rel="alternate" hreflang="uk" href="https://satisfactory-tools.vercel.app/uk/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://satisfactory-tools.vercel.app/" />
+  </url>
+  <url>
+    <loc>https://satisfactory-tools.vercel.app/uk/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://satisfactory-tools.vercel.app/" />
+    <xhtml:link rel="alternate" hreflang="uk" href="https://satisfactory-tools.vercel.app/uk/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://satisfactory-tools.vercel.app/" />
+  </url>
+  <url>
+    <loc>https://satisfactory-tools.vercel.app/changelog.html</loc>
+  </url>
+  <url>
+    <loc>https://satisfactory-tools.vercel.app/solo/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://satisfactory-tools.vercel.app/solo/" />
+    <xhtml:link rel="alternate" hreflang="uk" href="https://satisfactory-tools.vercel.app/uk/solo/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://satisfactory-tools.vercel.app/solo/" />
+  </url>
+  <url>
+    <loc>https://satisfactory-tools.vercel.app/uk/solo/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://satisfactory-tools.vercel.app/solo/" />
+    <xhtml:link rel="alternate" hreflang="uk" href="https://satisfactory-tools.vercel.app/uk/solo/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://satisfactory-tools.vercel.app/solo/" />
+  </url>
+  <url>
+    <loc>https://satisfactory-tools.vercel.app/duo/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://satisfactory-tools.vercel.app/duo/" />
+    <xhtml:link rel="alternate" hreflang="uk" href="https://satisfactory-tools.vercel.app/uk/duo/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://satisfactory-tools.vercel.app/duo/" />
+  </url>
+  <url>
+    <loc>https://satisfactory-tools.vercel.app/uk/duo/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://satisfactory-tools.vercel.app/duo/" />
+    <xhtml:link rel="alternate" hreflang="uk" href="https://satisfactory-tools.vercel.app/uk/duo/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://satisfactory-tools.vercel.app/duo/" />
+  </url>
+  <url>
+    <loc>https://satisfactory-tools.vercel.app/own/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://satisfactory-tools.vercel.app/own/" />
+    <xhtml:link rel="alternate" hreflang="uk" href="https://satisfactory-tools.vercel.app/uk/own/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://satisfactory-tools.vercel.app/own/" />
+  </url>
+  <url>
+    <loc>https://satisfactory-tools.vercel.app/uk/own/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://satisfactory-tools.vercel.app/own/" />
+    <xhtml:link rel="alternate" hreflang="uk" href="https://satisfactory-tools.vercel.app/uk/own/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://satisfactory-tools.vercel.app/own/" />
+  </url>
+</urlset>
