@@ -11,6 +11,7 @@ import {
 import { NavLink } from "react-router-dom";
 import { ColorAccessibilityProvider } from "@/components/accessibility/ColorAccessibilityProvider";
 import SwatchAssistOverlay from "@/components/accessibility/SwatchAssistOverlay";
+import TutorialPreviewCarousel from "@/components/landing/TutorialPreviewCarousel";
 import AppFooter from "@/components/layout/AppFooter";
 import AppHeader from "@/components/layout/AppHeader";
 import { ALL_COPY_COUNT_STORAGE_KEYS, RESET_COPY_COUNTS_EVENT } from "@/config/storage";
@@ -287,6 +288,8 @@ const Landing = ({ initialLocale = "en" }: { initialLocale?: "en" | "uk" }) => {
               </div>
             </div>
           </section>
+
+          <TutorialPreviewCarousel localePrefix={localePrefix} />
 
           <section className="border-b border-border px-6 py-12 lg:px-12">
             <div className="mx-auto max-w-7xl">

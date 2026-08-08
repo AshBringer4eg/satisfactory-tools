@@ -61,6 +61,56 @@
         "action": "Open own mode"
       }
     },
+    "tutorials": {
+      "eyebrow": "Interactive field guides for factory workers",
+      "title": "Learn every feature",
+      "carouselAria": "Interactive tutorials",
+      "paginationAria": "Tutorial carousel pagination",
+      "previous": "Show previous tutorial",
+      "next": "Show next tutorial",
+      "goTo": "Show tutorial {{index}}",
+      "slideAria": "Tutorial {{index}} of {{total}}: {{title}}",
+      "featuresLabel": "You will learn",
+      "start": "Start tutorial",
+      "items": {
+        "swatches": {
+          "label": "01 // Swatches",
+          "title": "Copy color zones and sort by use",
+          "description": "Use one-color and two-color swatches without losing track of your most-used references.",
+          "feature1": "Copy primary and secondary HEX values",
+          "feature2": "Read copy counters on every swatch",
+          "feature3": "See frequently used colors rise first",
+          "imageAlt": "DUO color swatch interface with primary and secondary color zones"
+        },
+        "filtering": {
+          "label": "02 // Filtering",
+          "title": "Find an item in seconds",
+          "description": "Combine text search and item categories to shrink the color database to exactly what you need.",
+          "feature1": "Search item names, internal codes, or HEX values",
+          "feature2": "Filter by Satisfactory item category",
+          "feature3": "Read live matching-result totals",
+          "imageAlt": "Color search and category filter interface with narrowed results"
+        },
+        "harmony": {
+          "label": "03 // Harmony",
+          "title": "Generate stronger color combinations",
+          "description": "Start from one or two anchors, choose a relationship, and copy generated palette suggestions.",
+          "feature1": "Use swatch colors as harmony anchors",
+          "feature2": "Compare OKLCH harmony modes",
+          "feature3": "Check Factory Safe warnings before copying",
+          "imageAlt": "Color harmony dialog with generated palette suggestions"
+        },
+        "accessibility": {
+          "label": "04 // Accessibility",
+          "title": "Make factory colors easier to read",
+          "description": "Preview color-vision modes and add patterns or symbols where color alone is not enough.",
+          "feature1": "Simulate common color-vision differences",
+          "feature2": "Add symbols to distinguish swatches",
+          "feature3": "Add patterns as a second visual cue",
+          "imageAlt": "Palette accessibility controls with color-vision simulation options"
+        }
+      }
+    },
     "featured": {
       "eyebrow": "Factory reference data",
       "title": "Popular color references",

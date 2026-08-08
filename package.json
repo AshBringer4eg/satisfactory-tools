@@ -1,7 +1,7 @@
 {
   "name": "vite_react_shadcn_ts",
   "private": true,
-  "version": "1.7.33",
+  "version": "1.7.35",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -21,6 +21,7 @@
     "pretest:e2e": "pnpm generate:share-cards",
     "test:e2e:ui": "playwright test --ui",
     "generate:share-cards": "node scripts/generate-share-cards.mjs",
+    "generate:tutorial-previews": "pnpm build && node scripts/generate-tutorial-previews.mjs",
     "bump:patch:package": "node scripts/bump-patch-version.mjs",
     "prepare": "git config core.hooksPath .githooks || exit 0"
   },
