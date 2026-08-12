@@ -16,7 +16,17 @@ export const createIndexedSearchColors = (
 ): IndexedSearchColor[] =>
   allColors.map((color) => ({
     color,
-    searchableText: `${color.name} ${color.hex} ${color.code}`.toLowerCase(),
+    searchableText: [
+      color.name,
+      color.defaultName,
+      color.hex,
+      color.secondaryColor,
+      color.code,
+      ...color.categories,
+      ...color.categoryCodes,
+    ]
+      .join(" ")
+      .toLowerCase(),
   }));
 
 export const getFilteredColors = (

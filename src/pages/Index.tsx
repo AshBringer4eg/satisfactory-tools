@@ -5,6 +5,7 @@ import AppTabBar from "@/components/layout/AppTabBar";
 import AppTabContent from "@/components/layout/AppTabContent";
 import AppFooter from "@/components/layout/AppFooter";
 import { ColorAccessibilityProvider } from "@/components/accessibility/ColorAccessibilityProvider";
+import TutorialProvider from "@/tutorials/TutorialProvider";
 import {
   ALL_COPY_COUNT_STORAGE_KEYS,
   RESET_COPY_COUNTS_EVENT,
@@ -71,12 +72,14 @@ const Index = ({ initialTab, initialLocale = "en" }: IndexProps) => {
 
   return (
     <ColorAccessibilityProvider>
-      <div className="min-h-screen min-w-[220px] bg-background flex flex-col" data-locale={activeLocale}>
-        <AppHeader />
-        <AppTabBar activeTab={activeTab} onTabChange={handleTabChange} />
-        <AppTabContent activeTab={activeTab} />
-        <AppFooter onResetCounters={handleResetCounters} />
-      </div>
+      <TutorialProvider>
+        <div className="min-h-screen min-w-[220px] bg-background flex flex-col" data-locale={activeLocale}>
+          <AppHeader />
+          <AppTabBar activeTab={activeTab} onTabChange={handleTabChange} />
+          <AppTabContent activeTab={activeTab} />
+          <AppFooter onResetCounters={handleResetCounters} />
+        </div>
+      </TutorialProvider>
     </ColorAccessibilityProvider>
   );
 };

@@ -1,7 +1,15 @@
-import { Menu, Search, X } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useCallback, useEffect, useRef, useState, type AnimationEvent } from "react";
+import { CircleHelp, Menu, Search, X } from "lucide-react";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { t } from "@/i18n";
+import { useTutorial } from "@/tutorials/tutorial-context";
 import type { CategoryFilterOption } from "./types";
 
 interface ColorsTabFilterControlsProps {
@@ -65,6 +73,11 @@ const CategoryFiltersPanel = ({
             onClick={() => onToggleCategory(category.code)}
             aria-pressed={isActive}
             aria-label={category.label}
+            data-tutorial={
+              category.code === "CATEGORY_FUELS"
+                ? "filtering-category-fuels"
+                : "category-filters"
+            }
             data-testid={`category-toggle-${category.code}`}
             className={cn(
               categoryButtonClassName,
@@ -88,7 +101,7 @@ const CategoryFiltersPanel = ({
       })}
     </div>
 
-    <div className={resultsSummaryClassName}>
+    <div className={resultsSummaryClassName} data-tutorial="results-summary">
       {t("colors.resultsSummary", {
         filtered: filteredCount,
         total: totalColors,
@@ -108,40 +121,140 @@ const ColorsTabFilterControls = ({
   categoryCountsByCode,
   onToggleCategory,
 }: ColorsTabFilterControlsProps) => {
+  const {
+    activeTutorial,
+    isRunning,
+    registerSearchSetter,
+    reportTutorialAction,
+    startTutorial,
+  } = useTutorial();
+  const isFilteringTutorial = activeTutorial === "filtering" && isRunning;
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const pendingMobileDrawerActionRef = useRef<
+    | { type: "open-filter-menu" }
+    | { type: "category"; code: string }
+    | null
+  >(null);
   const searchPlaceholder = t("colors.searchPlaceholder", { total: totalColors });
+  const handleSearchChange = useCallback(
+    (value: string) => {
+      onSearchChange(value);
+      reportTutorialAction({ type: "search", value });
+    },
+    [onSearchChange, reportTutorialAction],
+  );
+
+  useEffect(
+    () => registerSearchSetter(handleSearchChange),
+    [handleSearchChange, registerSearchSetter],
+  );
+
+  const handleMobileDrawerAnimationEnd = useCallback(
+    (event: AnimationEvent<HTMLDivElement>) => {
+      if (event.target !== event.currentTarget) return;
+
+      const drawerState = event.currentTarget.dataset.state;
+      const pendingAction = pendingMobileDrawerActionRef.current;
+      if (!pendingAction) return;
+
+      if (
+        (drawerState === "open" && pendingAction.type !== "open-filter-menu") ||
+        (drawerState === "closed" && pendingAction.type !== "category")
+      ) {
+        return;
+      }
+
+      pendingMobileDrawerActionRef.current = null;
+      reportTutorialAction(pendingAction);
+    },
+    [reportTutorialAction],
+  );
+
+  const handleMobileCategoryToggle = useCallback(
+    (categoryCode: string) => {
+      onToggleCategory(categoryCode);
+      if (isFilteringTutorial && mobileMenuOpen) {
+        pendingMobileDrawerActionRef.current = {
+          type: "category",
+          code: categoryCode,
+        };
+        setMobileMenuOpen(false);
+        return;
+      }
+
+      reportTutorialAction({ type: "category", code: categoryCode });
+    },
+    [isFilteringTutorial, mobileMenuOpen, onToggleCategory, reportTutorialAction],
+  );
+
+  const startFilteringTutorial = useCallback(
+    () => startTutorial("filtering"),
+    [startTutorial],
+  );
+
   const searchFilter = (
-    <div className="relative">
-      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-      <input
-        type="text"
-        placeholder={searchPlaceholder}
-        value={search}
-        onChange={(event) => onSearchChange(event.target.value)}
-        aria-label={searchPlaceholder}
-        data-testid="colors-search-input"
-        className={searchInputClassName}
-      />
-      {search && (
-        <button
-          type="button"
-          onClick={onClearSearch}
-          className="absolute right-2 top-1/2 -translate-y-1/2 inline-flex h-5 w-5 items-center justify-center text-muted-foreground hover:text-foreground"
-          aria-label={t("colors.clearSearchAria")}
-        >
-          <X className="h-3.5 w-3.5" />
-        </button>
-      )}
+    <div className="flex items-center gap-2">
+      <div className="relative min-w-0 flex-1">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <input
+          type="text"
+          placeholder={searchPlaceholder}
+          value={search}
+          onChange={(event) => handleSearchChange(event.target.value)}
+          readOnly={isFilteringTutorial}
+          aria-readonly={isFilteringTutorial}
+          aria-label={searchPlaceholder}
+          data-tutorial="search-input"
+          data-testid="colors-search-input"
+          className={searchInputClassName}
+        />
+        {search && (
+          <button
+            type="button"
+            onClick={onClearSearch}
+            disabled={isFilteringTutorial}
+            className="absolute right-2 top-1/2 -translate-y-1/2 inline-flex h-5 w-5 items-center justify-center text-muted-foreground hover:text-foreground"
+            aria-label={t("colors.clearSearchAria")}
+          >
+            <X className="h-3.5 w-3.5" />
+          </button>
+        )}
+      </div>
+      <button
+        type="button"
+        onClick={startFilteringTutorial}
+        className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[2px] border border-border bg-surface text-foreground hover:text-primary focus:outline-none focus:ring-1 focus:ring-primary"
+        aria-label={t("tutorials.quickActions.startFiltering")}
+        title={t("tutorials.quickActions.startFiltering")}
+        data-testid="tutorial-filtering-inline-trigger"
+      >
+        <CircleHelp className="h-4 w-4" aria-hidden="true" />
+      </button>
     </div>
   );
 
   return (
     <>
       <div className="md:hidden flex items-center gap-2">
-        <Sheet>
+        <Sheet
+          open={mobileMenuOpen}
+          onOpenChange={(open) => {
+            setMobileMenuOpen(open);
+            if (open && isFilteringTutorial) {
+              pendingMobileDrawerActionRef.current = {
+                type: "open-filter-menu",
+              };
+              return;
+            }
+
+            if (open) reportTutorialAction({ type: "open-filter-menu" });
+          }}
+        >
           <SheetTrigger asChild>
             <button
               type="button"
               className={menuButtonClassName}
+              data-tutorial="filter-menu"
               aria-label={t("colors.openMenuAria")}
             >
               <Menu className="w-4 h-4" />
@@ -151,14 +264,19 @@ const ColorsTabFilterControls = ({
           <SheetContent
             side="left"
             className="w-[85vw] max-w-sm overflow-y-auto"
+            onAnimationEnd={handleMobileDrawerAnimationEnd}
           >
+            <SheetTitle className="sr-only">{t("colors.categories")}</SheetTitle>
+            <SheetDescription className="sr-only">
+              {t("colors.openMenuAria")}
+            </SheetDescription>
             <CategoryFiltersPanel
               totalColors={totalColors}
               filteredCount={filteredCount}
               categoryFilters={categoryFilters}
               activeCategories={activeCategories}
               categoryCountsByCode={categoryCountsByCode}
-              onToggleCategory={onToggleCategory}
+              onToggleCategory={handleMobileCategoryToggle}
               showHeading
             />
           </SheetContent>
@@ -174,7 +292,10 @@ const ColorsTabFilterControls = ({
           categoryFilters={categoryFilters}
           activeCategories={activeCategories}
           categoryCountsByCode={categoryCountsByCode}
-          onToggleCategory={onToggleCategory}
+          onToggleCategory={(categoryCode) => {
+            onToggleCategory(categoryCode);
+            reportTutorialAction({ type: "category", code: categoryCode });
+          }}
         />
       </div>
     </>

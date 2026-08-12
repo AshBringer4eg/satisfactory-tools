@@ -68,4 +68,13 @@
   .font-mono {
     font-family: 'Geist Mono', ui-monospace, monospace;
   }
+
+}
+
+.react-joyride__spotlight > path:first-child {
+  pointer-events: none !important;
+}
+
+.react-joyride__floater {
+  pointer-events: auto !important;
 }

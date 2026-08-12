@@ -10,6 +10,7 @@ export interface ColorAccessibilityContextValue {
   setVisionMode: (mode: VisionMode) => void;
   setShowSymbols: (showSymbols: boolean) => void;
   setShowPatterns: (showPatterns: boolean) => void;
+  resetSettings: () => void;
 }
 
 const noop = () => {};
@@ -19,6 +20,7 @@ const defaultContextValue: ColorAccessibilityContextValue = {
   setVisionMode: noop,
   setShowSymbols: noop,
   setShowPatterns: noop,
+  resetSettings: noop,
 };
 
 export const ColorAccessibilityContext =

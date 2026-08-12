@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { t } from "@/i18n";
+import { getTutorialUrl } from "@/tutorials/routing";
 
 export type TutorialPreviewId =
   | "swatches"
@@ -20,15 +21,14 @@ export type TutorialPreviewId =
 
 type TutorialPreview = {
   id: TutorialPreviewId;
-  mode: "solo" | "duo";
   icon: LucideIcon;
 };
 
 const tutorialPreviews: TutorialPreview[] = [
-  { id: "swatches", mode: "duo", icon: SwatchBook },
-  { id: "filtering", mode: "duo", icon: Search },
-  { id: "harmony", mode: "duo", icon: WandSparkles },
-  { id: "accessibility", mode: "duo", icon: Eye },
+  { id: "swatches", icon: SwatchBook },
+  { id: "filtering", icon: Search },
+  { id: "harmony", icon: WandSparkles },
+  { id: "accessibility", icon: Eye },
 ];
 
 const tutorialImagePath = (id: TutorialPreviewId): string =>
@@ -123,10 +123,11 @@ const TutorialPreviewCarousel = ({
           data-testid="landing-tutorial-carousel"
         >
           <div className="flex touch-pan-y">
-            {tutorialPreviews.map(({ id, icon: Icon, mode }, index) => {
+            {tutorialPreviews.map(({ id, icon: Icon }, index) => {
               const isSelected = selectedIndex === index;
               const itemKey = `landing.tutorials.items.${id}`;
-              const tutorialPath = `${localePrefix}/${mode}/?tutorial=${id}`;
+              const tutorialLocale = localePrefix === "/uk" ? "uk" : "en";
+              const tutorialPath = getTutorialUrl(id, tutorialLocale);
 
               return (
                 <article

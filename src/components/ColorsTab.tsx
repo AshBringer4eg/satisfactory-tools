@@ -1,11 +1,13 @@
 import {
   useCallback,
   useDeferredValue,
+  useEffect,
   useMemo,
   useRef,
   useState,
   type ReactNode,
 } from "react";
+import { CircleHelp } from "lucide-react";
 import type { SatisfactoryColor, SatisfactoryPalette } from "@/data/colors";
 import type { ShareCardMode } from "@/lib/share-links";
 import { DEFAULT_COPY_COUNTS_STORAGE_KEY } from "@/config/storage";
@@ -22,6 +24,7 @@ import type { ReorderCommit } from "./colors-tab/types";
 import { useColorCopyCounts } from "./colors-tab/use-color-copy-counts";
 import { useColorFilters } from "./colors-tab/use-color-filters";
 import { useColorReorderAnimation } from "./colors-tab/use-color-reorder-animation";
+import { useTutorial } from "@/tutorials/tutorial-context";
 
 interface ColorsTabProps {
   palette: SatisfactoryPalette;
@@ -39,6 +42,14 @@ const ColorsTab = ({
   shareLinksEnabled = true,
 }: ColorsTabProps) => {
   useLocale();
+  const {
+    activeTutorial,
+    isRunning,
+    registerFilteringResetter,
+    reportTutorialAction,
+    startTutorial,
+  } = useTutorial();
+  const [filteringResultSettled, setFilteringResultSettled] = useState(false);
   const [harmonySeed, setHarmonySeed] = useState<{
     primaryHex: string;
     secondaryHex: string;
@@ -50,11 +61,17 @@ const ColorsTab = ({
     searchQuery,
     setSearch,
     clearSearch,
+    resetFilters,
     activeCategories,
     toggleCategory,
     categoryFiltersList,
     categoryCountsByCode,
   } = useColorFilters(palette);
+
+  useEffect(
+    () => registerFilteringResetter(resetFilters),
+    [registerFilteringResetter, resetFilters],
+  );
 
   const startReorderRef = useRef((_params: ReorderCommit) => {});
   const resetReorderRef = useRef(() => {});
@@ -96,6 +113,34 @@ const ColorsTab = ({
       ),
     [indexedColors, deferredSearchQuery, activeCategories, copyCounts],
   );
+  const isFilteringResultFiltered =
+    activeTutorial === "filtering" &&
+    isRunning &&
+    search.trim().toLowerCase() === "packaged" &&
+    deferredSearchQuery === "packaged" &&
+    filteredColors.length > 0;
+  const highlightFilteringResult =
+    isFilteringResultFiltered && filteringResultSettled;
+  const filteringResultKey = isFilteringResultFiltered
+    ? filteredColors.map((color) => color.code).join("|")
+    : "";
+  const filteringResultAnchor = activeCategories.has("CATEGORY_FUELS")
+    ? "filtering-filtered-swatches"
+    : "filtering-results-grid";
+
+  useEffect(() => {
+    setFilteringResultSettled(false);
+  }, [filteringResultKey]);
+
+  const handleFilteringAnimationStart = useCallback(() => {
+    setFilteringResultSettled(false);
+  }, []);
+
+  const handleFilteringAnimationComplete = useCallback(() => {
+    if (isFilteringResultFiltered) {
+      setFilteringResultSettled(true);
+    }
+  }, [isFilteringResultFiltered]);
   const shareMode: ShareCardMode | null = shareLinksEnabled
     ? swatchMode === "duo"
       ? "two"
@@ -103,11 +148,12 @@ const ColorsTab = ({
     : null;
 
   const handleHarmonyOpen = useCallback((color: SatisfactoryColor) => {
+    reportTutorialAction({ type: "open-harmony" });
     setHarmonySeed({
       primaryHex: color.hex,
       secondaryHex: swatchMode === "duo" ? color.secondaryColor : "",
     });
-  }, [swatchMode]);
+  }, [reportTutorialAction, swatchMode]);
 
   const handleHarmonyDialogOpenChange = useCallback((open: boolean) => {
     if (!open) {
@@ -154,8 +200,18 @@ const ColorsTab = ({
 
       <div className="flex-1 min-w-0">
         {topContent ? <div className="mb-2">{topContent}</div> : null}
-        <div className="mb-2 font-mono text-[9px] leading-tight text-orange-400/90">
-          {t("header.manualInstruction")}
+        <div className="mb-2 flex items-start gap-2 font-mono text-[9px] leading-tight text-orange-400/90">
+          <span className="min-w-0 flex-1">{t("header.manualInstruction")}</span>
+          <button
+            type="button"
+            onClick={() => startTutorial("swatches")}
+            className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-[2px] border border-border bg-surface text-foreground hover:text-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            aria-label={t("tutorials.quickActions.startSwatches")}
+            title={t("tutorials.quickActions.startSwatches")}
+            data-testid="tutorial-swatches-inline-trigger"
+          >
+            <CircleHelp className="h-3.5 w-3.5" aria-hidden="true" />
+          </button>
         </div>
 
         <ColorsTabGrid
@@ -167,6 +223,12 @@ const ColorsTab = ({
           movingColorCode={movingColorCode}
           floatingMove={floatingMove}
           reorderDelayByCode={reorderDelayByCode}
+          highlightFilteringResult={highlightFilteringResult}
+          filteringResultAnchor={filteringResultAnchor}
+          trackFilteringResultLayout={isFilteringResultFiltered}
+          filteringAnimationKey={filteringResultKey}
+          onFilteringAnimationStart={handleFilteringAnimationStart}
+          onFilteringAnimationComplete={handleFilteringAnimationComplete}
           placeholderRef={placeholderRef}
           registerSwatchNode={registerSwatchNode}
           onCopy={queueCopyCount}

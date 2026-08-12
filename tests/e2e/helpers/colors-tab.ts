@@ -131,6 +131,7 @@ export const setupClipboardMock = async (
     const mockWriteText = async (text: string) => {
       lastClipboardText = text;
     };
+    const mockReadText = async () => lastClipboardText;
 
     Object.defineProperty(window, "__lastClipboardText", {
       get() {
@@ -140,7 +141,7 @@ export const setupClipboardMock = async (
     });
 
     Object.defineProperty(navigator, "clipboard", {
-      value: { writeText: mockWriteText },
+      value: { writeText: mockWriteText, readText: mockReadText },
       configurable: true,
     });
   });

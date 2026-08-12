@@ -13,6 +13,7 @@ import {
   hasStaticShareCard,
   type ShareCardMode,
 } from "@/lib/share-links";
+import { useTutorial } from "@/tutorials/tutorial-context";
 
 interface ColorSwatchProps {
   color: SatisfactoryColor;
@@ -50,6 +51,7 @@ const ColorSwatch = ({
   const [showActionsPersistently, setShowActionsPersistently] = useState(false);
   const isDuo = mode === "duo";
   const { settings } = useColorAccessibility();
+  const { activeTutorial, isRunning, reportTutorialAction } = useTutorial();
   const primaryHex = color.hex.toUpperCase();
   const secondaryHex = color.secondaryColor.toUpperCase();
   const primaryDisplayHex = simulateHexColor(primaryHex, settings.visionMode);
@@ -162,6 +164,7 @@ const ColorSwatch = ({
       void navigator.clipboard.writeText(hexToCopy).then(
         () => {
           onCopy?.();
+          reportTutorialAction({ type: "copy", zone: part });
           setCopyFailedPart(null);
           setCopiedPart(part);
           scheduleFeedbackReset();
@@ -173,7 +176,7 @@ const ColorSwatch = ({
         },
       );
     },
-    [onCopy, primaryHex, scheduleFeedbackReset, secondaryHex],
+    [onCopy, primaryHex, reportTutorialAction, scheduleFeedbackReset, secondaryHex],
   );
 
   const handleMouseLeave = useCallback(() => {
@@ -206,7 +209,9 @@ const ColorSwatch = ({
   const isPartActive = (part: SwatchPart) =>
     hoveredPart === part || copiedPart === part || copyFailedPart === part;
   const isSwatchHovered = hoveredPart !== null;
-  const areActionsHovered = isSwatchHovered || isActionHovered;
+  const isHarmonyTourActive = isRunning && activeTutorial === "harmony";
+  const areActionsHovered =
+    isSwatchHovered || isActionHovered || isHarmonyTourActive;
   const bottomTintStyle = {
     background:
       "linear-gradient(to top, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0) 100%)",
@@ -254,6 +259,7 @@ const ColorSwatch = ({
       onMouseLeave={() => setIsActionHovered(false)}
       aria-label={t("swatch.aria.openHarmony", { name: color.name })}
       title={t("swatch.aria.openHarmony", { name: color.name })}
+      data-tutorial="swatch-harmony"
       data-testid="swatch-harmony-open"
       className={`absolute left-2 ${canShare ? "top-10" : "top-2"} z-50 inline-flex h-7 w-7 items-center justify-center rounded-[2px] bg-black/50 text-white shadow-sm hover:bg-black/70 focus:outline-none focus:ring-2 focus:ring-white/70 ${actionButtonVisibilityClass}`}
     >
@@ -284,6 +290,7 @@ const ColorSwatch = ({
         <button
           type="button"
           onClick={() => handleCopy("primary")}
+          data-tutorial="swatch-primary-copy"
           onMouseEnter={() => setHoveredPart("primary")}
           onMouseLeave={handleMouseLeave}
           className="relative z-0 w-full flex flex-col text-left transition-all duration-150 cursor-pointer"
@@ -320,7 +327,7 @@ const ColorSwatch = ({
               </div>
             )}
             <div className="absolute right-2 top-2 z-10 px-2 py-0.5 text-[12px] font-semibold text-white bg-black/35 rounded-[2px] pointer-events-none">
-              {copyCount}x
+              <span data-tutorial="swatch-copy-counter">{copyCount}x</span>
             </div>
             <div
               className="absolute inset-x-0 z-10 px-3 pt-2 flex flex-col gap-0"
@@ -384,6 +391,7 @@ const ColorSwatch = ({
           type="button"
           onMouseEnter={() => setHoveredPart("primary")}
           onClick={() => handleCopy("primary")}
+          data-tutorial="swatch-primary-copy"
           className="relative z-0 basis-[70%] grow-0 shrink-0 text-left overflow-hidden"
           style={{ backgroundColor: primaryDisplayHex }}
           aria-label={t("swatch.aria.copyPrimaryHex", {
@@ -430,6 +438,7 @@ const ColorSwatch = ({
           type="button"
           onMouseEnter={() => setHoveredPart("secondary")}
           onClick={() => handleCopy("secondary")}
+          data-tutorial="swatch-secondary-copy"
           className="relative z-0 basis-[30%] grow-0 shrink-0 text-left overflow-hidden"
           style={{ backgroundColor: secondaryDisplayHex }}
           aria-label={t("swatch.aria.copySecondaryHex", {
@@ -487,7 +496,7 @@ const ColorSwatch = ({
           </div>
         ) : (
           <div className="absolute right-2 top-2 px-2 py-0.5 text-[12px] font-semibold text-white bg-black/35 rounded-[2px] pointer-events-none z-10">
-            {copyCount}x
+            <span data-tutorial="swatch-copy-counter">{copyCount}x</span>
           </div>
         )}
       </div>

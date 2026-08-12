@@ -78,8 +78,8 @@
           "title": "Copy color zones and sort by use",
           "description": "Use one-color and two-color swatches without losing track of your most-used references.",
           "feature1": "Copy primary and secondary HEX values",
-          "feature2": "Read copy counters on every swatch",
-          "feature3": "See frequently used colors rise first",
+          "feature2": "Automatically sort colors by the number of times the “Copy” is clicked",
+          "feature3": "Have quick access to your most frequently used colors",
           "imageAlt": "DUO color swatch interface with primary and secondary color zones"
         },
         "filtering": {
@@ -88,16 +88,16 @@
           "description": "Combine text search and item categories to shrink the color database to exactly what you need.",
           "feature1": "Search item names, internal codes, or HEX values",
           "feature2": "Filter by Satisfactory item category",
-          "feature3": "Read live matching-result totals",
+          "feature3": "View filtering and sorting results in real time",
           "imageAlt": "Color search and category filter interface with narrowed results"
         },
         "harmony": {
           "label": "03 // Harmony",
           "title": "Generate stronger color combinations",
           "description": "Start from one or two anchors, choose a relationship, and copy generated palette suggestions.",
-          "feature1": "Use swatch colors as harmony anchors",
+          "feature1": "Use colors for your factory from the generated harmonies",
           "feature2": "Compare OKLCH harmony modes",
-          "feature3": "Check Factory Safe warnings before copying",
+          "feature3": "Use Factory Safe color mode before copying",
           "imageAlt": "Color harmony dialog with generated palette suggestions"
         },
         "accessibility": {
@@ -106,7 +106,7 @@
           "description": "Preview color-vision modes and add patterns or symbols where color alone is not enough.",
           "feature1": "Simulate common color-vision differences",
           "feature2": "Add symbols to distinguish swatches",
-          "feature3": "Add patterns as a second visual cue",
+          "feature3": "Add patterns as a second visual cue to help distinguish between them visually",
           "imageAlt": "Palette accessibility controls with color-vision simulation options"
         }
       }
@@ -208,6 +208,138 @@
       "deutan": "Deuteranope",
       "tritan": "Tritanope"
     }
+  },
+  "tutorials": {
+    "help": "HELP",
+    "openAria": "Open interactive tutorials",
+    "menuTitle": "Interactive tutorials",
+    "menuDescription": "Choose a field guide for this color terminal.",
+    "quickActions": {
+      "startSwatches": "Start Copy swatch tutorial",
+      "startFiltering": "Start Search and filter tutorial"
+    },
+    "controls": {
+      "back": "BACK",
+      "next": "NEXT",
+      "finish": "FINISH",
+      "cancel": "CANCEL"
+    },
+    "items": {
+      "swatches": {
+        "title": "Copy and sort swatches",
+        "description": "Copy both color zones and watch frequently used swatches rise.",
+        "steps": {
+          "intro": {
+            "title": "SWATCH GRID",
+            "content": "Each card contains primary and secondary paint zones."
+          },
+          "primary": {
+            "title": "PRIMARY ZONE",
+            "content": "Click primary zone to copy its HEX value into your clipboard."
+          },
+          "secondary": {
+            "title": "SECONDARY ZONE",
+            "content": "Click secondary zone to copy second HEX value into your clipboard."
+          },
+          "paste": {
+            "title": "PASTE COPIED RESULT",
+            "content": "Paste copied result into this field."
+          },
+          "counter": {
+            "title": "USE COUNTER",
+            "content": "Copy count persists locally and drives sort order when you move your cursor outside of the swatch."
+          }
+        }
+      },
+      "filtering": {
+        "title": "Search and filter",
+        "description": "Combine text search and categories to narrow results.",
+        "steps": {
+          "search": {
+            "title": "SEARCH",
+            "content": "Use guided search to find packaged items.",
+            "fill": "Fill search with 'PACKAGED'"
+          },
+          "resultsGrid": {
+            "title": "PACKAGED RESULTS",
+            "content": "This section shows every item found by the packaged search."
+          },
+          "menu": {
+            "title": "FILTER MENU",
+            "content": "Open the menu to choose an item category."
+          },
+          "category": {
+            "title": "FUELS CATEGORY",
+            "content": "Select FUELS to narrow packaged results to fuel items."
+          },
+          "filteredSwatches": {
+            "title": "FILTERED SWATCHES",
+            "content": "These swatches match both packaged search and the FUELS category."
+          },
+          "results": {
+            "title": "RESULT TOTAL",
+            "content": "Live total shows combined search and category matches."
+          }
+        }
+      },
+      "harmony": {
+        "title": "Generate color harmony",
+        "description": "Open harmony, choose relationship, and copy suggestion.",
+        "steps": {
+          "open": {
+            "title": "OPEN HARMONY",
+            "content": "Open harmony from any swatch action menu."
+          },
+          "mode": {
+            "title": "HARMONY MODE",
+            "content": "Choose another relationship from this selector."
+          },
+          "safe": {
+            "title": "FACTORY SAFE",
+            "content": "Toggle safety checks for contrast and color-vision conflicts."
+          },
+          "copy": {
+            "title": "COPY SUGGESTION",
+            "content": "Click generated suggestion to copy its HEX value."
+          },
+          "paste": {
+            "title": "PASTE COPIED RESULT",
+            "content": "Paste copied result into this field."
+          }
+        }
+      },
+      "accessibility": {
+        "title": "Check accessibility",
+        "description": "Simulate color vision and add non-color cues.",
+        "steps": {
+          "open": {
+            "title": "OPEN A11Y",
+            "content": "Open accessibility controls from header."
+          },
+          "vision": {
+            "title": "VISION MODE",
+            "content": "Choose a color-vision simulation."
+          },
+          "symbols": {
+            "title": "SYMBOLS",
+            "content": "Toggle symbols as an extra visual cue."
+          },
+          "patterns": {
+            "title": "PATTERNS",
+            "content": "Toggle patterns so color is not your only signal."
+          },
+          "reset": {
+            "title": "RESET ACCESSIBILITY",
+            "content": "Restore default vision and turn off symbols and patterns.",
+            "button": "RESET",
+            "apply": "APPLY AND FINISH"
+          }
+        }
+      }
+    },
+    "pasteInputAria": "Paste copied result",
+    "pasteButtonAria": "Paste from clipboard",
+    "pasteFailed": "Clipboard paste unavailable."
   },
   "footer": {
     "toolkit": "FICSIT_EMPLOYEE_TOOLKIT",
@@ -327,7 +459,7 @@
     "returnHome": "Return to Home"
   },
   "colors": {
-    "searchPlaceholder": "Search {{total}} colours",
+    "searchPlaceholder": "Search colors",
     "clearSearchAria": "Clear search",
     "openMenuAria": "Open menu",
     "menu": "Menu",

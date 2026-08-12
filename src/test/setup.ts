@@ -23,3 +23,36 @@ Object.defineProperty(window, "scrollTo", {
   writable: true,
   value: () => {},
 });
+
+if (!("IntersectionObserver" in globalThis)) {
+  class IntersectionObserverMock implements IntersectionObserver {
+    readonly root = null;
+    readonly rootMargin = "";
+    readonly thresholds: readonly number[] = [];
+
+    disconnect() {}
+    observe(_target: Element) {}
+    takeRecords(): IntersectionObserverEntry[] {
+      return [];
+    }
+    unobserve(_target: Element) {}
+  }
+
+  Object.defineProperty(globalThis, "IntersectionObserver", {
+    configurable: true,
+    value: IntersectionObserverMock,
+  });
+}
+
+if (!("ResizeObserver" in globalThis)) {
+  class ResizeObserverMock implements ResizeObserver {
+    disconnect() {}
+    observe(_target: Element) {}
+    unobserve(_target: Element) {}
+  }
+
+  Object.defineProperty(globalThis, "ResizeObserver", {
+    configurable: true,
+    value: ResizeObserverMock,
+  });
+}

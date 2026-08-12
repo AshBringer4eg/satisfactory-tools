@@ -10,6 +10,7 @@ interface UseColorFiltersResult {
   searchQuery: string;
   setSearch: (value: string) => void;
   clearSearch: () => void;
+  resetFilters: () => void;
   activeCategories: Set<string>;
   toggleCategory: (categoryCode: string) => void;
   categoryFiltersList: CategoryFilterOption[];
@@ -49,6 +50,11 @@ export const useColorFilters = (
     setSearch("");
   }, []);
 
+  const resetFilters = useCallback(() => {
+    setSearch("");
+    setActiveCategories(new Set());
+  }, []);
+
   const toggleCategory = useCallback((categoryCode: string) => {
     setActiveCategories((previous) => {
       const next = new Set(previous);
@@ -66,6 +72,7 @@ export const useColorFilters = (
     searchQuery,
     setSearch,
     clearSearch,
+    resetFilters,
     activeCategories,
     toggleCategory,
     categoryFiltersList,

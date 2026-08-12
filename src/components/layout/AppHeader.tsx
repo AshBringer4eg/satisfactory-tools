@@ -1,11 +1,14 @@
 import { Terminal } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import AccessibilityPaletteMenu from "@/components/accessibility/AccessibilityPaletteMenu";
+import TutorialHelpMenu from "@/components/tutorials/TutorialHelpMenu";
 import { setLocale, t, useLocale } from "@/i18n";
 
 const AppHeader = () => {
   const activeLocale = useLocale();
   const { pathname } = useLocation();
+  const normalizedPathname = pathname.replace(/\/+$/, "") || "/";
+  const isLandingPage = normalizedPathname === "/" || normalizedPathname === "/uk";
   const languageOptions = [
     { label: "EN", value: "en" },
     { label: "UA", value: "uk" },
@@ -32,6 +35,7 @@ const AppHeader = () => {
         </span>
       </div>
       <div className="flex shrink-0 items-center gap-3">
+        {!isLandingPage ? <TutorialHelpMenu /> : null}
         <AccessibilityPaletteMenu />
         <nav
           aria-label="Language switcher"

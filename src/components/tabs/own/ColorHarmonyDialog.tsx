@@ -37,6 +37,7 @@ import {
 } from "@/lib/color-accessibility";
 import { cn } from "@/lib/utils";
 import { t } from "@/i18n";
+import { useTutorial } from "@/tutorials/tutorial-context";
 
 interface ColorHarmonyDialogProps {
   open: boolean;
@@ -63,6 +64,8 @@ const ColorHarmonyDialog = ({
   const [factorySafe, setFactorySafe] = useState(true);
   const [copiedHex, setCopiedHex] = useState<string | null>(null);
   const { settings } = useColorAccessibility();
+  const { activeTutorial, isRunning, reportTutorialAction } = useTutorial();
+  const isHarmonyTutorialRunning = activeTutorial === "harmony" && isRunning;
 
   useEffect(() => {
     if (!open) return;
@@ -96,16 +99,34 @@ const ColorHarmonyDialog = ({
     }
 
     void navigator.clipboard.writeText(hex).then(
-      () => setCopiedHex(hex),
+      () => {
+        setCopiedHex(hex);
+        reportTutorialAction({ type: "harmony-copy" });
+      },
       () => setCopiedHex(null),
     );
-  }, []);
+  }, [reportTutorialAction]);
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog
+      modal={!isHarmonyTutorialRunning}
+      open={open}
+      onOpenChange={onOpenChange}
+    >
       <DialogContent
         className="max-h-[90vh] max-w-4xl overflow-y-auto rounded-[2px] p-0"
+        data-tutorial="harmony-dialog"
         data-testid="harmony-dialog"
+        onInteractOutside={(event) => {
+          const target = event.target as HTMLElement | null;
+
+          if (
+            isHarmonyTutorialRunning &&
+            target?.closest(".react-joyride__floater")
+          ) {
+            event.preventDefault();
+          }
+        }}
       >
         <DialogHeader className="border-b border-border px-4 pb-3 pt-4">
           <DialogTitle className="flex items-center gap-2 font-mono text-[14px] uppercase tracking-wider">
@@ -159,15 +180,20 @@ const ColorHarmonyDialog = ({
               </span>
               <Select
                 value={mode}
-                onValueChange={(value) => setMode(value as HarmonyMode)}
+                onValueChange={(value) => {
+                  const nextMode = value as HarmonyMode;
+                  setMode(nextMode);
+                  reportTutorialAction({ type: "harmony-mode", mode: nextMode });
+                }}
               >
                 <SelectTrigger
                   className="rounded-[2px] font-mono uppercase"
+                  data-tutorial="harmony-mode"
                   data-testid="harmony-mode-select"
                 >
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="z-[110]">
                   {HARMONY_MODES.map((harmonyMode) => (
                     <SelectItem
                       key={harmonyMode}
@@ -186,7 +212,12 @@ const ColorHarmonyDialog = ({
                 <input
                   type="checkbox"
                   checked={factorySafe}
-                  onChange={(event) => setFactorySafe(event.target.checked)}
+                  onChange={(event) => {
+                    const enabled = event.target.checked;
+                    setFactorySafe(enabled);
+                    reportTutorialAction({ type: "factory-safe", enabled });
+                  }}
+                  data-tutorial="harmony-factory-safe"
                   className="size-4 accent-primary"
                 />
                 <span className="font-mono text-[12px] uppercase tracking-wider">
@@ -244,6 +275,7 @@ const ColorHarmonyDialog = ({
                       key={swatch.id}
                       type="button"
                       onClick={() => copyHex(swatch.hex)}
+                      data-tutorial={swatch.isAnchor ? undefined : "harmony-suggestion"}
                       data-testid="harmony-swatch"
                       className="group relative flex min-h-[84px] items-center justify-center border-b border-black/10 text-center transition-opacity last:border-b-0 hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background"
                       style={{

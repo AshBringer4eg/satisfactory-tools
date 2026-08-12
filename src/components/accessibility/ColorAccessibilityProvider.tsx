@@ -78,17 +78,23 @@ export const ColorAccessibilityProvider = ({
     [updateSettings],
   );
 
+  const resetSettings = useCallback(() => {
+    setSettings({ ...DEFAULT_COLOR_ACCESSIBILITY_SETTINGS });
+  }, []);
+
   const value = useMemo<ColorAccessibilityContextValue>(
     () => ({
       settings,
       setVisionMode,
       setShowSymbols,
       setShowPatterns,
+      resetSettings,
     }),
     [
       setShowPatterns,
       setShowSymbols,
       setVisionMode,
+      resetSettings,
       settings,
     ],
   );

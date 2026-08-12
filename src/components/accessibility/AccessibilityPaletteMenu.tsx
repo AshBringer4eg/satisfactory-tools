@@ -1,4 +1,5 @@
 import { Check, Eye, Layers, Shapes } from "lucide-react";
+import { useRef, useState, type AnimationEvent } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -14,6 +15,7 @@ import {
   type VisionMode,
 } from "@/lib/color-accessibility";
 import { useColorAccessibility } from "./color-accessibility-context";
+import { useTutorial } from "@/tutorials/tutorial-context";
 
 const modeLabelKeyByMode: Record<VisionMode, string> = {
   normal: "accessibility.modes.normal",
@@ -37,15 +39,39 @@ const getModeBackgroundStyle = (mode: VisionMode) => ({
 });
 
 const AccessibilityPaletteMenu = () => {
-  const {
-    settings,
-    setVisionMode,
-    setShowSymbols,
-    setShowPatterns,
-  } = useColorAccessibility();
+  const { settings, setVisionMode, setShowSymbols, setShowPatterns } =
+    useColorAccessibility();
+  const { activeTutorial, reportTutorialAction } = useTutorial();
+  const [open, setOpen] = useState(false);
+  const pendingDrawerCloseActionRef = useRef<
+    { type: "toggle-patterns"; enabled: boolean } | null
+  >(null);
+
+  const handleOpenChange = (nextOpen: boolean) => setOpen(nextOpen);
+
+  const reportDrawerAnimation = (
+    event: AnimationEvent<HTMLDivElement>,
+    phase: "start" | "end",
+  ) => {
+    if (event.target !== event.currentTarget) return;
+    if (phase === "end") {
+      if (event.currentTarget.dataset.state === "open") {
+        reportTutorialAction({ type: "accessibility-drawer", phase });
+        return;
+      }
+
+      const pendingAction = pendingDrawerCloseActionRef.current;
+      if (pendingAction) {
+        pendingDrawerCloseActionRef.current = null;
+        reportTutorialAction(pendingAction);
+      }
+      return;
+    }
+    reportTutorialAction({ type: "accessibility-drawer", phase });
+  };
 
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={handleOpenChange}>
       <SheetTrigger asChild>
         <Button
           type="button"
@@ -53,6 +79,7 @@ const AccessibilityPaletteMenu = () => {
           size="sm"
           aria-label={t("accessibility.openAria")}
           className="h-8 px-2"
+          data-tutorial="accessibility-menu"
           data-testid="accessibility-menu-trigger"
         >
           <Eye aria-hidden="true" />
@@ -62,6 +89,9 @@ const AccessibilityPaletteMenu = () => {
       <SheetContent
         side="right"
         className="w-[min(92vw,384px)] overflow-y-auto sm:max-w-[384px]"
+        onAnimationStart={(event) => reportDrawerAnimation(event, "start")}
+        onAnimationEnd={(event) => reportDrawerAnimation(event, "end")}
+        data-tutorial="accessibility-panel"
         data-testid="accessibility-menu-content"
       >
         <SheetHeader>
@@ -79,7 +109,10 @@ const AccessibilityPaletteMenu = () => {
             >
               {t("accessibility.simulation")}
             </h2>
-            <div className="grid grid-cols-2 gap-2">
+            <div
+              className="grid grid-cols-2 gap-2"
+              data-tutorial="accessibility-vision-mode"
+            >
               {VISION_MODES.map((mode) => (
                 <Button
                   key={mode}
@@ -89,7 +122,10 @@ const AccessibilityPaletteMenu = () => {
                   }
                   size="sm"
                   aria-pressed={settings.visionMode === mode}
-                  onClick={() => setVisionMode(mode)}
+                  onClick={() => {
+                    setVisionMode(mode);
+                    reportTutorialAction({ type: "vision-mode", mode });
+                  }}
                   data-testid={`accessibility-mode-${mode}`}
                   className="h-16 justify-start overflow-hidden border-black/35 bg-[length:100%_100%] bg-center bg-no-repeat px-3 font-black text-white [text-shadow:0_1px_1px_rgba(0,0,0,1),0_0_2px_rgba(0,0,0,1),1px_0_0_rgba(0,0,0,0.85),-1px_0_0_rgba(0,0,0,0.85)] shadow-sm hover:text-white"
                   style={getModeBackgroundStyle(mode)}
@@ -120,7 +156,12 @@ const AccessibilityPaletteMenu = () => {
                 variant={settings.showSymbols ? "default" : "outline"}
                 size="sm"
                 aria-pressed={settings.showSymbols}
-                onClick={() => setShowSymbols(!settings.showSymbols)}
+                onClick={() => {
+                  const enabled = !settings.showSymbols;
+                  setShowSymbols(enabled);
+                  reportTutorialAction({ type: "toggle-symbols", enabled });
+                }}
+                data-tutorial="accessibility-symbols"
                 data-testid="accessibility-symbols-toggle"
                 className="justify-start"
               >
@@ -132,7 +173,20 @@ const AccessibilityPaletteMenu = () => {
                 variant={settings.showPatterns ? "default" : "outline"}
                 size="sm"
                 aria-pressed={settings.showPatterns}
-                onClick={() => setShowPatterns(!settings.showPatterns)}
+                onClick={() => {
+                  const enabled = !settings.showPatterns;
+                  setShowPatterns(enabled);
+                  if (enabled && activeTutorial === "accessibility") {
+                    pendingDrawerCloseActionRef.current = {
+                      type: "toggle-patterns",
+                      enabled,
+                    };
+                    setOpen(false);
+                    return;
+                  }
+                  reportTutorialAction({ type: "toggle-patterns", enabled });
+                }}
+                data-tutorial="accessibility-patterns"
                 data-testid="accessibility-patterns-toggle"
                 className="justify-start"
               >
