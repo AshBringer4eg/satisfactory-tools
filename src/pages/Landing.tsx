@@ -23,7 +23,8 @@ import {
 import { setLocale, t, useLocale } from "@/i18n";
 import {
   getSwatchOverlayToken,
-  simulateHexColor,
+  VISION_MODES,
+  type VisionMode,
 } from "@/lib/color-accessibility";
 
 const featuredColorCodes: ColorCode[] = [
@@ -116,9 +117,29 @@ const LandingDuoSwatch = ({ color }: { color: SatisfactoryColor }) => (
   </article>
 );
 
-const accessibilityPreviewHex = "#D4292E";
 const accessibilityCueColors = ["#1A7F7A", "#FA0C2B"] as const;
 const accessibilityHarmonyColors = ["#CB603A", "#3A8ECB", "#86CB3A"] as const;
+const accessibilityCueTokens = [
+  getSwatchOverlayToken("landing-cue-0", "primary"),
+  {
+    ...getSwatchOverlayToken("landing-cue-1", "primary"),
+    symbol: "#",
+  },
+] as const;
+
+const accessibilityVisionModeBackgroundImages: Record<VisionMode, string> = {
+  normal: "normal.png",
+  protan: "protanopia.png",
+  deutan: "deuteranopia.png",
+  tritan: "tritanopia.png",
+};
+
+const getAccessibilityVisionModeStyle = (mode: VisionMode) => ({
+  backgroundImage: [
+    "linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.4))",
+    `url("${import.meta.env.BASE_URL}img/colorblind/${accessibilityVisionModeBackgroundImages[mode]}")`,
+  ].join(", "),
+});
 
 const AccessibilityExamples = () => (
   <div className="mt-6 grid gap-3 md:grid-cols-3">
@@ -126,15 +147,15 @@ const AccessibilityExamples = () => (
       <p className="font-mono text-[10px] font-black uppercase tracking-wider text-primary">
         01 // {t("landing.accessibility.examples.vision.title")}
       </p>
-      <div className="mt-4 grid grid-cols-2 gap-2" aria-hidden="true">
-        {(["normal", "deutan"] as const).map((mode) => (
-          <div key={mode}>
-            <div
-              className="h-16 rounded-[2px] border border-border"
-              style={{ backgroundColor: simulateHexColor(accessibilityPreviewHex, mode) }}
-            />
-            <p className="mt-1 text-center font-mono text-[9px] font-bold uppercase text-muted-foreground">
-              {t(`landing.accessibility.examples.vision.${mode}`)}
+      <div className="mt-4 grid h-[84px] grid-cols-2 gap-2" aria-hidden="true">
+        {VISION_MODES.map((mode) => (
+          <div
+            key={mode}
+            className="relative min-h-0 overflow-hidden rounded-[2px] border border-border bg-[length:100%_100%] bg-center bg-no-repeat"
+            style={getAccessibilityVisionModeStyle(mode)}
+          >
+            <p className="absolute inset-0 flex items-center px-2 font-mono text-[9px] font-bold uppercase text-white [text-shadow:0_1px_1px_rgba(0,0,0,1),0_0_2px_rgba(0,0,0,1)]">
+              {t(`accessibility.modes.${mode}`)}
             </p>
           </div>
         ))}
@@ -159,7 +180,7 @@ const AccessibilityExamples = () => (
             style={{ backgroundColor: hex }}
           >
             <SwatchAssistOverlay
-              token={getSwatchOverlayToken(`landing-cue-${index}`, "primary")}
+              token={accessibilityCueTokens[index]}
               showPattern
               showSymbol
               presentation="compact"

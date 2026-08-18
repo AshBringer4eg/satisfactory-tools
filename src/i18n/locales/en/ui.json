@@ -133,15 +133,15 @@
     },
     "accessibility": {
       "eyebrow": "Accessibility assist // available",
-      "title": "Build palettes that are easier to distinguish",
-      "description": "Preview how every swatch appears with different types of color-vision deficiency, then add visual symbols and patterns so color is never the only cue.",
+      "title": "Build palettes that are easier to distinguish for color blindness",
+      "description": "Preview how every swatch appears with different types of color-vision deficiency (Deuteranope, Protanope, and Tritanope), then add visual symbols and patterns so color is never the only cue.",
       "examples": {
         "vision": {
           "title": "Vision simulation",
           "normal": "Default",
-          "deutan": "Deutan",
+          "deutan": "Deuteranope",
           "heading": "Change color-vision modes",
-          "description": "Preview every swatch in default, protan, deutan, or tritan modes without changing its real HEX value."
+          "description": "Preview every swatch in Default, Protanope, Deuteranope, or Tritanope modes without changing its real HEX value."
         },
         "cues": {
           "title": "Visual cues",

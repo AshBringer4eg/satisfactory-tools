@@ -68,7 +68,7 @@ const SwatchAssistOverlay = ({
     {showSymbol && (
       <div
         className={cn(
-          "absolute inset-0 z-[2] grid place-items-center pointer-events-none font-mono font-bold leading-none text-white/55 mix-blend-overlay",
+          "absolute inset-0 z-[2] grid place-items-center pointer-events-none font-mono font-bold leading-none text-white",
           presentation === "compact" ? "text-[14px]" : "text-[38px]",
         )}
         aria-hidden="true"
